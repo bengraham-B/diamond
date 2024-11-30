@@ -11,7 +11,8 @@ public class DB {
 
             String connectionString = String.format("jdbc:postgresql://%s:%d/%s", host, port, dbName); // Fixed connection string
             Connection conn = DriverManager.getConnection(connectionString, userName, password);
-            transactionTableExists(conn); // Ensure the Zombie Table exists
+            transactionTableExists(conn); // Ensure the Transaction Table exists
+            creditorTableExists(conn); // Ensure the Creditor Table exists
             System.out.println("Connected to Diamond DB");
             return conn;
         } catch (Exception e) {
@@ -24,7 +25,7 @@ public class DB {
     public void transactionTableExists(Connection conn) throws SQLException {
         try {
             DatabaseMetaData meta = conn.getMetaData();
-            ResultSet resultSet = meta.getTables(null, null, "zombie", new String[]{"TABLE"});
+            ResultSet resultSet = meta.getTables(null, null, "transaction", new String[]{"TABLE"});
 
             if (!resultSet.next()) {
                 String SQL_zombie_table = """
@@ -52,10 +53,48 @@ public class DB {
                     throw e; // Rethrow exception for further handling
                 }
             } else {
-                System.out.println("Zombie table already exists.");
+                System.out.println("Transaction table already exists.");
             }
         } catch (SQLException e) {
-            System.out.println("Error checking zombie table existence: " + e.getMessage());
+            System.out.println("Error checking transaction table existence: " + e.getMessage());
+            throw e; // Rethrow exception for further handling
+        }
+    }
+
+    public void creditorTableExists(Connection conn) throws SQLException {
+        try {
+            DatabaseMetaData meta = conn.getMetaData();
+            ResultSet resultSet = meta.getTables(null, null, "creditor", new String[]{"TABLE"});
+
+            if (!resultSet.next()) {
+                String SQL_zombie_table = """
+                        CREATE TABLE creditor(
+                          id UUID NOT NULL DEFAULT gen_random_uuid (),
+                          type TEXT NULL,
+                          creditor_name TEXT NULL,
+                          amount FLOAT NULL,
+                          details TEXT NULL,
+                          user_id UUID NULL,
+                          account_id UUID NULL,
+                          date DATE NULL,
+                          day INT NULL,
+                          month INT NULL,
+                          year INT NULL
+                        )
+                        """;
+
+                try (Statement statement = conn.createStatement()) {
+                    statement.executeUpdate(SQL_zombie_table); // Use executeUpdate for DDL statements
+                    System.out.println("Creditor table successfully created.");
+                } catch (SQLException e) {
+                    System.out.println("Error creating creditor table: " + e.getMessage());
+                    throw e; // Rethrow exception for further handling
+                }
+            } else {
+                System.out.println("Creditor table already exists.");
+            }
+        } catch (SQLException e) {
+            System.out.println("Error checking creditor table existence: " + e.getMessage());
             throw e; // Rethrow exception for further handling
         }
     }

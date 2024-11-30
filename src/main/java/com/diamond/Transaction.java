@@ -1,6 +1,7 @@
 package com.diamond;
 
 import java.util.Date;
+import java.util.UUID;
 
 public class Transaction {
 
@@ -8,8 +9,8 @@ public class Transaction {
     private String details;
     private double amount;
     private String transactionType;
-    private String userID;
-    private String accountID;
+    private UUID userID;
+    private UUID accountID;
 
     private String date;
     private int day;
@@ -18,9 +19,10 @@ public class Transaction {
 
     // Default constructor <-- Add this so the post function works
     public Transaction() {
+
     }
 
-    public Transaction(String transactionID, String details, double amount, String transactionType, String userID, String accountID, String date, int day, int month, int year) {
+    public Transaction(String transactionID, String details, double amount, String transactionType, UUID userID, UUID accountID, String date, int day, int month, int year) {
         this.transactionID = transactionID;
         this.details = details;
         this.amount = amount;
@@ -73,19 +75,19 @@ public class Transaction {
         this.transactionType = transactionType;
     }
 
-    public String getUserID() {
+    public UUID getUserID() {
         return userID;
     }
 
-    public void setUserID(String userID) {
+    public void setUserID(UUID userID) {
         this.userID = userID;
     }
 
-    public String getAccountID() {
+    public UUID getAccountID() {
         return accountID;
     }
 
-    public void setAccountID(String accountID) {
+    public void setAccountID(UUID accountID) {
         this.accountID = accountID;
     }
 
