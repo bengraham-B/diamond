@@ -14,14 +14,23 @@ public class DB {
             Connection conn = DriverManager.getConnection(connectionString, userName, password);
 
             // Checks that all the tables exist when ever a connection is made to the DB.
+            System.out.println();
+            System.out.println("------------------- Checking DB Tables ------------------- ");
             DBTables DBT = new DBTables(conn);
             DBT.transactionTableExists(conn); // Ensure the Transaction Table exists
+
             DBT.creditorTableExists(conn); // Ensure the Creditor Table exists
+            DBT.creditorTransactionTable(conn);
+
             DBT.diamondUserTableExists(conn); // Ensure the User Table exists
+
             DBT.accountTableExists(conn); // Ensure the Account Table exists
+
             DBT.debtorsTableExists(conn); // Ensure the Debtors Table exists
             DBT.debtorsTransactionTable(conn); // Ensure the Debtors Transaction Table exists
 
+            System.out.println("--------------------------------------------------------- ");
+            System.out.println();
             System.out.println("Connected to Diamond DB");
             return conn;
         } catch (Exception e) {

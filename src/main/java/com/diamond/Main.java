@@ -1,5 +1,7 @@
 package com.diamond;
 
+import com.diamond.creditors.Creditors;
+import com.diamond.creditors.CreditorsFunc;
 import com.diamond.debtors.Debtors;
 import com.diamond.debtors.DebtorsFunc;
 
@@ -49,12 +51,21 @@ public class Main {
 //        Account acc = new Account(conn, diamondUserId, "Main", "Main account for Ben");
 //        acc.createAccount();
 
+        UUID diamondUserID = UUID.fromString("1160ad8a-12cf-40da-a1f1-d8cc93beebe8");
+        UUID accountID = UUID.fromString("ac001123-d9d6-44da-8b81-7ddf54f59699");
+        UUID bossDebtorsID = UUID.fromString("aa2b11ce-b563-4b9d-9e53-9dc3aedb1eda");
+        UUID boosCreditorID = UUID.fromString("a91f6c47-e916-49a6-a0cb-84de4a1f8501");
 
-        DebtorsFunc DF = new DebtorsFunc(conn);
-//        DF.createDebtor("Mom", "Transactions which the mom will refund me", UUID.fromString("1160ad8a-12cf-40da-a1f1-d8cc93beebe8"), UUID.fromString("ac001123-d9d6-44da-8b81-7ddf54f59699"));
-        // Date -> YYYY - MM - DD
-        Debtors debtors = new Debtors(UUID.fromString("aa2b11ce-b563-4b9d-9e53-9dc3aedb1eda"), "debit",22.99, "Bought White bread from Spar", Date.valueOf("2024-12-02"));
-        DF.addDebtorsTransaction(debtors);
+//        DebtorsFunc DF = new DebtorsFunc(conn);
+//////        DF.createDebtor("Mom", "Transactions which the mom will refund me", UUID.fromString("1160ad8a-12cf-40da-a1f1-d8cc93beebe8"), UUID.fromString("ac001123-d9d6-44da-8b81-7ddf54f59699"));
+////        // Date -> YYYY - MM - DD
+//        Debtors debtors = new Debtors(diamondUserID, accountID,bossDebtorsID,"credit", 100, "TEST DEBTOR", Date.valueOf("2024-12-02"));
+//        DF.addDebtorsTransaction(debtors);
+
+        Creditors creditor = new Creditors(diamondUserID, accountID, boosCreditorID ,"credit" ,45, "Somerset Private Business Registration", Date.valueOf("2024-12-02"));
+        CreditorsFunc CF = new CreditorsFunc(conn);
+//        CF.createCreditor("Boss", "Money which the boss gives me for household expenses", UUID.fromString("1160ad8a-12cf-40da-a1f1-d8cc93beebe8"), UUID.fromString("ac001123-d9d6-44da-8b81-7ddf54f59699"));
+        CF.addCreditorsTransaction(creditor);
 
     }
 }

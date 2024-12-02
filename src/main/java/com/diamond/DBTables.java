@@ -55,23 +55,16 @@ public class DBTables {
     public void creditorTableExists(Connection conn) throws SQLException {
         try {
             DatabaseMetaData meta = conn.getMetaData();
-            ResultSet resultSet = meta.getTables(null, null, "creditor", new String[]{"TABLE"});
+            ResultSet resultSet = meta.getTables(null, null, "creditors", new String[]{"TABLE"});
 
             if (!resultSet.next()) {
                 String SQL_transaction_table = """
-                        CREATE TABLE creditor(
+                        CREATE TABLE creditors(
                             id UUID NOT NULL DEFAULT gen_random_uuid (),
-                            type TEXT NULL,
-                            creditor_name TEXT NULL,
-                            amount FLOAT NULL,
-                            details TEXT NULL,
-                            user_id UUID NULL,
-                            account_id UUID NULL,
-                            date DATE NULL,
-                            day INT NULL,
-                            month INT NULL,
-                            month_name TEXT NULL,
-                            year INT NULL,
+                            diamond_user_id UUID,
+                           account_id UUID,
+                           name TEXT,
+                           description TEXT,
                             timestamp TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP -- Adds timestamp with default current time
                         )
                         """;
@@ -90,6 +83,45 @@ public class DBTables {
             System.out.println("Error checking creditor table existence: " + e.getMessage());
             throw e; // Rethrow exception for further handling
         }
+    }
+
+    public void creditorTransactionTable(Connection conn) throws SQLException{
+        try {
+            DatabaseMetaData meta = conn.getMetaData();
+            ResultSet resultSet = meta.getTables(null, null, "creditors_transaction", new String[]{"TABLE"});
+
+            if (!resultSet.next()) {
+                String SQL_debtors_transaction_table = """
+                       CREATE TABLE creditors_transaction(
+                            id UUID NOT NULL DEFAULT gen_random_uuid(),
+                            creditor_id UUID,
+                            type TEXT,
+                            amount FLOAT,
+                            details TEXT,
+                            date DATE,
+                            day INT,
+                            month INT,
+                            month_name TEXT,
+                            year INT,
+                            timestamp TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+                        )
+                       \s""";
+
+                try (Statement statement = conn.createStatement()) {
+                    statement.executeUpdate(SQL_debtors_transaction_table); // Use executeUpdate for DDL statements
+                    System.out.println("creditors_transaction table successfully created.");
+                } catch (SQLException e) {
+                    System.out.println("Error creating creditors_transaction table: " + e.getMessage());
+                    throw e; // Rethrow exception for further handling
+                }
+            } else {
+                System.out.println("creditors_transaction table already exists.");
+            }
+        } catch (SQLException e) {
+            System.out.println("Error checking creditors_transaction table existence: " + e.getMessage());
+            throw e; // Rethrow exception for further handling
+        }
+
     }
 
     public void accountTableExists(Connection conn) throws  SQLException{

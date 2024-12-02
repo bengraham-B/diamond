@@ -1,13 +1,13 @@
-package com.diamond.debtors;
+package com.diamond.creditors;
 
 import java.sql.Connection;
 import java.sql.Date;
 import java.util.UUID;
 
-public class Debtors {
+public class Creditors {
     private UUID diamondUserID;
     private UUID accountID;
-    private UUID debtorsID;
+    private UUID creditorsID;
     private String type;
     private double amount;
     private String details;
@@ -17,10 +17,10 @@ public class Debtors {
     private String monthName;
     private int year;
 
-    public Debtors(UUID diamondUserID, UUID accountID, UUID debtorsID, String type, double amount, String details, Date date) {
+    public Creditors (UUID diamondUserID, UUID accountID, UUID creditorsID, String type, double amount, String details, Date date) {
         this.diamondUserID = diamondUserID;
         this.accountID = accountID;
-        this.debtorsID = debtorsID;
+        this.creditorsID = creditorsID;
         this.type = type;
         this.amount = amount;
         this.details = details;
@@ -43,12 +43,13 @@ public class Debtors {
         this.accountID = accountID;
     }
 
-    public UUID getDebtorsID() {
-        return debtorsID;
+
+    public UUID getCreditorsID() {
+        return creditorsID;
     }
 
-    public void setDebtorsID(UUID debtorsID) {
-        this.debtorsID = debtorsID;
+    public void setCreditorsID(UUID creditorsID) {
+        this.creditorsID = creditorsID;
     }
 
     public String getType() {

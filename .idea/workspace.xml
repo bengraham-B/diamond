@@ -5,22 +5,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c8a282a1-b423-47d6-a5e1-285f85ea51b7" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/diamond/DBTables.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/diamond/DiamondUser.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/diamond/account/Account.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/diamond/debtors/Debtors.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/diamond/debtors/DebtorsFunc.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/diamond/functions/Functions.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/diamond/transactions/TransactionFunc.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/diamond/creditors/Creditors.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/UUID.txt" beforeDir="false" afterPath="$PROJECT_DIR$/UUID.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/diamond/Creditor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/diamond/creditors/Creditor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/diamond/CreditorsFunc.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/diamond/creditors/CreditorsFunc.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/diamond/DB.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/diamond/DB.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/diamond/DBTables.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/diamond/DBTables.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/diamond/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/diamond/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/diamond/Transaction.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/diamond/transactions/Transaction.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/diamond/TransactionFunc.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/diamond/User.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/diamond/creditors/Creditor.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/diamond/creditors/CreditorsFunc.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/diamond/creditors/CreditorsFunc.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/diamond/debtors/Debtors.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/diamond/debtors/Debtors.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/diamond/debtors/DebtorsFunc.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/diamond/debtors/DebtorsFunc.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/diamond/transactions/TransactionFunc.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/diamond/transactions/TransactionFunc.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

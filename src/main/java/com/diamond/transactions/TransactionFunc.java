@@ -64,7 +64,7 @@ public class TransactionFunc {
 
         try {
             Statement statement = conn.createStatement();
-            String SQL = String.format("INSERT INTO transaction (details, amount, transaction_type, user_id, account_id, date, day, month, month_name, year) VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')", transaction.getDetails(), transaction.getAmount(),  transaction.getTransactionType(), transaction.getUserID(), transaction.getAccountID(), dateFormatter(transaction.getDate()), dayBrokenDown, monthBrokenDown, monthNames[monthBrokenDown -1], yearBrokenDown);
+            String SQL = String.format("INSERT INTO transaction (details, amount, transaction_type, user_id, account_id, date, day, month, month_name, year) VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')", transaction.getDetails(), (transaction.getTransactionType().equals("credit") ? transaction.getAmount() : transaction.getAmount() * -1),  transaction.getTransactionType(), transaction.getUserID(), transaction.getAccountID(), dateFormatter(transaction.getDate()), dayBrokenDown, monthBrokenDown, monthNames[monthBrokenDown -1], yearBrokenDown);
 
             int rowsAffected   = statement.executeUpdate(SQL);
             if(rowsAffected > 0){

@@ -1,6 +1,11 @@
-6b92f7f8-4d72-4ad7-abfb-8256ee9a1b50 - USER_ID
-53d5389d-7d03-4872-a9f9-f0ef354d0878 - ACCOUNT_ID
+--------------------------------- User ---------------------------------
+1160ad8a-12cf-40da-a1f1-d8cc93beebe8 - Ben USER_ID
+ac001123-d9d6-44da-8b81-7ddf54f59699 - Ben ACCOUNT_ID: Account Main
 
 
-1160ad8a-12cf-40da-a1f1-d8cc93beebe8 - Ben
-ac001123-d9d6-44da-8b81-7ddf54f59699 - Ben Account Main
+--------------------------------- Debtor ---------------------------------
+aa2b11ce-b563-4b9d-9e53-9dc3aedb1eda - BOSS Debtor
+
+--------------------------------- Creditor ---------------------------------
+a91f6c47-e916-49a6-a0cb-84de4a1f8501 - BOSS Creditor
+
