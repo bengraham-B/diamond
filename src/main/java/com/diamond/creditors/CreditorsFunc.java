@@ -1,10 +1,9 @@
-package com.diamond;
+package com.diamond.creditors;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.Objects;
-import java.util.UUID;
 
 public class CreditorsFunc {
     private Creditor creditor;
@@ -14,6 +13,8 @@ public class CreditorsFunc {
         this.conn = conn;
         this.creditor = creditor;
     }
+
+
 
     // Credit Transaction
     public String addCreditorsTransaction(){

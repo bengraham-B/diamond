@@ -1,6 +1,6 @@
-package com.diamond;
+package com.diamond.transactions;
 
-import java.util.Date;
+import java.sql.Date;
 import java.util.UUID;
 
 public class Transaction {
@@ -12,9 +12,10 @@ public class Transaction {
     private UUID userID;
     private UUID accountID;
 
-    private String date;
+    private Date date;
     private int day;
     private int month;
+    private String monthName;
     private int year;
 
     // Default constructor <-- Add this so the post function works
@@ -22,7 +23,7 @@ public class Transaction {
 
     }
 
-    public Transaction(String transactionID, String details, double amount, String transactionType, UUID userID, UUID accountID, String date, int day, int month, int year) {
+    public Transaction(String transactionID, String details, double amount, String transactionType, UUID userID, UUID accountID, Date date, int day, int month, String monthName, int year) {
         this.transactionID = transactionID;
         this.details = details;
         this.amount = amount;
@@ -32,6 +33,7 @@ public class Transaction {
         this.date = date;
         this.day = day;
         this.month = month;
+        this.monthName = monthName;
         this.year = year;
     }
 
@@ -59,11 +61,11 @@ public class Transaction {
         this.amount = amount;
     }
 
-    public String getDate() {
+    public Date getDate() {
         return date;
     }
 
-    public void setDate(String date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 
@@ -105,6 +107,14 @@ public class Transaction {
 
     public void setMonth(int month) {
         this.month = month;
+    }
+
+    public String getMonthName() {
+        return monthName;
+    }
+
+    public void setMonthName(String month) {
+        this.monthName = monthName;
     }
 
     public int getYear() {
