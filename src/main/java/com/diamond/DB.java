@@ -29,6 +29,8 @@ public class DB {
             DBT.debtorsTableExists(conn); // Ensure the Debtors Table exists
             DBT.debtorsTransactionTable(conn); // Ensure the Debtors Transaction Table exists
 
+            DBT.categoryTable(conn);
+
             System.out.println("--------------------------------------------------------- ");
             System.out.println();
             System.out.println("Connected to Diamond DB");

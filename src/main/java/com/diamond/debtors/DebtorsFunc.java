@@ -35,7 +35,7 @@ public class DebtorsFunc {
     }
 
     //  -------------------- ADD Debtor Transaction -- Requires Debtors Class --------------------
-    public void addDebtorsTransaction(Debtors debtors) throws SQLException {
+    public void addDebtorsTransaction(Debtor debtors) throws SQLException {
 
         try {
             int dayBrokenDown = func.breakDownDate(debtors.getDate())[0];
@@ -43,7 +43,7 @@ public class DebtorsFunc {
             int yearBrokenDown = func.breakDownDate(debtors.getDate())[2];
             String []monthNames = {"Jan", "Feb", "Mar", "Apr","May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"};
 
-            String SQL = String.format("INSERT INTO debtors_transaction(debtor_id, type, amount, details, date, day, month, month_name, year) VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')", debtors.getDebtorsID(), debtors.getType().toLowerCase(), (debtors.getType().equalsIgnoreCase("debit") ? debtors.getAmount() : debtors.getAmount() * -1), debtors.getDetails(), debtors.getDate(), dayBrokenDown, monthBrokenDown, monthNames[monthBrokenDown -1], yearBrokenDown);
+            String SQL = String.format("INSERT INTO debtors_transaction(debtor_id, account_id, type, amount, details, date, day, month, month_name, year) VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')", debtors.getDebtorsID(), debtors.getAccountID(), debtors.getType().toLowerCase(), (debtors.getType().equalsIgnoreCase("debit") ? debtors.getAmount() : debtors.getAmount() * -1), debtors.getDetails(), debtors.getDate(), dayBrokenDown, monthBrokenDown, monthNames[monthBrokenDown -1], yearBrokenDown);
             Statement statement = conn.createStatement();
             int rowsAffected = statement.executeUpdate(SQL);
             System.out.println(rowsAffected);
@@ -53,15 +53,15 @@ public class DebtorsFunc {
 
                 // Updates the Transaction Table if the debtors_transaction is credit: We are receiving money into out account
                 // This is done after the debtors_transaction has been added successfully
-                if (debtors.getType().equals("credit")){
-                    System.out.println("CREDIT - DEBTORS");
-                    String SQL_TRANSACTION = String.format("INSERT INTO transaction (details, amount, transaction_type, user_id, account_id, date, day, month, month_name, year) VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')", "From Debtors: " + debtors.getDetails(), debtors.getAmount(),  "credit", debtors.getDiamondUserID(), debtors.getAccountID(), func.dateFormatter(debtors.getDate()), dayBrokenDown, monthBrokenDown, monthNames[monthBrokenDown -1], yearBrokenDown);
-                    int rowsAffectedTransaction = statement.executeUpdate(SQL_TRANSACTION);
-                    if (rowsAffectedTransaction == 1) {
-                        System.out.println("Debtor Transaction added to [Transaction] ");
-                    }
-
-                }
+//                if (debtors.getType().equals("credit")){
+//                    System.out.println("CREDIT - DEBTORS");
+//                    String SQL_TRANSACTION = String.format("INSERT INTO transaction (details, amount, transaction_type, user_id, account_id, date, day, month, month_name, year) VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')", "From Debtors: " + debtors.getDetails(), debtors.getAmount(),  "credit", debtors.getDiamondUserID(), debtors.getAccountID(), func.dateFormatter(debtors.getDate()), dayBrokenDown, monthBrokenDown, monthNames[monthBrokenDown -1], yearBrokenDown);
+//                    int rowsAffectedTransaction = statement.executeUpdate(SQL_TRANSACTION);
+//                    if (rowsAffectedTransaction == 1) {
+//                        System.out.println("Debtor Transaction added to [Transaction] ");
+//                    }
+//
+//                }
             }
         } catch (Exception e) {
             throw new RuntimeException(e);

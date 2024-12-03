@@ -1,13 +1,15 @@
-package com.diamond.debtors;
+package com.diamond.creditors;
 
 import java.sql.Connection;
 import java.sql.Date;
 import java.util.UUID;
 
-public class Debtors {
+public class Creditor {
+    private UUID id;
     private UUID diamondUserID;
     private UUID accountID;
-    private UUID debtorsID;
+    private UUID creditorsID;
+    private UUID categoryID;
     private String type;
     private double amount;
     private String details;
@@ -17,14 +19,23 @@ public class Debtors {
     private String monthName;
     private int year;
 
-    public Debtors(UUID diamondUserID, UUID accountID, UUID debtorsID, String type, double amount, String details, Date date) {
+    public Creditor (UUID diamondUserID, UUID accountID, UUID creditorsID, UUID categoryID, String type, double amount, String details, Date date) {
         this.diamondUserID = diamondUserID;
         this.accountID = accountID;
-        this.debtorsID = debtorsID;
+        this.creditorsID = creditorsID;
+        this.categoryID = categoryID;
         this.type = type;
         this.amount = amount;
         this.details = details;
         this.date = date;
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
     }
 
     public UUID getDiamondUserID() {
@@ -43,12 +54,21 @@ public class Debtors {
         this.accountID = accountID;
     }
 
-    public UUID getDebtorsID() {
-        return debtorsID;
+
+    public UUID getCreditorsID() {
+        return creditorsID;
     }
 
-    public void setDebtorsID(UUID debtorsID) {
-        this.debtorsID = debtorsID;
+    public void setCreditorsID(UUID creditorsID) {
+        this.creditorsID = creditorsID;
+    }
+
+    public UUID getCategoryID() {
+        return categoryID;
+    }
+
+    public void setCategoryID(UUID categoryID) {
+        this.categoryID = categoryID;
     }
 
     public String getType() {
