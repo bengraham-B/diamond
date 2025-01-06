@@ -9,8 +9,8 @@ public class Transaction {
     private String details;
     private double amount;
     private String transactionType;
-    private UUID userID;
-    private UUID accountID;
+    private String userID;
+    private String accountID;
 
     private Date date;
     private int day;
@@ -23,7 +23,7 @@ public class Transaction {
 
     }
 
-    public Transaction(String transactionID, String details, double amount, String transactionType, UUID userID, UUID accountID, Date date, int day, int month, String monthName, int year) {
+    public Transaction(String transactionID, String details, double amount, String transactionType, String userID, String accountID, Date date, int day, int month, String monthName, int year) {
         this.transactionID = transactionID;
         this.details = details;
         this.amount = amount;
@@ -36,6 +36,9 @@ public class Transaction {
         this.monthName = monthName;
         this.year = year;
     }
+
+//    public Transaction(String transactionId, String details, double amount, String transactionType, String userId, Object o) {
+//    }
 
     public String getTransactionID() {
         return transactionID;
@@ -77,19 +80,19 @@ public class Transaction {
         this.transactionType = transactionType;
     }
 
-    public UUID getUserID() {
+    public String getUserID() {
         return userID;
     }
 
-    public void setUserID(UUID userID) {
+    public void setUserID(String userID) {
         this.userID = userID;
     }
 
-    public UUID getAccountID() {
+    public String getAccountID() {
         return accountID;
     }
 
-    public void setAccountID(UUID accountID) {
+    public void setAccountID(String accountID) {
         this.accountID = accountID;
     }
 

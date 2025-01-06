@@ -41,11 +41,12 @@ public class DBTables {
                     statement.executeUpdate(SQL_transaction_table); // Use executeUpdate for DDL statements
                     System.out.println("Transaction table successfully created.");
                 } catch (SQLException e) {
-                    System.out.println("Error creating transaction table: " + e.getMessage());
+//                    System.out.println("Error creating transaction table: " + e.getMessage());
+                    System.out.printf("%-15s %-27s %-27s%n", "Error Creating Table:", "Transaction Table", e.getMessage());
                     throw e; // Rethrow exception for further handling
                 }
             } else {
-                System.out.println("Transaction table already exists.");
+                System.out.printf("%-15s %-27s%n", "Table Exists:", "Transaction Table");
             }
         } catch (SQLException e) {
             System.out.println("Error checking transaction table existence: " + e.getMessage());
@@ -75,7 +76,7 @@ public class DBTables {
                     throw e; // Rethrow exception for further handling
                 }
             } else {
-                System.out.println("diamond_user table already exists.");
+                System.out.printf("%-15s %-27s%n", "Table Exists:", "Account Table");
             }
         } catch (SQLException e) {
             System.out.println("Error checking creditor table existence: " + e.getMessage());
@@ -108,7 +109,7 @@ public class DBTables {
                     throw e; // Rethrow exception for further handling
                 }
             } else {
-                System.out.println("account table already exists.");
+                System.out.printf("%-15s %-27s%n", "Table Exists:", "Diamond User Table");
             }
         } catch (SQLException e) {
             System.out.println("Error checking account table existence: " + e.getMessage());
@@ -136,13 +137,16 @@ public class DBTables {
 
                 try (Statement statement = conn.createStatement()) {
                     statement.executeUpdate(SQL_creditor_table); // Use executeUpdate for DDL statements
-                    System.out.println("Creditor table successfully created.");
+//                    System.out.println("Creditor table successfully created.");
+                    String l = String.format("Created Successfully%10s", "Creditor Table");
+                    System.out.println(l);
+
                 } catch (SQLException e) {
                     System.out.println("Error creating creditor table: " + e.getMessage());
                     throw e; // Rethrow exception for further handling
                 }
             } else {
-                System.out.println("Creditor table already exists.");
+                System.out.printf("%-15s %-27s%n", "Table Exists:", "Creditor Table");
             }
         } catch (SQLException e) {
             System.out.println("Error checking creditor table existence: " + e.getMessage());
@@ -182,7 +186,7 @@ public class DBTables {
                     throw e; // Rethrow exception for further handling
                 }
             } else {
-                System.out.println("creditors_transaction table already exists.");
+                System.out.printf("%-15s %-27s%n", "Table Exists:", "Creditors Transaction Table");
             }
         } catch (SQLException e) {
             System.out.println("Error checking creditors_transaction table existence: " + e.getMessage());
@@ -216,7 +220,7 @@ public class DBTables {
                     throw e; // Rethrow exception for further handling
                 }
             } else {
-                System.out.println("debtors table already exists.");
+                System.out.printf("%-15s %-27s%n", "Table Exists:", "Debtors Table");
             }
         } catch (SQLException e) {
             System.out.println("Error checking debtors table existence: " + e.getMessage());
@@ -257,7 +261,8 @@ public class DBTables {
                     throw e; // Rethrow exception for further handling
                 }
             } else {
-                System.out.println("debtors_transaction table already exists.");
+                System.out.printf("%-15s %-27s%n", "Table Exists:", "Debtors Transaction Table");
+
             }
         } catch (SQLException e) {
             System.out.println("Error checking debtors_transaction table existence: " + e.getMessage());
@@ -289,7 +294,7 @@ public class DBTables {
                     throw e; // Rethrow exception for further handling
                 }
             } else {
-                System.out.println("category table already exists.");
+                System.out.printf("%-15s %-27s%n", "Table Exists:", "Category Table");
             }
         } catch (SQLException e) {
             System.out.println("Error checking category table existence: " + e.getMessage());
