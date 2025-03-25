@@ -21,18 +21,26 @@ public class Main {
         DB db = new DB();
         Connection conn = db.connectDB("ben", "silly", "localhost", 5441, "Diamond");
 
-        UUID diamondUserID = UUID.fromString("1160ad8a-12cf-40da-a1f1-d8cc93beebe8");
-        UUID accountID = UUID.fromString("ac001123-d9d6-44da-8b81-7ddf54f59699");
+        String diamondUserID = "1160ad8a-12cf-40da-a1f1-d8cc93beebe8";
+        String accountID = ("ac001123-d9d6-44da-8b81-7ddf54f59699");
         UUID bossDebtorsID = UUID.fromString("aa2b11ce-b563-4b9d-9e53-9dc3aedb1eda");
-        UUID bossCreditorID = UUID.fromString("a91f6c47-e916-49a6-a0cb-84de4a1f8501");
-        UUID houseHolderCreditorID = UUID.fromString("038472c0-d2a1-4854-b8cd-c8f8d7c6c4f7");
+        String bossCreditorID = ("a91f6c47-e916-49a6-a0cb-84de4a1f8501");
+        String houseHolderCreditorID = ("038472c0-d2a1-4854-b8cd-c8f8d7c6c4f7");
         UUID momDebtorID = UUID.fromString("f8c3bed6-92ec-441b-898d-ab2be615bf69");
         UUID RRSCategory = UUID.fromString("9875eae0-34ea-43aa-9299-470d0081e20b");
+
+        String AEGrahamID_Creditor = "af26cd21-0db5-4889-91b0-b2b011de63ae";
+
+        CreditorsFunc CF = new CreditorsFunc(conn);
+        CF.CreditorBalance(houseHolderCreditorID);
+
+
+        // =========================================== Create Account ===========================================
 
 
         // =========================================== Transaction ===========================================
 //        Transaction transaction = new Transaction("", "", "", "", "", "", "");
-        TransactionFunc transactionFunc = new TransactionFunc(conn);
+//        TransactionFunc transactionFunc = new TransactionFunc(conn);
 //        List<Transaction> transactionList = transactionFunc.getTransactions("ac001123-d9d6-44da-8b81-7ddf54f59699");
 ////           for(int i = 0; i < transactionList.size(); i++){
 ////               System.out.println(transactionList.get(i));
@@ -40,15 +48,15 @@ public class Main {
 //
 //        transactionList.forEach(System.out::println);
 
-        try {
-            // Retrieve the list of transactions for the specified account
-            List<Transaction> transactionList = transactionFunc.getTransactions("ac001123-d9d6-44da-8b81-7ddf54f59699");
-
-            // Print each transaction using the overridden toString method
-            transactionList.forEach(System.out::println);
-        } catch (SQLException e) {
-            System.err.println("Error fetching transactions: " + e.getMessage());
-        }
+//        try {
+//            // Retrieve the list of transactions for the specified account
+//            List<Transaction> transactionList = transactionFunc.getTransactions("ac001123-d9d6-44da-8b81-7ddf54f59699");
+//
+//            // Print each transaction using the overridden toString method
+////            transactionList.forEach(System.out::println);
+//        } catch (SQLException e) {
+//            System.err.println("Error fetching transactions: " + e.getMessage());
+//        }
 
 
 //        transaction.setAmount(260);
@@ -61,11 +69,11 @@ public class Main {
 //        TF.insertTransaction(transaction);
 
          // --- Creditor ---
-//        Creditor creditor = new Creditor(diamondUserID, accountID, houseHolderCreditorID,null, "debit", 41.23, "Groceries", Date.valueOf("2025-01-04"));
+//        Creditor creditor = new Creditor(diamondUserID, accountID, "0356b70d-c02f-4022-a14a-6ea2df25c537",null, "debit", 2300, "Pocket Money - Dad", Date.valueOf("2025-01-01"));
 //        CreditorsFunc CF = new CreditorsFunc(conn);
 //        CF.addCreditorsTransaction(creditor);
 
-//        CF.createCreditor("Somerset Private", "Business Studies at Somerset Private", diamondUserID, accountID);
+//        CF.createCreditor("A.E Graham", "Money I owe to the boss from 2025", UUID.fromString(diamondUserID), UUID.fromString(accountID));
 
 ////         Date -> YYYY - MM - DD
 //        DebtorsFunc DF = new DebtorsFunc(conn);
@@ -74,17 +82,27 @@ public class Main {
 //
 //        DF.createDebtor("Mom", "Transactions which the mom will refund me", UUID.fromString("1160ad8a-12cf-40da-a1f1-d8cc93beebe8"), UUID.fromString("ac001123-d9d6-44da-8b81-7ddf54f59699"));
 
-        Balance B = new Balance(conn);
-        B.detailedBalance(accountID);
-        B.balancePerCreditors(accountID);
-        B.balancePerDebtors(accountID);
+//        Balance B = new Balance(conn);
+//        B.detailedBalance(UUID.fromString(accountID));
+//        Balance.ReturnBalances returnBalances = new Balance.ReturnBalances();
+//        System.out.println(" ------ New Creditors Balance ----");
+//        List<Balance.ReturnBalances> creditorsBalances = B.balancePerCreditors(accountID);
+//        for (Balance.ReturnBalances balance : creditorsBalances) {
+//            System.out.println(balance);
+//        }
+
+//        System.out.println(" ------ New Creditors Transactions ----");
+//        CreditorsFunc cf = new CreditorsFunc(conn);
+//        List<Creditor> creditorsTransaction = cf.creditTransactions("0356b70d-c02f-4022-a14a-6ea2df25c537");
+//        for (Creditor creditor : creditorsTransaction) {
+//            System.out.println(creditor.getDetails() + ": " + creditor.getAmount());
+//        }
+
+//        B.balancePerDebtors(accountID);
 
 //        Category cat = new Category("RRS", "Money spent at RRS", accountID);
 //        CategoryFunc CatFunc = new CategoryFunc(conn);
 //        CatFunc.createCategory(cat);
-
-
-
 
         // User
 //        DiamondUser diamondUser = new DiamondUser(conn);

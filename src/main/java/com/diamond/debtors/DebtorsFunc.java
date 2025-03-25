@@ -43,7 +43,7 @@ public class DebtorsFunc {
             int yearBrokenDown = func.breakDownDate(debtors.getDate())[2];
             String []monthNames = {"Jan", "Feb", "Mar", "Apr","May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"};
 
-            String SQL = String.format("INSERT INTO debtors_transaction(debtor_id, account_id, type, amount, details, date, day, month, month_name, year) VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')", debtors.getDebtorsID(), debtors.getAccountID(), debtors.getType().toLowerCase(), (debtors.getType().equalsIgnoreCase("debit") ? debtors.getAmount() : debtors.getAmount() * -1), debtors.getDetails(), debtors.getDate(), dayBrokenDown, monthBrokenDown, monthNames[monthBrokenDown -1], yearBrokenDown);
+            String SQL = String.format("INSERT INTO debtors_transaction(debtor_id, account_id, category_id, type, amount, details, date, day, month, month_name, year) VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')", debtors.getDebtorsID(), debtors.getAccountID(), debtors.getCategoryID(), debtors.getType().toLowerCase(), (debtors.getType().equalsIgnoreCase("debit") ? debtors.getAmount() : debtors.getAmount() * -1), debtors.getDetails(), debtors.getDate(), dayBrokenDown, monthBrokenDown, monthNames[monthBrokenDown -1], yearBrokenDown);
             Statement statement = conn.createStatement();
             int rowsAffected = statement.executeUpdate(SQL);
             System.out.println(rowsAffected);

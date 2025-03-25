@@ -16,8 +16,9 @@ public class Balance {
 
     private ReturnBalances mapRowReurnBalance(ResultSet rs, String balanceName) throws SQLException{
         return new ReturnBalances(
-            rs.getString("name"),
-            rs.getDouble(balanceName)
+                rs.getString("ID"),
+                rs.getString("name"),
+                rs.getDouble(balanceName)
         );
     }
 
@@ -91,19 +92,19 @@ public class Balance {
     }
 
     // GET balance per Creditors
-    public List<ReturnBalances> balancePerCreditors(UUID accountID) throws SQLException {
+    public List<ReturnBalances> balancePerCreditors(String accountID) throws SQLException {
         System.out.println("==================== Creditors Balance ====================");
         try {
             String SQL = String.format(
                 """
-                    SELECT SUM(creditors_transaction.amount) AS creditors_balance, creditors.name AS name\s
+                    SELECT SUM(creditors_transaction.amount) AS creditors_balance, creditors.name AS name, creditors.id AS ID \s
                     FROM\s
                         creditors_transaction
                     JOIN
                     creditors ON creditors_transaction.creditor_id = creditors.id
                     WHERE\s
                         creditors_transaction.account_id='%s'
-                    GROUP BY creditors.name;
+                    GROUP BY creditors.name, creditors.id;
                 """, accountID);
 
             Statement statement = conn.createStatement();
@@ -127,13 +128,23 @@ public class Balance {
     }
 
     // Class which is used to return the balances as it only requires amount and name
-    public class ReturnBalances{
+    public static class ReturnBalances{
+        String id;
         String name;
         double amount;
 
-        public ReturnBalances(String name, double amount) {
+        public ReturnBalances(String id, String name, double amount) {
+            this.id = id;
             this.name = name;
             this.amount = amount;
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
         }
 
         public String getName() {

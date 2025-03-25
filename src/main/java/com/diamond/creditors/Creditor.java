@@ -5,11 +5,11 @@ import java.sql.Date;
 import java.util.UUID;
 
 public class Creditor {
-    private UUID id;
-    private UUID diamondUserID;
-    private UUID accountID;
-    private UUID creditorsID;
-    private UUID categoryID;
+    private String id;
+    private String diamondUserID;
+    private String accountID;
+    private String creditorsID;
+    private String categoryID;
     private String type;
     private double amount;
     private String details;
@@ -19,8 +19,8 @@ public class Creditor {
     private String monthName;
     private int year;
 
-    public Creditor (UUID diamondUserID, UUID accountID, UUID creditorsID, UUID categoryID, String type, double amount, String details, Date date) {
-        this.diamondUserID = diamondUserID;
+    public Creditor (String id, String accountID, String creditorsID, String categoryID, String type, double amount, String details, Date date) {
+        this.id = id;
         this.accountID = accountID;
         this.creditorsID = creditorsID;
         this.categoryID = categoryID;
@@ -30,44 +30,40 @@ public class Creditor {
         this.date = date;
     }
 
-    public UUID getId() {
+    public Creditor(){
+
+    }
+
+    public String getId() {
         return id;
     }
 
-    public void setId(UUID id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public UUID getDiamondUserID() {
-        return diamondUserID;
-    }
-
-    public void setDiamondUserID(UUID diamondUserID) {
-        this.diamondUserID = diamondUserID;
-    }
-
-    public UUID getAccountID() {
+    public String getAccountID() {
         return accountID;
     }
 
-    public void setAccountID(UUID accountID) {
+    public void setAccountID(String accountID) {
         this.accountID = accountID;
     }
 
 
-    public UUID getCreditorsID() {
+    public String getCreditorsID() {
         return creditorsID;
     }
 
-    public void setCreditorsID(UUID creditorsID) {
+    public void setCreditorsID(String creditorsID) {
         this.creditorsID = creditorsID;
     }
 
-    public UUID getCategoryID() {
+    public String getCategoryID() {
         return categoryID;
     }
 
-    public void setCategoryID(UUID categoryID) {
+    public void setCategoryID(String categoryID) {
         this.categoryID = categoryID;
     }
 

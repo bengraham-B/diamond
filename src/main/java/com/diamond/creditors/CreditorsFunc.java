@@ -1,97 +1,153 @@
 package com.diamond.creditors;
 
 import com.diamond.functions.Functions;
-
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.Objects;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class CreditorsFunc {
     private final Connection conn;
-
     Functions func = new Functions();
 
-    public CreditorsFunc(Connection conn){
+    public CreditorsFunc(Connection conn) {
         this.conn = conn;
     }
 
     // CREATE Creditor
     public void createCreditor(String creditorName, String description, UUID diamondUserId, UUID accountId) throws SQLException {
-        try {
-            String SQL = String.format("INSERT INTO creditors (name, description, diamond_user_id, account_id) VALUES('%s', '%s', '%s', '%s') RETURNING id", creditorName, description, diamondUserId, accountId);
-            Statement statement = conn.createStatement();
-            ResultSet rs = statement.executeQuery(SQL);
-            UUID debtorID = null;
-            while(rs.next()){
-                debtorID = UUID.fromString(rs.getString("id"));
-            }
-            System.out.println(debtorID);
+        String SQL = "INSERT INTO creditors (name, description, diamond_user_id, account_id) VALUES(?, ?, ?, ?) RETURNING id";
+        try (PreparedStatement preparedStatement = conn.prepareStatement(SQL)) {
+            preparedStatement.setString(1, creditorName);
+            preparedStatement.setString(2, description);
+            preparedStatement.setObject(3, diamondUserId);
+            preparedStatement.setObject(4, accountId);
 
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+            try (ResultSet rs = preparedStatement.executeQuery()) {
+                if (rs.next()) {
+                    UUID debtorID = UUID.fromString(rs.getString("id"));
+                    System.out.println(debtorID);
+                }
+            }
         }
     }
 
     // ADD Creditor Transaction
-    public void addCreditorsTransaction(Creditor creditor){
-        func.breakDownDate(creditor.getDate());
-        int dayBrokenDown = func.breakDownDate(creditor.getDate())[0];
-        int monthBrokenDown = func.breakDownDate(creditor.getDate())[1];
-        int yearBrokenDown = func.breakDownDate(creditor.getDate())[2];
-        String []monthNames = {"Jan", "Feb", "Mar", "Apr","May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"};
+    public void addCreditorsTransaction(Creditor creditor) {
+        int[] dateParts = func.breakDownDate(creditor.getDate());
+        int day = dateParts[0], month = dateParts[1], year = dateParts[2];
+        String[] monthNames = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"};
 
-        try {
-            Statement statement = conn.createStatement();
-            String SQL = String.format("INSERT INTO creditors_transaction(creditor_id, account_id, type, amount, details, date, day, month, month_name, year) VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')", creditor.getCreditorsID(), creditor.getAccountID(), creditor.getType().toLowerCase(), (creditor.getType().equalsIgnoreCase("credit") ? creditor.getAmount() : creditor.getAmount() * -1), creditor.getDetails(), creditor.getDate(), dayBrokenDown, monthBrokenDown, monthNames[monthBrokenDown -1], yearBrokenDown);
-            int rowsAffected = statement.executeUpdate(SQL);
+        String SQL = "INSERT INTO creditors_transaction(creditor_id, account_id, type, amount, details, date, day, month, month_name, year) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
+        try (PreparedStatement preparedStatement = conn.prepareStatement(SQL)) {
+            preparedStatement.setObject(1, creditor.getCreditorsID());
+            preparedStatement.setObject(2, creditor.getAccountID());
+            preparedStatement.setString(3, creditor.getType().toLowerCase());
+            preparedStatement.setDouble(4, creditor.getAmount());
+            preparedStatement.setString(5, creditor.getDetails());
+            preparedStatement.setDate(6, creditor.getDate());
+            preparedStatement.setInt(7, day);
+            preparedStatement.setInt(8, month);
+            preparedStatement.setString(9, monthNames[month - 1]);
+            preparedStatement.setInt(10, year);
+
+            int rowsAffected = preparedStatement.executeUpdate();
             if (rowsAffected == 1) {
                 System.out.println("Creditors Transaction Added Successfully");
-                // Updates the Transaction Table if the creditor_transaction is debit: We are paying money out of account
-                // This is done after the creditors_transaction has been added successfully
-//                if (creditor.getType().equals("debit")){
-//                    System.out.println("CREDIT - DEBTORS");
-//                    String SQL_TRANSACTION = String.format("INSERT INTO transaction (details, amount, transaction_type, user_id, account_id, date, day, month, month_name, year) VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')", "From Creditors: " + creditor.getDetails(), creditor.getAmount(),  "debit", creditor.getDiamondUserID(), creditor.getAccountID(), func.dateFormatter(creditor.getDate()), dayBrokenDown, monthBrokenDown, monthNames[monthBrokenDown -1], yearBrokenDown);
-//                    int rowsAffectedTransaction = statement.executeUpdate(SQL_TRANSACTION);
-//                    if (rowsAffectedTransaction == 1) {
-//                        System.out.println("Creditor Transaction added to [Transaction] ");
-//                    }
-//                }
-
-
             }
-
-
-
-
         } catch (Exception e) {
             System.out.println("Creditor transaction was not added!");
             throw new RuntimeException(e);
         }
     }
 
-    // GET CREDITOR BALANCE
-//    public void getCreditorBalance(String creditorBalanceName, Creditors creditor) throws SQLException{
-//        try {
-//            String SQL = String.format("SELECT SUM(amount) AS creditor_balance FROM creditor WHERE user_id='%s' AND account_id='%s' AND creditor_name='%s' ", creditor.getUserId(), creditor.getAccountId(), creditorBalanceName);
-//            Statement statement = conn.createStatement();
-//            ResultSet resultSet = statement.executeQuery(SQL);
-//            double creditorBalance = 0;
-//            if(resultSet.next()){
-//                creditorBalance = resultSet.getDouble("creditor_balance");
-//            }
-//
-//            if(creditorBalance < 0){
-//                System.out.println("Your Creditor ows you money: " + creditorBalance);
-//            }
-//
-//            System.out.println(creditorBalance);
-//
-//        } catch (Exception e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
+    // Map ResultSet to Creditor
+    private Creditor CreditorTransactionRowMapper(ResultSet rs) throws SQLException {
+        return new Creditor(
+                rs.getString("id"),
+                rs.getString("account_id"),
+                rs.getString("creditor_id"),
+                rs.getString("category_id"),
+                rs.getString("type"),
+                rs.getDouble("amount"),
+                rs.getString("details"),
+                rs.getDate("date")
+        );
+    }
+
+    // Get Credit Transactions For Creditor
+    public List<Creditor> creditTransactions(String creditorID) throws SQLException {
+        String SQL = "SELECT * FROM creditors_transaction WHERE creditor_id = CAST(? AS UUID) ORDER BY date DESC";
+        List<Creditor> creditorsTransaction = new ArrayList<>();
+
+        try (PreparedStatement preparedStatement = conn.prepareStatement(SQL)) {
+            preparedStatement.setString(1, creditorID);
+            try (ResultSet rs = preparedStatement.executeQuery()) {
+                while (rs.next()) {
+                    creditorsTransaction.add(CreditorTransactionRowMapper(rs));
+                }
+            }
+        }
+        return creditorsTransaction;
+    }
+
+    // Creditor Outstanding Balance Helper Class
+    private static class CreditorsOutstandingBalance {
+        private final double totalDebit;
+        private final double totalCredit;
+
+        public CreditorsOutstandingBalance(double totalDebit, double totalCredit) {
+            this.totalDebit = totalDebit;
+            this.totalCredit = totalCredit;
+        }
+
+        public double getTotalDebit() {
+            return totalDebit;
+        }
+
+        public double getTotalCredit() {
+            return totalCredit;
+        }
+
+        public double getOutstandingBalance() {
+            return totalCredit - totalDebit;
+        }
+    }
+
+    // Map ResultSet to CreditorsOutstandingBalance
+    private CreditorsOutstandingBalance CreditorBalanceRowMapper(ResultSet rs) throws SQLException {
+        return new CreditorsOutstandingBalance(
+                rs.getDouble("total_debit"),
+                rs.getDouble("total_credit")
+        );
+    }
+
+    // Get Creditor Outstanding Balance
+    public double CreditorBalance(String creditorID) throws SQLException {
+        String SQL = "SELECT " +
+                "SUM(CASE WHEN type = 'credit' THEN amount ELSE 0 END) AS total_credit, " +
+                "SUM(CASE WHEN type = 'debit' THEN amount ELSE 0 END) AS total_debit " +
+                "FROM creditors_transaction " +
+                "WHERE creditor_id = CAST(? AS UUID)";
+
+        try (PreparedStatement preparedStatement = conn.prepareStatement(SQL)) {
+            preparedStatement.setString(1, creditorID);
+            try (ResultSet rs = preparedStatement.executeQuery()) {
+                if (rs.next()) {
+                    CreditorsOutstandingBalance balance = CreditorBalanceRowMapper(rs);
+                    double outstandingBalance = balance.getOutstandingBalance();
+                    System.out.println("Creditor ID: " + creditorID);
+                    System.out.println("Total Credit: " + balance.getTotalCredit() + "  Amount Owed.");
+                    System.out.println("Total Debit: " + balance.getTotalDebit() + "  Amount Repaid.");
+                    System.out.println("Outstanding Balance: " + outstandingBalance);
+
+                    return balance.getOutstandingBalance();
+                }
+            }
+        }
+        return 0; // Default to 0 if no transactions found
+    }
+
 }

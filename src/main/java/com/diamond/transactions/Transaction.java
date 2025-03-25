@@ -11,6 +11,8 @@ public class Transaction {
     private String transactionType;
     private String userID;
     private String accountID;
+    private String categoryID;
+    private String categoryName;
 
     private Date date;
     private int day;
@@ -23,13 +25,15 @@ public class Transaction {
 
     }
 
-    public Transaction(String transactionID, String details, double amount, String transactionType, String userID, String accountID, Date date, int day, int month, String monthName, int year) {
+    public Transaction(String transactionID, String details, double amount, String transactionType, String userID, String accountID, String categoryID, String categoryName, Date date, int day, int month, String monthName, int year) {
         this.transactionID = transactionID;
         this.details = details;
         this.amount = amount;
         this.transactionType = transactionType;
         this.userID = userID;
         this.accountID = accountID;
+        this.categoryID = categoryID;
+        this.categoryName = categoryName;
         this.date = date;
         this.day = day;
         this.month = month;
@@ -94,6 +98,22 @@ public class Transaction {
 
     public void setAccountID(String accountID) {
         this.accountID = accountID;
+    }
+
+    public String getCategoryID() {
+        return categoryID;
+    }
+
+    public void setCategoryID(String categoryID) {
+        this.categoryID = categoryID;
+    }
+
+    public String getCategoryName() {
+        return categoryName;
+    }
+
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
     }
 
     public int getDay() {

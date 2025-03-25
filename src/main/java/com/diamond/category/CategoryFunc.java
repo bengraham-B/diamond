@@ -20,7 +20,8 @@ public class CategoryFunc {
             int result = statement.executeUpdate(SQL);
 
             if (result == 1){
-                System.out.println("Category created");
+                System.out.println("Category created: " + category.getName());
+                System.out.println("Category created ID: " + category.getId());
             } else {
                 System.out.println("Could not create category created");
             }
@@ -33,4 +34,5 @@ public class CategoryFunc {
     // GET User Categories -> include names of accounts
 
     // GET User Categories
+
 }

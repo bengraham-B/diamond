@@ -8,9 +8,9 @@ import java.util.UUID;
 
 public class Account {
     private Connection conn;
-    private UUID diamondUserId;
-    private String name;
-    private String description;
+    private final UUID diamondUserId;
+    private final String name;
+    private final String description;
 
     public Account(Connection conn, UUID diamondUserId, String name, String description) {
         this.conn = conn;

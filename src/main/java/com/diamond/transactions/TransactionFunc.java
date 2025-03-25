@@ -56,7 +56,19 @@ public class TransactionFunc {
 
         try {
             Statement statement = conn.createStatement();
-            String SQL = String.format("INSERT INTO transaction (details, amount, transaction_type, user_id, account_id, date, day, month, month_name, year) VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')", transaction.getDetails(), (transaction.getTransactionType().equals("credit") ? transaction.getAmount() : transaction.getAmount() * -1),  transaction.getTransactionType(), transaction.getUserID(), transaction.getAccountID(), dateFormatter(transaction.getDate()), dayBrokenDown, monthBrokenDown, monthNames[monthBrokenDown -1], yearBrokenDown);
+
+            // Allows user to insert null value.
+            String categoryID = (transaction.getCategoryID() == null) ? "NULL" : "'" + transaction.getCategoryID() + "'";
+
+            String SQL = String.format(
+                    "INSERT INTO transaction (details, amount, transaction_type, user_id, account_id, category_id, date, day, month, month_name, year) " +
+                            "VALUES ('%s', '%s', '%s', '%s', '%s', %s, '%s', '%s', '%s', '%s', '%s')",
+                    transaction.getDetails(), transaction.getAmount(), transaction.getTransactionType(),
+                    transaction.getUserID(), transaction.getAccountID(), categoryID,
+                    dateFormatter(transaction.getDate()), dayBrokenDown, monthBrokenDown,
+                    monthNames[monthBrokenDown - 1], yearBrokenDown
+            );
+//            String SQL = String.format("INSERT INTO transaction (details, amount, transaction_type, user_id, account_id, category_id, date, day, month, month_name, year) VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')", transaction.getDetails(), transaction.getAmount(),  transaction.getTransactionType(), transaction.getUserID(), transaction.getAccountID(), transaction.getCategoryID(), dateFormatter(transaction.getDate()), dayBrokenDown, monthBrokenDown, monthNames[monthBrokenDown -1], yearBrokenDown);
 
             int rowsAffected   = statement.executeUpdate(SQL);
             if(rowsAffected > 0){
@@ -156,6 +168,8 @@ public class TransactionFunc {
                 rs.getString("transaction_type"),
                 rs.getString("user_id"),
                 rs.getString("account_id"),
+                rs.getString("category_id"),
+                rs.getString("category_name"),
                 rs.getDate("date"),
                 rs.getInt("day"),
                 rs.getInt("month"),
@@ -168,7 +182,27 @@ public class TransactionFunc {
     public List<Transaction> getTransactions(String accountID) throws SQLException {
         try {
 
-            String SQL = "SELECT * FROM transaction WHERE account_id = ? ORDER BY date DESC";
+            String SQL =
+                    "SELECT " +
+                            "transaction.transaction_id, " +
+                            "transaction.account_id, " +
+                            "transaction.details, " +
+                            "transaction.amount, " +
+                            "transaction.transaction_type, " +
+                            "transaction.user_id, " +
+                            "transaction.category_id, " +
+                            "transaction.date, " +
+                            "transaction.day, " +
+                            "transaction.month, " +
+                            "transaction.month_name, " +
+                            "transaction.year, " +
+                            "category.name AS category_name " +
+                            "FROM transaction " +
+                            "LEFT JOIN category ON transaction.category_id = category.id " +
+                            "WHERE transaction.account_id = ?";
+
+
+            String SQL1 = "SELECT * FROM transaction WHERE account_id = ? ORDER BY date DESC";
             PreparedStatement preparedStatement = conn.prepareStatement(SQL);
             preparedStatement.setString(1, accountID);
             ResultSet rs = preparedStatement.executeQuery();
