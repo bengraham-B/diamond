@@ -1,6 +1,6 @@
 export default function Header() {
-    return 
+    return (
         <div>
             <h1>Diamond</h1>
-        </div>;
+        </div>);
 }
