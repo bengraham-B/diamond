@@ -1,0 +1,7 @@
+- Client
+    $ NextJS
+    $ SASS
+
+- Server
+    $ Express
+    $ Typescript
