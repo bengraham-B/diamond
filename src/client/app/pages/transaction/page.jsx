@@ -13,8 +13,7 @@ const Select = dynamic(() => import("react-select"), { ssr: false });
 
 
 import TransactionModal from "./AddTransaction/AddTransactionModal";
-// import EditModal from "./EditModal";
-// import CategoryModal from "./CategoryModal";
+import EditTransactionModal from "./EditTransaction/EditTransactionModal";
 
 export default function page() {
     const [transactions, setTransactions] = useState();
@@ -42,11 +41,6 @@ export default function page() {
         setObjectState(id); // Extract and set the admin's ID
         setIsOpenTransactionModal(true);
     };
-
-    //X Shows The Category Modal
-    const showCategoryModal = (id) => {
-        setIsOpenCategoryModal(true)
-    }
    
     const showEditModal = (id) => {
         setObjectState(id); // Extract and set the admin's ID
@@ -114,10 +108,6 @@ export default function page() {
 		return timestamp.split('T')[0];
 	}
 
-    
-
-
-
     //Y Converst date so that it can be used by the HTML Date Element
     function dateFormater(date){
         const isoDate = date;
@@ -148,7 +138,7 @@ export default function page() {
                 console.log("Server Base", serverbase)
                 console.log(`${serverbase}transaction/get_transactions`)
                 const accountID = 'ced66b1b-be88-4163-8ba1-77207ec20ca9'
-                const response = await fetch(`${serverbase}transaction/get_transactions`, {
+                const response = await fetch(`${serverbase}/api/transaction/get_transactions`, {
                     method: "POST",
                     body: JSON.stringify({
                         // accountID: localStorage.getItem("accountID")
@@ -189,7 +179,7 @@ export default function page() {
 	}, [serverbase])
 	
     useEffect(() => {
-		// fetchTransactions()
+		fetchTransactions()
 	}, [isOpenTransactionModal, isOpenEditModal])
 
     return (
@@ -264,14 +254,15 @@ export default function page() {
                         ).map((T) => (
                             <tr key={T.id} className={` hover:bg-gray-100`} onClick={() => showEditModal(
                                 {
-                                    id: T.transaction_id, 
+                                    id: T.id, 
                                     details: T.details,
                                     amount: T.amount,
-                                    transactionType: T.transaction_type,
+                                    type: T.type,
                                     date: dateFormater(T.date),
                                     category: T.category_name,
                                     categoryID: T.category_id,
-                                    accountID: localStorage.getItem("accountID")
+                                    supplierID: T.supplier_id,
+                                    accountID: T.account_id
                                 })
                             }>
                          
@@ -315,6 +306,7 @@ export default function page() {
             </section>
             <section>
                 <TransactionModal isVisible={isOpenTransactionModal} onClose={() => setIsOpenTransactionModal(false)}/>
+                <EditTransactionModal isVisible={isOpenEditModal} onClose={() => setIsOpenEditModal(false)} editObject={objectState}/>
                 {/* <EditModal isVisible={isOpenEditModal} editObject={objectState} onClose={() => setIsOpenEditModal(false)}/> */}
                 {/* <CategoryModal isVisible={isOpenCategoryModal} onClose={() => setIsOpenCategoryModal(false)}/> */}
             </section>

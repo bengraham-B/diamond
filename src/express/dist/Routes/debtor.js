@@ -1,0 +1,14 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = __importDefault(require("express"));
+const router = express_1.default.Router();
+// Importing Controllers
+const debtorController_1 = require("../Controllers/Debtors/Debtor/debtorController");
+const debtorController_2 = require("../Controllers/Debtors/Debtor/debtorController");
+router.post("/", debtorController_1.createDebtor);
+router.post("/get_debtors", debtorController_2.getDebtors);
+router;
+exports.default = router;

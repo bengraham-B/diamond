@@ -3,10 +3,33 @@ import React, { useState, useEffect } from 'react'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-
 import Select from 'react-select' //? https://react-select.com/home#welcome
 
-export default function TransactionModal({ isVisible, onClose }) {
+export default function EditTransactionModal({ isVisible, onClose, editObject }) {
+
+    //Y State Variables For Transaction
+    const [accountID, setAccountID] = useState()
+    const [details, setDetails] = useState()
+    const [amount, setAmount] = useState()
+    const [type, setType] = useState()
+    const [date, setDate] = useState(new Date())
+    const [categoryID, setCategoryID] = useState()
+    const [supplierID, setSupplierID] = useState()
+
+
+    useEffect(() => {
+        console.log("------------------------------------------------------")
+        console.log(editObject)
+        if (editObject) {
+            setAccountID(editObject.accountID)
+            setDetails(editObject.details || "");
+            setAmount(editObject.amount || "");
+            setType(editObject.type || "");
+            setDate(editObject.date || "");
+            setSupplierID(editObject.supplierID || "");
+            setCategoryID(editObject.categoryID || "");
+        }
+    }, [editObject]);
 
     //Y Server Base
     const [serverbase, setServerBase] = useState("")
@@ -96,15 +119,6 @@ export default function TransactionModal({ isVisible, onClose }) {
         }
     }
 
-        //Y State Variables For Transaction
-    const [details, setDetails] = useState()
-    const [amount, setAmount] = useState()
-    const [transactionType, setTransactionType] = useState()
-    const [date, setDate] = useState(new Date())
-    const [categoryID, setCategoryID] = useState()
-    const [supplierID, setSupplierID] = useState()
-    const accountID = 'ced66b1b-be88-4163-8ba1-77207ec20ca9'
-
     //Y ----- Add Transaction  -----
     const postTransaction = async () => {
         try {
@@ -136,6 +150,80 @@ export default function TransactionModal({ isVisible, onClose }) {
             notifyError("Could not Add Transaction", error)
         }
     }
+    //Y --------------------- Update Transaction ---------------------
+    const updateTransaction = async () => {
+        try {
+            // Gets the User's Account ID from Local storage
+		    if(!localStorage.getItem("accountID")){
+                notifyError("Could not get Account ID")
+            }
+
+            try {
+                const response = await fetch(`${serverbase}/api/transaction/edit`, {
+                    method: "PUT",
+                    body: JSON.stringify({
+                        transactionID: editObject.id,
+                        accountID: editObject.account_id, 
+                        amount: amount,
+                        details: details,
+                        date: postgresDate(date),
+                        type: type,
+                        categoryID: categoryID,
+                        supplierID: supplierID,
+                    }),
+                    headers: {
+                        "content-Type": "application/json"
+                    }
+                })
+    
+                if (response.ok) {
+                    notifySuccess("Successfully Update Transaction")
+                    const data = await response.json()
+                    console.log(data.flight)
+    
+                } else {
+                    notifyError("Could not Update Transaction")
+                }
+    
+            } catch (error) {
+                notifyError("Could not Update Transaction", error)
+                console.log(error)
+            }
+        } catch (error) {
+            notifyError("Could Get Account ID ", error)
+        }
+       
+    }
+
+    //Y --------------------- Delete Transaction ---------------------
+    const deleteTransaction = async () => {
+        console.log({
+             transactionID: editObject.id,
+                    accountID: editObject.accountID
+        })
+        try {
+            const response = await fetch(`${serverbase}/api/transaction/delete`, {
+                method: "DELETE",
+                body: JSON.stringify({
+                    transactionID: editObject.id,
+                    accountID: editObject.accountID
+                }),
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+            const data = await response.json()
+            if (response.ok){
+                notifySuccess("Successfully Deleted Transaction")
+                
+            } else {
+                notifyError("Could not Delete Transaction")
+                console.log(data.error)
+            }
+        } catch (error) {
+            notifyError("Could not Delete Transaction: " + error)
+        }
+    }
 
     // ----- React Select -----
     const optionTransactionType = [
@@ -155,7 +243,6 @@ export default function TransactionModal({ isVisible, onClose }) {
     
     // Ensure "None" is at the end
     const noneOption = { value: "", label: "None" }; // Use an empty string for compatibility
-    const sundryOption = { value: "sundry", label: "Sundry" }; // TODO Get the user's sundry ID & Maybe Sundry can just be text
     optionCategories.push(noneOption );
     optionSuppliers.push(noneOption)
 
@@ -167,7 +254,6 @@ export default function TransactionModal({ isVisible, onClose }) {
         setServerBase(data.server)
         
     }
-
 
     useEffect(() => {
         fetchServerBase()
@@ -189,7 +275,7 @@ export default function TransactionModal({ isVisible, onClose }) {
                     
                     {/* Modal Header */}
                     <div className="flex justify-center items-center mb-6">
-                        <h1 className="text-3xl text-green-600">Add Transaction</h1>
+                        <h1 className="text-3xl text-blue-600">Edit Transaction</h1>
                     </div>
 
 
@@ -197,46 +283,59 @@ export default function TransactionModal({ isVisible, onClose }) {
                         {/* Details */}
                         <div className="w-full flex flex-col">
                             <label htmlFor="pilot" className="text-xl">Details</label>
-                            <input name="colors"  className='pl-1 p-1 rounded border border-gray-400' onChange={(e) => setDetails(e.target.value)} />
+                            <input name="colors"  className='pl-1 p-1 rounded border border-gray-400' value={details ? details: ""} onChange={(e) => setDetails(e.target.value)} />
                         </div>
                         
                         {/* Amount */}
                         <div className="w-full flex flex-col">
                             <label htmlFor="pilot" className="text-xl">Amount</label>
-                            <input name="colors" type="number" className={`pl-1 p-1 rounded border border-gray-400 `} onChange={(e) => setAmount(e.target.value)} />
+                            <input name="colors" type="number" className={`pl-1 p-1 rounded border border-gray-400 `} value={amount ? amount: ""} onChange={(e) => setAmount(e.target.value)} />
                         </div>
                         
                          {/* Category */}
                          <div className="w-full">
                             <label htmlFor="pilot" className="text-xl">Category</label>
-                            <Select name="colors" options={optionCategories} className="basic-multi-select" classNamePrefix="select" onChange={(selectedOption) => setCategoryID(selectedOption.value)} />
+                            <Select name="colors" options={optionCategories} className="basic-multi-select" classNamePrefix="select" value={optionCategories.find((CAT) => CAT.value === categoryID)} onChange={(selectedOption) => setCategoryID(selectedOption.value)} />
                         </div>
                         
                          {/* Supplier */}
                          <div className="w-full">
                             <label htmlFor="pilot" className="text-xl">Supplier</label>
-                            <Select name="colors" options={optionSuppliers} className="basic-multi-select" classNamePrefix="select" onChange={(selectedOption) => setSupplierID(selectedOption.value)} />
+                            <Select name="colors" options={optionSuppliers} className="basic-multi-select" classNamePrefix="select" value={optionSuppliers.find((SUP) => SUP.value === supplierID)} onChange={(selectedOption) => setSupplierID(selectedOption.value)} />
                         </div>
 
                         {/* Transaction Type */}
                         <div className="w-full">
                             <label htmlFor="pilot" className="text-xl">Transaction Type</label>
-                            <Select name="colors" options={optionTransactionType} className="basic-multi-select" classNamePrefix="select" onChange={(selectedOption) => setTransactionType(selectedOption.value)} />
+                            <Select name="colors" options={optionTransactionType} className="basic-multi-select" classNamePrefix="select" value={optionTransactionType.find((option) => option.value === type)} onChange={(selectedOption) => setType(selectedOption.value)} />
                         </div>
 
                          {/* Date */}
                          <div className="w-full flex flex-col">
                             <label htmlFor="pilot" className="text-xl">Date</label>
-                            <input name="colors" type="date" className='pl-1 p-1 rounded border border-gray-400' onChange={(e) => setDate(e.target.value)} />
+                            <input name="colors" type="date" className='pl-1 p-1 rounded border border-gray-400' value={date ? date: ""} onChange={(e) => setDate(e.target.value)} />
                         </div>
 
                        
                     </div>
 
-                    {/* Action Buttons */}
+                    {/* Action Buttons
                     <div className="flex justify-between mt-6">
                         <button onClick={onClose} className="bg-red-600 hover:bg-red-700 text-white rounded text-lg px-6 py-2 w-48">Close</button>
                         <button onClick={postTransaction} className="bg-green-600 hover:bg-green-700 text-white rounded text-lg px-6 py-2 w-48">Add Transaction</button>
+                    </div> */}
+
+                     {/* Action Buttons */}
+                    <div className='flex flex-col space-y-8'>
+
+                        <div className="flex justify-between mt-6">
+                            <button onClick={onClose} className=" bg-orange-600 hover:bg-orange-700 text-white rounded text-lg px-6 w-44 py-2">Close</button>
+                            <button onClick={updateTransaction} className="bg-blue-600 hover:bg-blue-700 text-white rounded text-lg px-6  w-44 py-2">Update</button>
+                        </div>
+
+                        <div className='flex justify-center'>
+                            <button onClick={deleteTransaction} className="w-full bg-red-600 hover:bg-red-700 text-white rounded text-lg px-6 py-2">Delete</button>
+                        </div>
                     </div>
 
                     {/* Toast Notification */}
