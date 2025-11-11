@@ -1,0 +1,189 @@
+"use client"
+import React, { useState, useEffect } from 'react'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+import Select from 'react-select' //? https://react-select.com/home#welcome
+
+export default function TransactionModal({ isVisible, onClose }) {
+
+    //Y State Variables For Transaction
+    const [details, setDetails] = useState()
+    const [amount, setAmount] = useState()
+    const [transactionType, setTransactionType] = useState()
+    const [date, setDate] = useState(new Date())
+    const [category, setCategory] = useState()
+
+
+    function postgresDate(date){
+		if (!date) return ''; // Return an empty string if date is null or undefined
+		const timestamp = date;
+		return timestamp.split('T')[0];
+	}
+
+    //Y React Toast functions
+    const notifySuccess = (msg) => {
+        toast.success(msg, {
+            className: "toast-success"
+        })
+    }
+
+    const notifyError = (msg) => {
+        toast.error(msg, {
+            className: "toast-error"
+        })
+    }
+
+    //Y Prevents user from closing the modal when they click on the modal body
+    const handleClose = (e) => {
+        if (e.target.id === "wrapper") onClose()
+    }
+
+    //X Fetch the Categories
+    const [categories, setCategories] = useState([])
+
+    // const fetchCategories = async () => {
+    //     try {
+    //         const response = await fetch(`/api/category?accountId=${localStorage.getItem("accountID")}`)
+            
+    //         if(response.ok){
+    //             const data = await response.json()
+    //             setCategories(data.categories)
+
+    //         } else {
+    //             notifyError("Could not Fetch Categories")
+    //         }
+
+    //     } catch (error) {
+    //         notifyError("Could not Fetch Categories", error)
+    //     }
+    // }
+
+
+    //Y ----- Add Transaction  -----
+    const postTransaction = async () => {
+
+        try {
+            const response = await fetch(`/api/transaction/`, {
+                method: "POST",
+                body: JSON.stringify({
+                    accountID: localStorage.getItem("accountID"),
+                    amount: amount,
+                    details: details,
+                    date: postgresDate(date),
+                    type: transactionType,
+                    categoryID: category_id
+                }),
+                headers: {
+                    "content-Type": "application/json"
+                }
+            })
+
+            if (response.ok) {
+                notifySuccess("Successfully Added Transaction")
+                const data = await response.json()
+                console.log(data.flight)
+
+            } else {
+                notifyError("Could not Add Transaction")
+            }
+
+        } catch (error) {
+            notifyError("Could not Add Transaction", error)
+        }
+    }
+
+    // ----- React Select -----
+    const optionTransactionType = [
+        { value: 'debit', label: 'debit' },
+        { value: 'credit', label: 'credit' },
+    ]
+
+    const optionCategories = (categories || []).map((C) => ({
+        value: C.id,
+        label: C.name,
+    }));
+    
+    const optionSuppliers = (categories || []).map((S) => ({
+        value: S.id,
+        label: S.name,
+    }));
+    
+    // Ensure "None" is at the end
+    const noneOption = { value: "", label: "None" }; // Use an empty string for compatibility
+    const sundryOption = { value: "sundry", label: "Sundry" }; // TODO Get the user's sundry ID & Maybe Sundry can just be text
+    optionCategories.push(noneOption, sundryOption);
+    optionSuppliers.push(noneOption, sundryOption)
+
+
+    useEffect(() => {
+        // fetchCategories()
+
+    }, []) 
+
+    // Early return moved after hook calls
+    if (!isVisible) return null
+
+    return (
+        <main>
+            <div   className="fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center" id="wrapper" onClick={handleClose}>
+                <div className="bg-white w-full max-w-[600px] rounded-lg flex flex-col p-6 mx-4 h-auto">
+                    
+                    {/* Modal Header */}
+                    <div className="flex justify-center items-center mb-6">
+                        <h1 className="text-3xl text-green-600">Add Transaction</h1>
+                    </div>
+
+
+                    <div className='space-y-4'>
+                        {/* Details */}
+                        <div className="w-full flex flex-col">
+                            <label htmlFor="pilot" className="text-xl">Details</label>
+                            <input name="colors"  className='pl-1 p-1 rounded border border-gray-400' onChange={(e) => setDetails(e.target.value)} />
+                        </div>
+                        
+                        {/* Amount */}
+                        <div className="w-full flex flex-col">
+                            <label htmlFor="pilot" className="text-xl">Amount</label>
+                            <input name="colors" type="number" className={`pl-1 p-1 rounded border border-gray-400 `} onChange={(e) => setAmount(e.target.value)} />
+                        </div>
+                        {/* Transaction Type */}
+                        <div className="w-full">
+                            <label htmlFor="pilot" className="text-xl">Transaction Type</label>
+                            <Select name="colors" options={optionTransactionType} className="basic-multi-select" classNamePrefix="select" onChange={(selectedOption) => setTransactionType(selectedOption.value)} />
+                        </div>
+
+                         {/* Category */}
+                         <div className="w-full">
+                            <label htmlFor="pilot" className="text-xl">Category</label>
+                            <Select name="colors" options={optionCategories} className="basic-multi-select" classNamePrefix="select" onChange={(selectedOption) => setCategory(selectedOption.value)} />
+                        </div>
+                        
+                         {/* Supplier */}
+                         <div className="w-full">
+                            <label htmlFor="pilot" className="text-xl">Supplier</label>
+                            <Select name="colors" options={optionCategories} className="basic-multi-select" classNamePrefix="select" onChange={(selectedOption) => setCategory(selectedOption.value)} />
+                        </div>
+
+                         {/* Date */}
+                         <div className="w-full flex flex-col">
+                            <label htmlFor="pilot" className="text-xl">Date</label>
+                            <input name="colors" type="date" className='pl-1 p-1 rounded border border-gray-400' onChange={(e) => setDate(e.target.value)} />
+                        </div>
+
+                       
+                    </div>
+
+                    {/* Action Buttons */}
+                    <div className="flex justify-between mt-6">
+                        <button onClick={onClose} className="bg-red-600 hover:bg-red-700 text-white rounded text-lg px-6 py-2">Close</button>
+                        <button onClick={postTransaction} className="bg-green-600 hover:bg-green-700 text-white rounded text-lg px-6 py-2">Add Transaction</button>
+                    </div>
+
+                    {/* Toast Notification */}
+                    <ToastContainer />
+                </div>
+            </div>
+        </main>
+    )
+}

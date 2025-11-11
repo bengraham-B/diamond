@@ -1,3 +1,5 @@
+const withFlowbiteReact = require("flowbite-react/plugin/nextjs");
+
 /** @type {import('next').NextConfig} */
  
 const nextConfig = {
@@ -5,7 +7,7 @@ const nextConfig = {
 		additionalData: 
 		`
 			$var: red;
-			$primary: blue;
+			$primary: #229fa9;
 			$diamond-light-blue: #00bfff;
 			$black: #19253d;
 		`
@@ -13,4 +15,4 @@ const nextConfig = {
 	},
 }
  
-module.exports = nextConfig
+module.exports = withFlowbiteReact(nextConfig)

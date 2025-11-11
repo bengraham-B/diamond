@@ -1,4 +1,12 @@
 @import "tailwindcss";
+@plugin "flowbite-react/plugin/tailwindcss";
+@source "../.flowbite-react/class-list.json";
+@plugin "daisyui";
+
+@import "tailwindcss";
+@plugin "flyonui";
+@import "flyonui/variants.css";
+@source "./node_modules/flyonui/flyonui.js"; 
 
 :root {
   --background: #ffffff;

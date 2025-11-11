@@ -1,0 +1,24 @@
+.nav {
+    width: 100%;
+    min-height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding: 25px 0 25px 0;
+
+    .route_btn {
+        width: 120px;
+        border: 1px solid $diamond-light-blue;
+        color: 	$diamond-light-blue;
+        padding: 5px 10px 5px 10px;
+        text-align: center;
+        font-size: 19px;
+        border-radius: 4px;
+        &:hover{
+            background: $black;
+            color: $diamond-light-blue;
+            border: none;
+        }
+    }
+
+}
