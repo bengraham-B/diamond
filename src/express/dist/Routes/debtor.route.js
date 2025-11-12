@@ -6,7 +6,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const router = express_1.default.Router();
 // Importing Controllers
-const debtorController_1 = require("../Controllers/Debtors/Debtor/debtorController");
-router.post("/", debtorController_1.createDebtor);
-router;
+const debtor_controller_js_1 = require("../Controllers/Debtors/Debtor/debtor.controller.js");
+router.post("/", debtor_controller_js_1.createDebtor);
+router.post("/get_balance_per_outstanding_debtor", debtor_controller_js_1.getOutstandingBalancePerDebtor);
+router.post("/get_debtor_details", debtor_controller_js_1.getDebtorDetails);
 exports.default = router;

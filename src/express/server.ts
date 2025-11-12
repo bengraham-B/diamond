@@ -9,14 +9,14 @@ app.use(express.json());
 app.use(cors())
 
 // Importing Routes
-import transaction from "./Routes/transactionRoutes"
-import account from "./Routes/accountRoutes"
-import debtor from "./Routes/debtor"
-import debtorTransaction from "./Routes/debtorTransaction"
-import category from "./Routes/categoryRoute"
-import transactionAmount from "./Routes/TransactionAmountRoute"
-import budget from "./Routes/budgetRoute"
-import supplier from "./Routes/supplierRoute"
+import transaction from "./Routes/transaction.route.js"
+import account from "./Routes/account.route.js"
+import debtor from "./Routes/debtor.route.js"
+import debtorTransaction from "./Routes/debtorTransaction.route.js"
+import category from "./Routes/category.route.js"
+import transactionAmount from "./Routes/TransactionAmount.route.js"
+import budget from "./Routes/budget.route.js"
+import supplier from "./Routes/supplierRoute.route.js"
 
 app.use('/api/transaction', transaction)
 app.use('/api/account', account)

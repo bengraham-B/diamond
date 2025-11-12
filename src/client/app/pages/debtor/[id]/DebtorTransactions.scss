@@ -1,0 +1,25 @@
+// .transaction_page {
+
+    
+// }
+.add_transaction_button {
+    display: flex;
+    text-align: center;
+    min-width: 120px;
+    color: $diamond-light-blue;
+    font-size: 19px;
+    letter-spacing: 2px;
+    border: 1px $diamond-light-blue solid;
+    border-radius: 4px;
+    padding: 5px 10px;
+
+    &:hover {
+        border: 1px $black solid;
+        background: $black;
+        color: $diamond-light-blue;
+    }
+
+   
+}
+
+//  text-purple-600 text-lg tracking-wide border border-purple-600 px-4 py-2 rounded hover:bg-purple-600 hover:text-white

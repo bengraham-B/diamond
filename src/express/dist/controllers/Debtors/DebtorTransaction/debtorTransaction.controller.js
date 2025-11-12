@@ -33,10 +33,7 @@ exports.createDebtorTransaction = createDebtorTransaction;
 const getDebtorTransactionByMonth = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { accountID, debtorID, month } = req.body;
-        const debtorTransaction = new DebtorTransaction_1.DebtorTransaction({ accountID: accountID, debtorID: debtorID, month: month });
-        const debtorTxnByMonth = yield debtorTransaction.getDebtorsByMonth({ accountID: accountID, debtorID: debtorID, month: month });
-        const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
-        console.log(`${accountID}: Retrived Debtors Transaction for Month ${monthNames[month - 1]}`);
+        // const SQL:string = `SELECT * FROM`
         res.status(200).json({
             msg: 'Retrived Transaction by month Successfully',
             debtorTransactions: debtorTxnByMonth

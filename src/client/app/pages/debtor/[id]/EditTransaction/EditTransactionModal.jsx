@@ -1,0 +1,347 @@
+"use client"
+import React, { useState, useEffect } from 'react'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+import Select from 'react-select' //? https://react-select.com/home#welcome
+
+export default function EditTransactionModal({ isVisible, onClose, editObject }) {
+
+    //Y State Variables For Transaction
+    const [accountID, setAccountID] = useState()
+    const [details, setDetails] = useState()
+    const [amount, setAmount] = useState()
+    const [type, setType] = useState()
+    const [date, setDate] = useState(new Date())
+    const [categoryID, setCategoryID] = useState()
+    const [supplierID, setSupplierID] = useState()
+
+
+    useEffect(() => {
+        console.log("------------------------------------------------------")
+        console.log(editObject)
+        if (editObject) {
+            setAccountID(editObject.accountID)
+            setDetails(editObject.details || "");
+            setAmount(editObject.amount || "");
+            setType(editObject.type || "");
+            setDate(editObject.date || "");
+            setSupplierID(editObject.supplierID || "");
+            setCategoryID(editObject.categoryID || "");
+        }
+    }, [editObject]);
+
+    //Y Server Base
+    const [serverbase, setServerBase] = useState("")
+
+
+    function postgresDate(date){
+		if (!date) return ''; // Return an empty string if date is null or undefined
+		const timestamp = date;
+		return timestamp.split('T')[0];
+	}
+
+    //Y React Toast functions
+    const notifySuccess = (msg) => {
+        toast.success(msg, {
+            className: "toast-success"
+        })
+    }
+
+    const notifyError = (msg) => {
+        toast.error(msg, {
+            className: "toast-error"
+        })
+    }
+
+    //Y Prevents user from closing the modal when they click on the modal body
+    const handleClose = (e) => {
+        if (e.target.id === "wrapper") onClose()
+    }
+
+    //X Fetch the Categories
+    const [categories, setCategories] = useState([])
+
+    const fetchCategories = async () => {
+        try {
+            const accountID = 'ced66b1b-be88-4163-8ba1-77207ec20ca9'
+            const response = await fetch(`${serverbase}/api/category/get_user_categories`, {
+                method: "POST",
+                body: JSON.stringify({
+                    accountID: accountID
+                }),
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+            
+            if(response.ok){
+                const data = await response.json()
+                setCategories(data.categories)
+                console.log(data.categories)
+
+            } else {
+                notifyError("Could not Fetch Categories")
+            }
+
+        } catch (error) {
+            notifyError("Could not Fetch Categories", error)
+        }
+    }
+   
+    //X Fetch Suppliers
+    const [suppliers, setSuppliers] = useState([])
+
+    const fetchSuppliers = async () => {
+        try {
+            const accountID = 'ced66b1b-be88-4163-8ba1-77207ec20ca9'
+            const response = await fetch(`${serverbase}/api/supplier/get_user_suppliers`, {
+                method: "POST",
+                body: JSON.stringify({
+                    accountID: accountID
+                }),
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+            
+            if(response.ok){
+                const data = await response.json()
+                setSuppliers(data.suppliers)
+                console.log(data.suppliers)
+
+            } else {
+                notifyError("Could not Fetch Suppliers")
+            }
+
+        } catch (error) {
+            notifyError("Could not Fetch Suppliers", error)
+        }
+    }
+
+    //Y ----- Add Transaction  -----
+    const postTransaction = async () => {
+        try {
+            const response = await fetch(`${serverbase}/api/transaction`, {
+                method: "POST",
+                body: JSON.stringify({
+                    accountID: accountID,
+                    amount: amount,
+                    details: details,
+                    date: postgresDate(date),
+                    type: transactionType,
+                    categoryID: categoryID,
+                    supplierID: supplierID
+                }),
+                headers: {
+                    "content-Type": "application/json"
+                }
+            })
+
+            if (response.ok) {
+                notifySuccess("Successfully Added Transaction")
+                const data = await response.json()
+
+            } else {
+                notifyError("Could not Add Transaction")
+            }
+
+        } catch (error) {
+            notifyError("Could not Add Transaction", error)
+        }
+    }
+    //Y --------------------- Update Transaction ---------------------
+    const updateTransaction = async () => {
+        try {
+            // Gets the User's Account ID from Local storage
+		    if(!localStorage.getItem("accountID")){
+                notifyError("Could not get Account ID")
+            }
+
+            try {
+                const response = await fetch(`${serverbase}/api/transaction/edit`, {
+                    method: "PUT",
+                    body: JSON.stringify({
+                        transactionID: editObject.id,
+                        accountID: editObject.account_id, 
+                        amount: amount,
+                        details: details,
+                        date: postgresDate(date),
+                        type: type,
+                        categoryID: categoryID,
+                        supplierID: supplierID,
+                    }),
+                    headers: {
+                        "content-Type": "application/json"
+                    }
+                })
+    
+                if (response.ok) {
+                    notifySuccess("Successfully Update Transaction")
+                    const data = await response.json()
+                    console.log(data.flight)
+    
+                } else {
+                    notifyError("Could not Update Transaction")
+                }
+    
+            } catch (error) {
+                notifyError("Could not Update Transaction", error)
+                console.log(error)
+            }
+        } catch (error) {
+            notifyError("Could Get Account ID ", error)
+        }
+       
+    }
+
+    //Y --------------------- Delete Transaction ---------------------
+    const deleteTransaction = async () => {
+        console.log({
+             transactionID: editObject.id,
+                    accountID: editObject.accountID
+        })
+        try {
+            const response = await fetch(`${serverbase}/api/transaction/delete`, {
+                method: "DELETE",
+                body: JSON.stringify({
+                    transactionID: editObject.id,
+                    accountID: editObject.accountID
+                }),
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+            const data = await response.json()
+            if (response.ok){
+                notifySuccess("Successfully Deleted Transaction")
+                
+            } else {
+                notifyError("Could not Delete Transaction")
+                console.log(data.error)
+            }
+        } catch (error) {
+            notifyError("Could not Delete Transaction: " + error)
+        }
+    }
+
+    // ----- React Select -----
+    const optionTransactionType = [
+        { value: 'debit', label: 'debit' },
+        { value: 'credit', label: 'credit' },
+    ]
+
+    const optionCategories = (categories || []).map((C) => ({
+        value: C.id,
+        label: C.name,
+    }));
+    
+    const optionSuppliers = (suppliers || []).map((S) => ({
+        value: S.id,
+        label: S.name,
+    }));
+    
+    // Ensure "None" is at the end
+    const noneOption = { value: "", label: "None" }; // Use an empty string for compatibility
+    optionCategories.push(noneOption );
+    optionSuppliers.push(noneOption)
+
+
+    const fetchServerBase = async () => {
+        const response = await fetch("/api/")
+        const data = await response.json()
+        console.log(data)
+        setServerBase(data.server)
+        
+    }
+
+    useEffect(() => {
+        fetchServerBase()
+    }, []) 
+
+    useEffect(() => {
+        fetchCategories()
+        fetchSuppliers()
+
+    }, [serverbase])
+
+    // Early return moved after hook calls
+    if (!isVisible) return null
+
+    return (
+        <main>
+            <div   className="fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center" id="wrapper" onClick={handleClose}>
+                <div className="bg-white w-full max-w-[600px] rounded-lg flex flex-col p-6 mx-4 max-h-auto">
+                    
+                    {/* Modal Header */}
+                    <div className="flex justify-center items-center mb-6">
+                        <h1 className="text-3xl text-blue-600">Edit Transaction</h1>
+                    </div>
+
+
+                    <div className='space-y-4'>
+                        {/* Details */}
+                        <div className="w-full flex flex-col">
+                            <label htmlFor="pilot" className="text-xl">Details</label>
+                            <input name="colors"  className='pl-1 p-1 rounded border border-gray-400' value={details ? details: ""} onChange={(e) => setDetails(e.target.value)} />
+                        </div>
+                        
+                        {/* Amount */}
+                        <div className="w-full flex flex-col">
+                            <label htmlFor="pilot" className="text-xl">Amount</label>
+                            <input name="colors" type="number" className={`pl-1 p-1 rounded border border-gray-400 `} value={amount ? amount: ""} onChange={(e) => setAmount(e.target.value)} />
+                        </div>
+                        
+                         {/* Category */}
+                         <div className="w-full">
+                            <label htmlFor="pilot" className="text-xl">Category</label>
+                            <Select name="colors" options={optionCategories} className="basic-multi-select" classNamePrefix="select" value={optionCategories.find((CAT) => CAT.value === categoryID)} onChange={(selectedOption) => setCategoryID(selectedOption.value)} />
+                        </div>
+                        
+                         {/* Supplier */}
+                         <div className="w-full">
+                            <label htmlFor="pilot" className="text-xl">Supplier</label>
+                            <Select name="colors" options={optionSuppliers} className="basic-multi-select" classNamePrefix="select" value={optionSuppliers.find((SUP) => SUP.value === supplierID)} onChange={(selectedOption) => setSupplierID(selectedOption.value)} />
+                        </div>
+
+                        {/* Transaction Type */}
+                        <div className="w-full">
+                            <label htmlFor="pilot" className="text-xl">Transaction Type</label>
+                            <Select name="colors" options={optionTransactionType} className="basic-multi-select" classNamePrefix="select" value={optionTransactionType.find((option) => option.value === type)} onChange={(selectedOption) => setType(selectedOption.value)} />
+                        </div>
+
+                         {/* Date */}
+                         <div className="w-full flex flex-col">
+                            <label htmlFor="pilot" className="text-xl">Date</label>
+                            <input name="colors" type="date" className='pl-1 p-1 rounded border border-gray-400' value={date ? date: ""} onChange={(e) => setDate(e.target.value)} />
+                        </div>
+
+                       
+                    </div>
+
+                    {/* Action Buttons
+                    <div className="flex justify-between mt-6">
+                        <button onClick={onClose} className="bg-red-600 hover:bg-red-700 text-white rounded text-lg px-6 py-2 w-48">Close</button>
+                        <button onClick={postTransaction} className="bg-green-600 hover:bg-green-700 text-white rounded text-lg px-6 py-2 w-48">Add Transaction</button>
+                    </div> */}
+
+                     {/* Action Buttons */}
+                    <div className='flex flex-col space-y-8'>
+
+                        <div className="flex justify-between mt-6">
+                            <button onClick={onClose} className=" bg-orange-600 hover:bg-orange-700 text-white rounded text-lg px-6 w-44 py-2">Close</button>
+                            <button onClick={updateTransaction} className="bg-blue-600 hover:bg-blue-700 text-white rounded text-lg px-6  w-44 py-2">Update</button>
+                        </div>
+
+                        <div className='flex justify-center'>
+                            <button onClick={deleteTransaction} className="w-full bg-red-600 hover:bg-red-700 text-white rounded text-lg px-6 py-2">Delete</button>
+                        </div>
+                    </div>
+
+                    {/* Toast Notification */}
+                    <ToastContainer />
+                </div>
+            </div>
+        </main>
+    )
+}
