@@ -24,6 +24,6 @@ export async function verifyConnection(): Promise<void> {
   }
   
 // Immediately verify connection upon module load.
-verifyConnection();
+// verifyConnection();
 
 export default pool;

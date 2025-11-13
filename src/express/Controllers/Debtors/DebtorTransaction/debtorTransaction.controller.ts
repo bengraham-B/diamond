@@ -17,17 +17,50 @@ export const createDebtorTransaction = async (req: Request, res: Response) => {
     }
 }
 
-export const getDebtorTransactionByMonth = async (req: Request, res: Response) => {
+export const getDebtorTransaction = async (req: Request, res: Response) => {
     try {
-        const {accountID, debtorID, month} = req.body
-        // const SQL:string = `SELECT * FROM`
+        const {accountID, debtorID} = req.body
+        const SQL:string = `
+        SELECT
+            debtor_transaction.id,
+            debtor_transaction.amount,
+            debtor_transaction.details,
+            debtor_transaction.date,
+            debtor_transaction.type,
+            debtor_transaction.monthname,
+            debtor_transaction.year,
+
+            supplier.id AS "supplier_id",
+            supplier.name AS "supplier_name",
+
+            category.id AS "category_id",
+            category.name AS "category_name"
+
+        FROM
+            debtor_transaction
+
+
+        INNER JOIN supplier on debtor_transaction.supplier_id = supplier.id
+        INNER JOIN category on debtor_transaction.category_id = category.id
+
+        WHERE
+        debtor_transaction.account_id =$1 AND
+        debtor_transaction.debtor_id =$2
+
+        ORDER BY
+            debtor_transaction.date DESC,
+            debtor_transaction.amount DESC
+    `
+        const values = [accountID, debtorID]
+        const query = await pool.query(SQL, values)
  
-        res.status(200).json({
+        return res.status(200).json({
             msg: 'Retrived Transaction by month Successfully',
-            debtorTransactions:  debtorTxnByMonth
+            debtorTransactions:  query.rows
         })
         
     } catch (error) {
+        console.log(error)
         res.status(500).json({error: `${error}`})
     }
 }
@@ -47,5 +80,21 @@ export const getDebtorTransactionByID = async (req: Request, res: Response) => {
 
     } catch (error) {
         res.status(500).json({error: `${error}`})
+    }
+}
+
+export const updateDebtorTransaction = async (req: Request, res: Response) => {
+    try {
+        
+    } catch (error) {
+        
+    }
+}
+
+export const deleteDebtorTransaction = async (req: Request, res: Response) => {
+    try {
+        
+    } catch (error) {
+        
     }
 }

@@ -3,6 +3,7 @@ import { verifyConnection } from "./Database/postgres"
 import cors from "cors"
 
 const port: Number = 8000
+const host: string = process.env.DB_HOST || ""
 const app: Express = express()
 
 app.use(express.json());
@@ -33,5 +34,5 @@ app.get("/", (req: Request, res: Response) => {
 
 app.listen(port, () => {
     verifyConnection()    
-    console.log(`Server running: ${port}`)
+    console.log(`Server running: [${host}]:${port}`)
 })

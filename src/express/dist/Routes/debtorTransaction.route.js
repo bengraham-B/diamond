@@ -9,6 +9,8 @@ const router = express_1.default.Router();
 const debtorTransaction_controller_1 = require("../Controllers/Debtors/DebtorTransaction/debtorTransaction.controller");
 // import { getDebtorTransactionByMonth } from "../Controllers/Debtors/DebtorTransaction/debtorTransaction"
 router.post("/", debtorTransaction_controller_1.createDebtorTransaction);
-router.post("/getDebtorTransactions", debtorTransaction_controller_1.getDebtorTransactionByMonth);
+router.post("/getDebtorTransactions", debtorTransaction_controller_1.getDebtorTransaction);
 router.post("/getDebtorTransactionByID", debtorTransaction_controller_1.getDebtorTransactionByID);
+router.put("/updateDebtorTransaction", debtorTransaction_controller_1.updateDebtorTransaction);
+router.delete("/delete_debtor_transaction", debtorTransaction_controller_1.deleteDebtorTransaction);
 exports.default = router;

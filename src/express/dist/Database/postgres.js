@@ -37,5 +37,5 @@ function verifyConnection() {
     });
 }
 // Immediately verify connection upon module load.
-verifyConnection();
+// verifyConnection();
 exports.default = pool;

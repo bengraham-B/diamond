@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getDebtorTransactionByID = exports.getDebtorTransactionByMonth = exports.createDebtorTransaction = void 0;
+exports.deleteDebtorTransaction = exports.updateDebtorTransaction = exports.getDebtorTransactionByID = exports.getDebtorTransaction = exports.createDebtorTransaction = void 0;
 const DebtorTransaction_1 = require("../../../Class/DebtorTransaction");
 const postgres_1 = __importDefault(require("../../../Database/postgres"));
 const createDebtorTransaction = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -30,20 +30,53 @@ const createDebtorTransaction = (req, res) => __awaiter(void 0, void 0, void 0, 
     }
 });
 exports.createDebtorTransaction = createDebtorTransaction;
-const getDebtorTransactionByMonth = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getDebtorTransaction = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { accountID, debtorID, month } = req.body;
-        // const SQL:string = `SELECT * FROM`
-        res.status(200).json({
+        const { accountID, debtorID } = req.body;
+        const SQL = `
+        SELECT
+            debtor_transaction.id,
+            debtor_transaction.amount,
+            debtor_transaction.details,
+            debtor_transaction.date,
+            debtor_transaction.type,
+            debtor_transaction.monthname,
+            debtor_transaction.year,
+
+            supplier.id AS "supplier_id",
+            supplier.name AS "supplier_name",
+
+            category.id AS "category_id",
+            category.name AS "category_name"
+
+        FROM
+            debtor_transaction
+
+
+        INNER JOIN supplier on debtor_transaction.supplier_id = supplier.id
+        INNER JOIN category on debtor_transaction.category_id = category.id
+
+        WHERE
+        debtor_transaction.account_id =$1 AND
+        debtor_transaction.debtor_id =$2
+
+        ORDER BY
+            debtor_transaction.date DESC,
+            debtor_transaction.amount DESC
+    `;
+        const values = [accountID, debtorID];
+        const query = yield postgres_1.default.query(SQL, values);
+        return res.status(200).json({
             msg: 'Retrived Transaction by month Successfully',
-            debtorTransactions: debtorTxnByMonth
+            debtorTransactions: query.rows
         });
     }
     catch (error) {
+        console.log(error);
         res.status(500).json({ error: `${error}` });
     }
 });
-exports.getDebtorTransactionByMonth = getDebtorTransactionByMonth;
+exports.getDebtorTransaction = getDebtorTransaction;
 const getDebtorTransactionByID = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { debtorTxnID } = req.body;
@@ -62,3 +95,17 @@ const getDebtorTransactionByID = (req, res) => __awaiter(void 0, void 0, void 0,
     }
 });
 exports.getDebtorTransactionByID = getDebtorTransactionByID;
+const updateDebtorTransaction = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+    }
+    catch (error) {
+    }
+});
+exports.updateDebtorTransaction = updateDebtorTransaction;
+const deleteDebtorTransaction = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+    }
+    catch (error) {
+    }
+});
+exports.deleteDebtorTransaction = deleteDebtorTransaction;
