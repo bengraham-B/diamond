@@ -5,7 +5,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import Select from 'react-select' //? https://react-select.com/home#welcome
 
-export default function EditTransactionModal({ isVisible, onClose, editObject }) {
+export default function EditDebtorTransactionModal({ isVisible, onClose, editObject }) {
 
     //Y State Variables For Transaction
     const [accountID, setAccountID] = useState()
@@ -19,7 +19,6 @@ export default function EditTransactionModal({ isVisible, onClose, editObject })
 
     useEffect(() => {
         console.log("------------------------------------------------------")
-        console.log(editObject)
         if (editObject) {
             setAccountID(editObject.accountID)
             setDetails(editObject.details || "");
@@ -30,9 +29,6 @@ export default function EditTransactionModal({ isVisible, onClose, editObject })
             setCategoryID(editObject.categoryID || "");
         }
     }, [editObject]);
-
-    //Y Server Base
-    const [serverbase, setServerBase] = useState("")
 
 
     function postgresDate(date){
@@ -65,7 +61,7 @@ export default function EditTransactionModal({ isVisible, onClose, editObject })
     const fetchCategories = async () => {
         try {
             const accountID = 'ced66b1b-be88-4163-8ba1-77207ec20ca9'
-            const response = await fetch(`${serverbase}/api/category/get_user_categories`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_ENV_SERVER_BASE}/api/category/get_user_categories`, {
                 method: "POST",
                 body: JSON.stringify({
                     accountID: accountID
@@ -95,7 +91,7 @@ export default function EditTransactionModal({ isVisible, onClose, editObject })
     const fetchSuppliers = async () => {
         try {
             const accountID = 'ced66b1b-be88-4163-8ba1-77207ec20ca9'
-            const response = await fetch(`${serverbase}/api/supplier/get_user_suppliers`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_ENV_SERVER_BASE}/api/supplier/get_user_suppliers`, {
                 method: "POST",
                 body: JSON.stringify({
                     accountID: accountID
@@ -119,51 +115,21 @@ export default function EditTransactionModal({ isVisible, onClose, editObject })
         }
     }
 
-    //Y ----- Add Transaction  -----
-    const postTransaction = async () => {
-        try {
-            const response = await fetch(`${serverbase}/api/transaction`, {
-                method: "POST",
-                body: JSON.stringify({
-                    accountID: accountID,
-                    amount: amount,
-                    details: details,
-                    date: postgresDate(date),
-                    type: transactionType,
-                    categoryID: categoryID,
-                    supplierID: supplierID
-                }),
-                headers: {
-                    "content-Type": "application/json"
-                }
-            })
-
-            if (response.ok) {
-                notifySuccess("Successfully Added Transaction")
-                const data = await response.json()
-
-            } else {
-                notifyError("Could not Add Transaction")
-            }
-
-        } catch (error) {
-            notifyError("Could not Add Transaction", error)
-        }
-    }
     //Y --------------------- Update Transaction ---------------------
     const updateTransaction = async () => {
         try {
             // Gets the User's Account ID from Local storage
 		    if(!localStorage.getItem("accountID")){
                 notifyError("Could not get Account ID")
+                // git
             }
 
             try {
-                const response = await fetch(`${serverbase}/api/transaction/edit`, {
+                const response = await fetch(`${process.env.NEXT_PUBLIC_ENV_SERVER_BASE}/api/debtorTransaction/update`, {
                     method: "PUT",
                     body: JSON.stringify({
-                        transactionID: editObject.id,
-                        accountID: editObject.account_id, 
+                        debtorTransactionID: editObject.id,
+                        accountID: editObject.accountID, 
                         amount: amount,
                         details: details,
                         date: postgresDate(date),
@@ -202,10 +168,10 @@ export default function EditTransactionModal({ isVisible, onClose, editObject })
                     accountID: editObject.accountID
         })
         try {
-            const response = await fetch(`${serverbase}/api/transaction/delete`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_ENV_SERVER_BASE}/api/debtorTransaction/delete`, {
                 method: "DELETE",
                 body: JSON.stringify({
-                    transactionID: editObject.id,
+                    debtorTransactionID: editObject.id,
                     accountID: editObject.accountID
                 }),
                 headers: {
@@ -246,24 +212,11 @@ export default function EditTransactionModal({ isVisible, onClose, editObject })
     optionCategories.push(noneOption );
     optionSuppliers.push(noneOption)
 
-
-    const fetchServerBase = async () => {
-        const response = await fetch("/api/")
-        const data = await response.json()
-        console.log(data)
-        setServerBase(data.server)
-        
-    }
-
-    useEffect(() => {
-        fetchServerBase()
-    }, []) 
-
     useEffect(() => {
         fetchCategories()
         fetchSuppliers()
 
-    }, [serverbase])
+    }, [])
 
     // Early return moved after hook calls
     if (!isVisible) return null
@@ -275,7 +228,7 @@ export default function EditTransactionModal({ isVisible, onClose, editObject })
                     
                     {/* Modal Header */}
                     <div className="flex justify-center items-center mb-6">
-                        <h1 className="text-3xl text-blue-600">Edit Transaction</h1>
+                        <h1 className="text-3xl text-blue-600">Edit Debtor Transaction</h1>
                     </div>
 
 

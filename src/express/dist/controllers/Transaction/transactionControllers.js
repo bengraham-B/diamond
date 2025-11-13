@@ -86,7 +86,6 @@ const deleteTransaction = (req, res) => __awaiter(void 0, void 0, void 0, functi
     console.log("DELETE TXN");
     try {
         const { accountID, transactionID } = req.body;
-        console.log(accountID, transactionID);
         const SQL = `DELETE FROM transaction WHERE account_id=$1 AND id=$2`;
         const values = [accountID, transactionID];
         yield postgres_1.default.query(SQL, values);

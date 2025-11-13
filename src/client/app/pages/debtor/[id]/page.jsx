@@ -12,8 +12,10 @@ import './DebtorTransactions.scss'
 const Select = dynamic(() => import("react-select"), { ssr: false });
 
 
-import TransactionModal from "./AddTransaction/AddTransactionModal";
-import EditTransactionModal from "./EditTransaction/EditTransactionModal";
+import TransactionModal from "./AddDebtorTransaction/AddDebtorTransactionModal";
+import EditTransactionModal from "./EditDebtorTransaction/EditDebtorTransactionModal";
+import AddDebtorTransactionModal from "./AddDebtorTransaction/AddDebtorTransactionModal";
+import EditDebtorTransactionModal from "./EditDebtorTransaction/EditDebtorTransactionModal";
 
 export default function page({params}) {
 	
@@ -23,7 +25,7 @@ export default function page({params}) {
 
 		const fetchDebtorDetails = async () => {
 			try {
-				const response = await fetch(`${NEXT_PUBLIC_ENV_SERVER_BASE}/api/debtor/get_debtor_details`)
+				const response = await fetch(`${process.env.NEXT_PUBLIC_ENV_SERVER_BASE}/api/debtor/get_debtor_details`)
 				
 			} catch (error) {
 				console.log(error)
@@ -135,7 +137,7 @@ export default function page({params}) {
 		try {
 
 			if(localStorage.getItem("accountID")){
-				notifySuccess("Got Account ID")
+
 			} else {
 				notifyError("Cannot Retrive Account ID")
 				//X Make a function to fetch Account ID's
@@ -147,8 +149,7 @@ export default function page({params}) {
 					method: "POST",
 					body: JSON.stringify({
 						accountID: accountID,
-    					debtorID: debtorIDParam,
-    					month: 11
+    					debtorID: debtorIDParam
 					}),
 					headers: {
 						"Content-Type": "application/json"
@@ -228,12 +229,12 @@ export default function page({params}) {
 					<thead className="bg-gray-50 border-b-2 border-gray-200">
 						<tr>
 
-							<th className="px-4 w-44 text-lg font-light tracking-wide text-left">Date</th>
-							<th className="px-4 text-lg font-light tracking-wide text-left">Details</th>
-							<th className="px-4 w-40 text-lg font-light tracking-wide text-left">Amount (R)</th>
-							<th className="px-4 w-40 text-lg font-light tracking-wide text-left">Type</th>
-							<th className="px-4 w-48 text-lg font-light tracking-wide text-left">Category</th>
-							<th className="px-4 w-56 text-lg font-light tracking-wide text-left">Supplier</th>
+                           <th className="px-4 w-36 text-lg font-light tracking-wide text-left">Date</th>
+                            <th className="px-4 w-56 text-lg font-light tracking-wide text-left">Details</th>
+                            <th className="px-4 w-40 text-lg font-light tracking-wide text-left">Amount (R)</th>
+                            <th className="px-4 w-40 text-lg font-light tracking-wide text-left">Type</th>
+                            <th className="px-4 w-48 text-lg font-light tracking-wide text-left">Category</th>
+                            <th className="px-4 w-64 text-lg font-light tracking-wide text-left">Supplier</th>
 						</tr>
 					</thead>
 					<tbody className="divide-y divide-gray-100">
@@ -295,10 +296,8 @@ export default function page({params}) {
 				</table>
 			</section>
 			<section>
-				<TransactionModal isVisible={isOpenTransactionModal} onClose={() => setIsOpenTransactionModal(false)}/>
-				<EditTransactionModal isVisible={isOpenEditModal} onClose={() => setIsOpenEditModal(false)} editObject={objectState}/>
-				{/* <EditModal isVisible={isOpenEditModal} editObject={objectState} onClose={() => setIsOpenEditModal(false)}/> */}
-				{/* <CategoryModal isVisible={isOpenCategoryModal} onClose={() => setIsOpenCategoryModal(false)}/> */}
+				<AddDebtorTransactionModal isVisible={isOpenTransactionModal} onClose={() => setIsOpenTransactionModal(false)} debtorIDParam={debtorIDParam}/>
+				<EditDebtorTransactionModal isVisible={isOpenEditModal} onClose={() => setIsOpenEditModal(false)} editObject={objectState}/>
 				<ToastContainer/>
 			</section>
 		</main>

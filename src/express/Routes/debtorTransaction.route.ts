@@ -8,8 +8,8 @@ import { createDebtorTransaction, getDebtorTransactionByID,getDebtorTransaction,
 router.post("/", createDebtorTransaction)
 router.post("/getDebtorTransactions", getDebtorTransaction)
 router.post("/getDebtorTransactionByID", getDebtorTransactionByID)
-router.put("/updateDebtorTransaction", updateDebtorTransaction)
-router.delete("/delete_debtor_transaction", deleteDebtorTransaction)
+router.put("/update", updateDebtorTransaction)
+router.delete("/delete", deleteDebtorTransaction)
 
 
 export default router

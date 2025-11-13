@@ -1,6 +1,7 @@
 import { DebtorTransaction } from "../../../Class/DebtorTransaction";
 import { Response, Request } from "express";
 import pool from "../../../Database/postgres";
+import { Functions } from "../../../Class/Functions";
 
 export const createDebtorTransaction = async (req: Request, res: Response) => {
     try {
@@ -22,6 +23,7 @@ export const getDebtorTransaction = async (req: Request, res: Response) => {
         const {accountID, debtorID} = req.body
         const SQL:string = `
         SELECT
+            debtor_transaction.account_id,
             debtor_transaction.id,
             debtor_transaction.amount,
             debtor_transaction.details,
@@ -85,16 +87,34 @@ export const getDebtorTransactionByID = async (req: Request, res: Response) => {
 
 export const updateDebtorTransaction = async (req: Request, res: Response) => {
     try {
-        
+        const {accountID, debtorTransactionID, supplierID, categoryID, details, amount, type, date } = req.body
+        if(!accountID || !debtorTransactionID) return res.status(500).json({error: `Debtor TXN ID or Account ID missings`})
+        console.log({accountID, debtorTransactionID, supplierID, categoryID, details, amount, type, date})
+        const func = new Functions()
+        const {day, week, month, monthName, year} = func.breakDownDate(date)
+        const SQL: string = `UPDATE debtor_transaction SET supplier_id=$1, category_id=$2, details=$3, amount=$4, type=$5, date=$6, day=$7, week=$8, month=$9, monthname=$10, year=$11 WHERE id=$12 AND account_id=$13`
+        const values = [supplierID, categoryID, details, amount, type, date, day, week, month, monthName, year, debtorTransactionID, accountID]
+        await pool.query(SQL, values)
+        return res.status(200).json({msg: `DEBTOR TXN: ${debtorTransactionID} Updated`})
     } catch (error) {
+        console.log(error)
+        return res.status(500).json({error: `${error}`})
         
     }
 }
 
 export const deleteDebtorTransaction = async (req: Request, res: Response) => {
     try {
-        
+        const {accountID, debtorTransactionID} = req.body
+        if(!accountID || !debtorTransactionID) return res.status(500).json({error: `Debtor TXN ID or Account ID missings`})
+        console.log({accountID, debtorTransactionID})
+        const SQL:string = `DELETE FROM debtor_transaction WHERE id=$1 AND account_id=$2`
+        const values = [debtorTransactionID, accountID]
+        await pool.query(SQL, values)
+        console.log(`DELETD DEBTOR TXN: ${debtorTransactionID}`)
+        return res.status(200).json({message: `Delete Debtor TXN: ${debtorTransactionID}`})
     } catch (error) {
-        
+        console.log(error)
+        res.status(500).json({error: `${error}`})
     }
 }

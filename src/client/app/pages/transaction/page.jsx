@@ -110,6 +110,7 @@ export default function page() {
 
     //Y Converst date so that it can be used by the HTML Date Element
     function dateFormater(date){
+        console.log(date)
         const isoDate = date;
         return isoDate.split("T")[0]; // Extracts '2025-03-14'
     }
@@ -124,7 +125,7 @@ export default function page() {
         
     }
 
-        const fetchTransactions = async () => {
+    const fetchTransactions = async () => {
         try {
 
             if(localStorage.getItem("accountID")){
@@ -258,7 +259,7 @@ export default function page() {
                                     details: T.details,
                                     amount: T.amount,
                                     type: T.type,
-                                    date: dateFormater(T.date),
+                                    date: postgresDate(T.date),
                                     category: T.category_name,
                                     categoryID: T.category_id,
                                     supplierID: T.supplier_id,
@@ -307,8 +308,6 @@ export default function page() {
             <section>
                 <TransactionModal isVisible={isOpenTransactionModal} onClose={() => setIsOpenTransactionModal(false)}/>
                 <EditTransactionModal isVisible={isOpenEditModal} onClose={() => setIsOpenEditModal(false)} editObject={objectState}/>
-                {/* <EditModal isVisible={isOpenEditModal} editObject={objectState} onClose={() => setIsOpenEditModal(false)}/> */}
-                {/* <CategoryModal isVisible={isOpenCategoryModal} onClose={() => setIsOpenCategoryModal(false)}/> */}
             </section>
         </main>
     );

@@ -1,11 +1,14 @@
 "use client"
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, use } from 'react'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import Select from 'react-select' //? https://react-select.com/home#welcome
 
 export default function EditTransactionModal({ isVisible, onClose, editObject }) {
+
+    // const { editObject } = params
+
 
     //Y State Variables For Transaction
     const [accountID, setAccountID] = useState()
@@ -18,8 +21,6 @@ export default function EditTransactionModal({ isVisible, onClose, editObject })
 
 
     useEffect(() => {
-        console.log("------------------------------------------------------")
-        console.log(editObject)
         if (editObject) {
             setAccountID(editObject.accountID)
             setDetails(editObject.details || "");

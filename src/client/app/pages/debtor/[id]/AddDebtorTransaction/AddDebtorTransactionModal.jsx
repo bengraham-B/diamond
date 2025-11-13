@@ -6,10 +6,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import Select from 'react-select' //? https://react-select.com/home#welcome
 
-export default function TransactionModal({ isVisible, onClose }) {
-
-    //Y Server Base
-    const [serverbase, setServerBase] = useState("")
+export default function AddDebtorTransactionModal({ isVisible, onClose, debtorIDParam }) {
 
 
     function postgresDate(date){
@@ -42,7 +39,7 @@ export default function TransactionModal({ isVisible, onClose }) {
     const fetchCategories = async () => {
         try {
             const accountID = 'ced66b1b-be88-4163-8ba1-77207ec20ca9'
-            const response = await fetch(`${serverbase}/api/category/get_user_categories`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_ENV_SERVER_BASE}/api/category/get_user_categories`, {
                 method: "POST",
                 body: JSON.stringify({
                     accountID: accountID
@@ -72,7 +69,7 @@ export default function TransactionModal({ isVisible, onClose }) {
     const fetchSuppliers = async () => {
         try {
             const accountID = 'ced66b1b-be88-4163-8ba1-77207ec20ca9'
-            const response = await fetch(`${serverbase}/api/supplier/get_user_suppliers`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_ENV_SERVER_BASE}/api/supplier/get_user_suppliers`, {
                 method: "POST",
                 body: JSON.stringify({
                     accountID: accountID
@@ -108,10 +105,11 @@ export default function TransactionModal({ isVisible, onClose }) {
     //Y ----- Add Transaction  -----
     const postTransaction = async () => {
         try {
-            const response = await fetch(`${serverbase}/api/transaction`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_ENV_SERVER_BASE}/api/debtorTransaction`, {
                 method: "POST",
                 body: JSON.stringify({
                     accountID: accountID,
+                    debtorID: debtorIDParam,
                     amount: amount,
                     details: details,
                     date: postgresDate(date),
@@ -159,25 +157,11 @@ export default function TransactionModal({ isVisible, onClose }) {
     optionCategories.push(noneOption );
     optionSuppliers.push(noneOption)
 
-
-    const fetchServerBase = async () => {
-        const response = await fetch("/api/")
-        const data = await response.json()
-        console.log(data)
-        setServerBase(data.server)
-        
-    }
-
-
-    useEffect(() => {
-        fetchServerBase()
-    }, []) 
-
     useEffect(() => {
         fetchCategories()
         fetchSuppliers()
 
-    }, [serverbase])
+    }, [])
 
     // Early return moved after hook calls
     if (!isVisible) return null
@@ -189,7 +173,7 @@ export default function TransactionModal({ isVisible, onClose }) {
                     
                     {/* Modal Header */}
                     <div className="flex justify-center items-center mb-6">
-                        <h1 className="text-3xl text-green-600">Add Transaction</h1>
+                        <h1 className="text-3xl text-green-600">Add Debtor Transaction</h1>
                     </div>
 
 

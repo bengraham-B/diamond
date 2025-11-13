@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteDebtorTransaction = exports.updateDebtorTransaction = exports.getDebtorTransactionByID = exports.getDebtorTransaction = exports.createDebtorTransaction = void 0;
 const DebtorTransaction_1 = require("../../../Class/DebtorTransaction");
 const postgres_1 = __importDefault(require("../../../Database/postgres"));
+const Functions_1 = require("../../../Class/Functions");
 const createDebtorTransaction = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { accountID, debtorID, categoryID, type, amount, details, location, supplierID, date, day, week, month, monthName, year } = req.body;
@@ -35,6 +36,7 @@ const getDebtorTransaction = (req, res) => __awaiter(void 0, void 0, void 0, fun
         const { accountID, debtorID } = req.body;
         const SQL = `
         SELECT
+            debtor_transaction.account_id,
             debtor_transaction.id,
             debtor_transaction.amount,
             debtor_transaction.details,
@@ -97,15 +99,38 @@ const getDebtorTransactionByID = (req, res) => __awaiter(void 0, void 0, void 0,
 exports.getDebtorTransactionByID = getDebtorTransactionByID;
 const updateDebtorTransaction = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        const { accountID, debtorTransactionID, supplierID, categoryID, details, amount, type, date } = req.body;
+        if (!accountID || !debtorTransactionID)
+            return res.status(500).json({ error: `Debtor TXN ID or Account ID missings` });
+        console.log({ accountID, debtorTransactionID, supplierID, categoryID, details, amount, type, date });
+        const func = new Functions_1.Functions();
+        const { day, week, month, monthName, year } = func.breakDownDate(date);
+        const SQL = `UPDATE debtor_transaction SET supplier_id=$1, category_id=$2, details=$3, amount=$4, type=$5, date=$6, day=$7, week=$8, month=$9, monthname=$10, year=$11 WHERE id=$12 AND account_id=$13`;
+        const values = [supplierID, categoryID, details, amount, type, date, day, week, month, monthName, year, debtorTransactionID, accountID];
+        yield postgres_1.default.query(SQL, values);
+        return res.status(200).json({ msg: `DEBTOR TXN: ${debtorTransactionID} Updated` });
     }
     catch (error) {
+        console.log(error);
+        return res.status(500).json({ error: `${error}` });
     }
 });
 exports.updateDebtorTransaction = updateDebtorTransaction;
 const deleteDebtorTransaction = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        const { accountID, debtorTransactionID } = req.body;
+        if (!accountID || !debtorTransactionID)
+            return res.status(500).json({ error: `Debtor TXN ID or Account ID missings` });
+        console.log({ accountID, debtorTransactionID });
+        const SQL = `DELETE FROM debtor_transaction WHERE id=$1 AND account_id=$2`;
+        const values = [debtorTransactionID, accountID];
+        yield postgres_1.default.query(SQL, values);
+        console.log(`DELETD DEBTOR TXN: ${debtorTransactionID}`);
+        return res.status(200).json({ message: `Delete Debtor TXN: ${debtorTransactionID}` });
     }
     catch (error) {
+        console.log(error);
+        res.status(500).json({ error: `${error}` });
     }
 });
 exports.deleteDebtorTransaction = deleteDebtorTransaction;

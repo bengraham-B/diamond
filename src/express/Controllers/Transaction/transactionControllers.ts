@@ -92,7 +92,6 @@ export const deleteTransaction = async (req:Request, res: Response) => {
     console.log("DELETE TXN")
     try {
         const {accountID, transactionID} = req.body
-        console.log(accountID, transactionID)
         const SQL: string = `DELETE FROM transaction WHERE account_id=$1 AND id=$2`
         const values = [accountID, transactionID]
         await pool.query(SQL, values)
