@@ -1,24 +1,17 @@
 "use client"
-import React from 'react'
 import { useSession } from "next-auth/react"
-import { redirect } from 'next/navigation'
 
-export default  function Member() {
-	const {data: session} = useSession({
-		required: true,
-		onUnauthenticated(){
-			redirect("/api/auth/signin?callbackUrl=/ClientMember")
-		}
-	})
-	return (
-		<div>
-			<h1>Member Client Session</h1>
-			<p>Auth on client components</p>
-			<p>{session?.user?.email}</p>
-			<p>{session?.user?.role}</p>
-			<p>{session?.user?.name}</p>
-			<p>{session?.user?.id}</p>
-			<p>{session?.user?.name}</p>
-		</div>
-	)
+export default function Dashboard() {
+    const { data: session } = useSession()
+
+    if (!session) return <p>Loading...</p>
+
+    return (
+        <div>
+            <h1>Welcome {session.diamond.accountID}</h1>
+
+            <h2>Diamond User Data:</h2>
+            <pre>{JSON.stringify(session.diamond, null, 2)}</pre>
+        </div>
+    )
 }
