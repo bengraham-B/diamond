@@ -1,16 +1,25 @@
 "use client"
 import React, { useState, useEffect } from 'react'
 import { ToastContainer, toast } from 'react-toastify';
+import { useSession } from "next-auth/react";
 import 'react-toastify/dist/ReactToastify.css';
 
 
 import Select from 'react-select' //? https://react-select.com/home#welcome
 
 export default function TransactionModal({ isVisible, onClose }) {
+    const { data: session } = useSession()
 
-    //Y Server Base
-    const [serverbase, setServerBase] = useState("")
+    const [categories, setCategories] = useState([])
+    const [suppliers, setSuppliers] = useState([])
 
+    //Y State Variables For Transaction
+    const [details, setDetails] = useState()
+    const [amount, setAmount] = useState()
+    const [transactionType, setTransactionType] = useState()
+    const [date, setDate] = useState(new Date())
+    const [categoryID, setCategoryID] = useState()
+    const [supplierID, setSupplierID] = useState()
 
     function postgresDate(date){
 		if (!date) return ''; // Return an empty string if date is null or undefined
@@ -37,15 +46,13 @@ export default function TransactionModal({ isVisible, onClose }) {
     }
 
     //X Fetch the Categories
-    const [categories, setCategories] = useState([])
 
     const fetchCategories = async () => {
         try {
-            const accountID = 'ced66b1b-be88-4163-8ba1-77207ec20ca9'
-            const response = await fetch(`${serverbase}/api/category/get_user_categories`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_ENV_SERVER_BASE}/api/category/get_user_categories`, {
                 method: "POST",
                 body: JSON.stringify({
-                    accountID: accountID
+                    accountID: session.diamond.accountID
                 }),
                 headers: {
                     "Content-Type": "application/json"
@@ -67,15 +74,12 @@ export default function TransactionModal({ isVisible, onClose }) {
     }
    
     //X Fetch Suppliers
-    const [suppliers, setSuppliers] = useState([])
-
     const fetchSuppliers = async () => {
         try {
-            const accountID = 'ced66b1b-be88-4163-8ba1-77207ec20ca9'
-            const response = await fetch(`${serverbase}/api/supplier/get_user_suppliers`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_ENV_SERVER_BASE}/api/supplier/get_user_suppliers`, {
                 method: "POST",
                 body: JSON.stringify({
-                    accountID: accountID
+                    accountID: session.diamond.accountID
                 }),
                 headers: {
                     "Content-Type": "application/json"
@@ -96,22 +100,15 @@ export default function TransactionModal({ isVisible, onClose }) {
         }
     }
 
-        //Y State Variables For Transaction
-    const [details, setDetails] = useState()
-    const [amount, setAmount] = useState()
-    const [transactionType, setTransactionType] = useState()
-    const [date, setDate] = useState(new Date())
-    const [categoryID, setCategoryID] = useState()
-    const [supplierID, setSupplierID] = useState()
-    const accountID = 'ced66b1b-be88-4163-8ba1-77207ec20ca9'
+
 
     //Y ----- Add Transaction  -----
     const postTransaction = async () => {
         try {
-            const response = await fetch(`${serverbase}/api/transaction`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_ENV_SERVER_BASE}/api/transaction`, {
                 method: "POST",
                 body: JSON.stringify({
-                    accountID: accountID,
+                    accountID: session.diamond.accountID,
                     amount: amount,
                     details: details,
                     date: postgresDate(date),
@@ -159,28 +156,16 @@ export default function TransactionModal({ isVisible, onClose }) {
     optionCategories.push(noneOption );
     optionSuppliers.push(noneOption)
 
-
-    const fetchServerBase = async () => {
-        const response = await fetch("/api/")
-        const data = await response.json()
-        console.log(data)
-        setServerBase(data.server)
-        
-    }
-
-
-    useEffect(() => {
-        fetchServerBase()
-    }, []) 
-
     useEffect(() => {
         fetchCategories()
         fetchSuppliers()
 
-    }, [serverbase])
+    }, [session])
 
     // Early return moved after hook calls
     if (!isVisible) return null
+
+    if (!session) return ""
 
     return (
         <main>

@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 // import Select from 'react-select' //? https://react-select.com/home#welcome
+import { useSession } from "next-auth/react";
 
 import dynamic from "next/dynamic";
 
@@ -16,36 +17,16 @@ import TransactionModal from "./AddTransaction/AddTransactionModal";
 import EditTransactionModal from "./EditTransaction/EditTransactionModal";
 
 export default function page() {
-    const [transactions, setTransactions] = useState();
+    const { data: session } = useSession()
 
+    // console.log(session.diamond.accountID)
+    const [transactions, setTransactions] = useState([]);
+    
     //Y Modal
     const [isOpenTransactionModal, setIsOpenTransactionModal] = useState(false)
     const [isOpenEditModal, setIsOpenEditModal] = useState(false)
     const [isOpenCategoryModal, setIsOpenCategoryModal] = useState(false)
     const [objectState, setObjectState] = useState()
-
-     // React Toast functions
-        const notifySuccess = (msg) => {
-            toast.success(msg, {
-                className: "toast-success"
-            })
-        }
-    
-        const notifyError = (msg) => {
-            toast.error(msg, {
-                className: "toast-error"
-            })
-        }
-
-    const showTransactionModal = (id) => {
-        setObjectState(id); // Extract and set the admin's ID
-        setIsOpenTransactionModal(true);
-    };
-   
-    const showEditModal = (id) => {
-        setObjectState(id); // Extract and set the admin's ID
-        setIsOpenEditModal(true);
-    };
 
     //Y Filters State
     const date = new Date()
@@ -88,6 +69,30 @@ export default function page() {
         { value: 'Dec', label: 'Dec' },
     ];
 
+    //? React Toast functions
+    const notifySuccess = (msg) => {
+        toast.success(msg, {
+            className: "toast-success"
+        })
+    }
+    
+    const notifyError = (msg) => {
+        toast.error(msg, {
+            className: "toast-error"
+        })
+    }
+
+    //? Modals
+    const showTransactionModal = (id) => {
+        setObjectState(id); // Extract and set the admin's ID
+        setIsOpenTransactionModal(true);
+    };
+   
+    const showEditModal = (id) => {
+        setObjectState(id); // Extract and set the admin's ID
+        setIsOpenEditModal(true);
+    };
+
     function formatDate(timestamp) {
         const monthNames = [
             "Jan", "Feb", "Mar", "Apr", "May", "June",
@@ -115,16 +120,6 @@ export default function page() {
         return isoDate.split("T")[0]; // Extracts '2025-03-14'
     }
 
-    const [serverbase, setServerBase] = useState("")
-
-    const fetchServerBase = async () => {
-        const response = await fetch("/api/")
-        const data = await response.json()
-        console.log(data)
-        setServerBase(data.server)
-        
-    }
-
     const fetchTransactions = async () => {
         try {
 
@@ -136,14 +131,12 @@ export default function page() {
             }
             
             try {
-                console.log("Server Base", serverbase)
-                console.log(`${serverbase}transaction/get_transactions`)
                 const accountID = 'ced66b1b-be88-4163-8ba1-77207ec20ca9'
-                const response = await fetch(`${serverbase}/api/transaction/get_transactions`, {
+                const response = await fetch(`${process.env.NEXT_PUBLIC_ENV_SERVER_BASE}/api/transaction/get_transactions`, {
                     method: "POST",
                     body: JSON.stringify({
                         // accountID: localStorage.getItem("accountID")
-                        accountID: accountID
+                        accountID: session.diamond.accountID
                     }),
                     headers: {
                         "Content-Type": "application/json"
@@ -168,20 +161,18 @@ export default function page() {
         }	
 	}
 
-    // Sets the User Account ID to Local Storage
-	useEffect(() => {
-        fetchServerBase()
-		localStorage.setItem("accountID", '51d6f15b-8625-4d50-9b7c-8f10a1a7adf5');
-
-	}, [])
-
 	useEffect(() => {
 		fetchTransactions()
-	}, [serverbase])
+	}, [session])
 	
     useEffect(() => {
 		fetchTransactions()
 	}, [isOpenTransactionModal, isOpenEditModal])
+
+    if (!session) {
+        return ""
+    }
+
 
     return (
         <main className="space-y-6 py-4 px-8">
@@ -189,12 +180,9 @@ export default function page() {
                 <h1>Transactions</h1>
             </section>
 
-            {serverbase}
+            {/* {session.diamond.accountID} */}
             <section id="Add-Transaction-Container" className="flex justify-end">
                 <div className="flex space-x-4">
-                    {/* <button onClick={showCategoryModal} className="flex justify-center w-44 text-purple-600 text-lg tracking-wide border border-purple-600 px-4 py-2 rounded hover:bg-purple-600 hover:text-white">
-                        Add Category
-                    </button> */}
                     <button onClick={showTransactionModal} className="add_transaction_button">
                         Add Transaction
                     </button>

@@ -1,13 +1,14 @@
 "use client"
 import React, { useState, useEffect, use } from 'react'
 import { ToastContainer, toast } from 'react-toastify';
+import { useSession } from "next-auth/react";
 import 'react-toastify/dist/ReactToastify.css';
 
 import Select from 'react-select' //? https://react-select.com/home#welcome
 
 export default function EditTransactionModal({ isVisible, onClose, editObject }) {
+    const { data: session } = useSession()
 
-    // const { editObject } = params
 
 
     //Y State Variables For Transaction
@@ -66,7 +67,7 @@ export default function EditTransactionModal({ isVisible, onClose, editObject })
     const fetchCategories = async () => {
         try {
             const accountID = 'ced66b1b-be88-4163-8ba1-77207ec20ca9'
-            const response = await fetch(`${serverbase}/api/category/get_user_categories`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_ENV_SERVER_BASE}/api/category/get_user_categories`, {
                 method: "POST",
                 body: JSON.stringify({
                     accountID: accountID
@@ -95,11 +96,10 @@ export default function EditTransactionModal({ isVisible, onClose, editObject })
 
     const fetchSuppliers = async () => {
         try {
-            const accountID = 'ced66b1b-be88-4163-8ba1-77207ec20ca9'
-            const response = await fetch(`${serverbase}/api/supplier/get_user_suppliers`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_ENV_SERVER_BASE}/api/supplier/get_user_suppliers`, {
                 method: "POST",
                 body: JSON.stringify({
-                    accountID: accountID
+                    accountID: session.diamond.accountID
                 }),
                 headers: {
                     "Content-Type": "application/json"
@@ -123,10 +123,10 @@ export default function EditTransactionModal({ isVisible, onClose, editObject })
     //Y ----- Add Transaction  -----
     const postTransaction = async () => {
         try {
-            const response = await fetch(`${serverbase}/api/transaction`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_ENV_SERVER_BASE}/api/transaction`, {
                 method: "POST",
                 body: JSON.stringify({
-                    accountID: accountID,
+                    accountID: session.diamond.accountID,
                     amount: amount,
                     details: details,
                     date: postgresDate(date),
@@ -160,11 +160,11 @@ export default function EditTransactionModal({ isVisible, onClose, editObject })
             }
 
             try {
-                const response = await fetch(`${serverbase}/api/transaction/edit`, {
+                const response = await fetch(`${process.env.NEXT_PUBLIC_ENV_SERVER_BASE}/api/transaction/edit`, {
                     method: "PUT",
                     body: JSON.stringify({
                         transactionID: editObject.id,
-                        accountID: editObject.account_id, 
+                        accountID: session.diamond.accountID, 
                         amount: amount,
                         details: details,
                         date: postgresDate(date),
@@ -198,16 +198,13 @@ export default function EditTransactionModal({ isVisible, onClose, editObject })
 
     //Y --------------------- Delete Transaction ---------------------
     const deleteTransaction = async () => {
-        console.log({
-             transactionID: editObject.id,
-                    accountID: editObject.accountID
-        })
+
         try {
-            const response = await fetch(`${serverbase}/api/transaction/delete`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_ENV_SERVER_BASE}/api/transaction/delete`, {
                 method: "DELETE",
                 body: JSON.stringify({
                     transactionID: editObject.id,
-                    accountID: editObject.accountID
+                    accountID: session.diamond.accountID
                 }),
                 headers: {
                     "Content-Type": "application/json"
@@ -247,27 +244,15 @@ export default function EditTransactionModal({ isVisible, onClose, editObject })
     optionCategories.push(noneOption );
     optionSuppliers.push(noneOption)
 
-
-    const fetchServerBase = async () => {
-        const response = await fetch("/api/")
-        const data = await response.json()
-        console.log(data)
-        setServerBase(data.server)
-        
-    }
-
-    useEffect(() => {
-        fetchServerBase()
-    }, []) 
-
     useEffect(() => {
         fetchCategories()
         fetchSuppliers()
-
-    }, [serverbase])
+    }, [session])
 
     // Early return moved after hook calls
     if (!isVisible) return null
+
+    if (!session) return ""
 
     return (
         <main>
