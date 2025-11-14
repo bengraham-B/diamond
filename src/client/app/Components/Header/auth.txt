@@ -1,0 +1,1 @@
+the Header component will handle auth
