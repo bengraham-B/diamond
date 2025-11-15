@@ -81,7 +81,7 @@ export const options = {
                         method: "POST",
                         body: JSON.stringify({
                             email: credentials.email,
-                            passwordHash: credentials.password
+                            password: credentials.password
                             
                         }),
                         headers: {

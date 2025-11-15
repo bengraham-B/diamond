@@ -19,7 +19,6 @@ import EditTransactionModal from "./EditTransaction/EditTransactionModal";
 export default function page() {
     const { data: session } = useSession()
 
-    // console.log(session.diamond.accountID)
     const [transactions, setTransactions] = useState([]);
     
     //Y Modal
@@ -122,20 +121,10 @@ export default function page() {
 
     const fetchTransactions = async () => {
         try {
-
-            if(localStorage.getItem("accountID")){
-                notifySuccess("Got Account ID")
-            } else {
-                notifyError("Cannot Retrive Account ID")
-                //X Make a function to fetch Account ID's
-            }
-            
             try {
-                const accountID = 'ced66b1b-be88-4163-8ba1-77207ec20ca9'
                 const response = await fetch(`${process.env.NEXT_PUBLIC_ENV_SERVER_BASE}/api/transaction/get_transactions`, {
                     method: "POST",
                     body: JSON.stringify({
-                        // accountID: localStorage.getItem("accountID")
                         accountID: session.diamond.accountID
                     }),
                     headers: {
@@ -160,19 +149,14 @@ export default function page() {
             console.log("Could not fetch Records: " + error)
         }	
 	}
-
-	useEffect(() => {
-		fetchTransactions()
-	}, [session])
 	
     useEffect(() => {
 		fetchTransactions()
-	}, [isOpenTransactionModal, isOpenEditModal])
+	}, [isOpenTransactionModal, isOpenEditModal, session])
 
     if (!session) {
         return ""
     }
-
 
     return (
         <main className="space-y-6 py-4 px-8">
@@ -180,7 +164,10 @@ export default function page() {
                 <h1>Transactions</h1>
             </section>
 
-            {/* {session.diamond.accountID} */}
+            {session.diamond.accountID}
+            {session.diamond.email}
+
+
             <section id="Add-Transaction-Container" className="flex justify-end">
                 <div className="flex space-x-4">
                     <button onClick={showTransactionModal} className="add_transaction_button">

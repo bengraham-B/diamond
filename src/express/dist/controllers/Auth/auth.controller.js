@@ -23,22 +23,43 @@ const diamondUserAuth = (req, res) => __awaiter(void 0, void 0, void 0, function
         const values = [email];
         const query = yield postgres_1.default.query(SQL_VERIFY_DIAMOND_USER, values);
         console.log({ "Verify User 001": query.rows });
-        // Y This means that there is a user
+        // Y This means that the Diamond_User already Existed
         if (((_a = query.rowCount) !== null && _a !== void 0 ? _a : 0) > 0) {
             const SQL_GET_USER_ACCOUNT_ID = `SELECT * FROM account WHERE diamond_user_id=$1`;
             const values = [query.rows[0].id];
             console.log("----->", query.rows[0].id);
-            const founudUserQuery = yield postgres_1.default.query(SQL_GET_USER_ACCOUNT_ID, values);
-            console.log("Found User AccountID [account table] 002", founudUserQuery.rows);
-            console.log("002.1", founudUserQuery.rows[0]);
-            return res.status(200).json({
-                authenticatedDiamondUser: {
-                    accountID: founudUserQuery.rows[0].id,
-                    accountName: founudUserQuery.rows[0].name,
-                    diamondUserID: founudUserQuery.rows[0].diamond_user_id,
-                },
-                msg: `User Exists Already 003`
-            });
+            const founudDiamondUser = yield postgres_1.default.query(SQL_GET_USER_ACCOUNT_ID, values);
+            console.log("Found User AccountID [account table] 002", founudDiamondUser.rows);
+            console.log("002.1", founudDiamondUser.rows[0]);
+            if ((founudDiamondUser.rowCount || 0) > 0) {
+                const SQL_GET_EXISTING_DIAMOND_USER_AUTH_DETAILS = `
+                    SELECT
+                        account.id AS "account_id",
+                        account.name AS "account_name",
+                        diamond_user.email,
+                        diamond_user.id AS "diamond_user_id"
+                    FROM account
+
+                    INNER JOIN diamond_user ON account.diamond_user_id = diamond_user.id
+
+                    WHERE diamond_user_id=$1
+                `;
+                const values = [founudDiamondUser.rows[0].diamond_user_id];
+                const existingDiamondUser = yield postgres_1.default.query(SQL_GET_EXISTING_DIAMOND_USER_AUTH_DETAILS, values);
+                return res.status(201).json({
+                    authenticatedDiamondUser: {
+                        accountID: existingDiamondUser.rows[0].account_id,
+                        accountName: existingDiamondUser.rows[0].account_name,
+                        diamondUserID: existingDiamondUser.rows[0].diamond_user_id,
+                        diamondUserEmail: existingDiamondUser.rows[0].email
+                    },
+                    msg: `[Success]: Auth details of existing Diamond_User 003`
+                });
+            }
+            else {
+                console.log("Could not get User, once the account was created000 3.1");
+                return res.status(500).json({ error: "Could not get User, once the account was created000 3.2" });
+            }
         }
         // Y DIAMOND_USER does not exist so one will be created
         else {
@@ -53,13 +74,39 @@ const diamondUserAuth = (req, res) => __awaiter(void 0, void 0, void 0, function
                 console.log({ newDiamondUserCreatedID });
                 if ((diamondUserCreated.rowCount || 0) > 0) {
                     try {
+                        // Y This creates the Diamond Account
                         const SQL_CREATE_ACCOUNT = `INSERT INTO account (name, diamond_user_id) VALUES ($1, $2) RETURNING *`;
                         const values = ["main", newDiamondUserCreatedID];
                         const createdAddedUserMainAccount = yield postgres_1.default.query(SQL_CREATE_ACCOUNT, values);
-                        return res.status(201).json({
-                            authenticatedDiamondUser: createdAddedUserMainAccount,
-                            msg: `User is Exists Already 005`
-                        });
+                        if ((createdAddedUserMainAccount.rowCount || 0) > 0) {
+                            const SQL_GET_NEWLY_CREATED_AUTH_DETAILS = `
+                                SELECT
+                                    account.id AS "account_id",
+                                    account.name AS "account_name",
+                                    diamond_user.email,
+                                    diamond_user.id AS "diamond_user_id"
+                                FROM account
+
+                                INNER JOIN diamond_user ON account.diamond_user_id = diamond_user.id
+
+                                WHERE diamond_user_id=$1
+                            `;
+                            const values = [createdAddedUserMainAccount.rows[0].diamond_user_id];
+                            const receivedNewlyCreatedDiamondUser = yield postgres_1.default.query(SQL_GET_NEWLY_CREATED_AUTH_DETAILS, values);
+                            return res.status(201).json({
+                                authenticatedDiamondUser: {
+                                    accountID: receivedNewlyCreatedDiamondUser.rows[0].account_id,
+                                    accountName: receivedNewlyCreatedDiamondUser.rows[0].account_name,
+                                    diamondUserID: receivedNewlyCreatedDiamondUser.rows[0].diamond_user_id,
+                                    diamondUserEmail: receivedNewlyCreatedDiamondUser.rows[0].email
+                                },
+                                msg: `[Success]: Newly Created Diamond User Details 005`
+                            });
+                        }
+                        else {
+                            console.log("Could not get User, once the account was created000 5.1");
+                            return res.status(500).json({ error: "Could not get User, once the account was created000 5.1" });
+                        }
                     }
                     catch (error) {
                         console.log("diamondUser.controller 006", error);
