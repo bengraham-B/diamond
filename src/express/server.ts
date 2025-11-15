@@ -12,6 +12,7 @@ app.use(cors())
 // Importing Routes
 import transaction from "./Routes/transaction.route.js"
 import account from "./Routes/account.route.js"
+import authRoute from "./Routes/auth.route"
 import debtor from "./Routes/debtor.route.js"
 import debtorTransaction from "./Routes/debtorTransaction.route.js"
 import category from "./Routes/category.route.js"
@@ -19,14 +20,15 @@ import transactionAmount from "./Routes/TransactionAmount.route.js"
 import budget from "./Routes/budget.route.js"
 import supplier from "./Routes/supplierRoute.route.js"
 
-app.use('/api/transaction', transaction)
 app.use('/api/account', account)
+app.use('/api/auth', authRoute)
+app.use('/api/category', category)
+app.use('/api/budget', budget)
 app.use('/api/debtor', debtor)
 app.use('/api/debtorTransaction', debtorTransaction)
-app.use('/api/category', category)
-app.use('/api/transaction_amount', transactionAmount)
-app.use('/api/budget', budget)
 app.use('/api/supplier',supplier)
+app.use('/api/transaction', transaction)
+app.use('/api/transaction_amount', transactionAmount)
 
 app.get("/", (req: Request, res: Response) => {
     res.status(200).json({data:"TypeScript 23"})

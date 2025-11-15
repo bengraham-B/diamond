@@ -7,29 +7,17 @@ export default function Nav() {
 	return (
 		<main className={styles.nav}>
 
-			<span className={styles.route_btn}>
-				<Link href="/pages/dashboard">Dashboard</Link>
-			</span>
+			<Link href="/pages/dashboard" className={styles.route_btn}>Dashboard</Link>
 
-			<span className={styles.route_btn}>
-				<Link href="/pages/transaction">Transaction</Link>
-			</span>
+			<Link href="/pages/transaction" className={styles.route_btn}>Transaction</Link>
 
-			<span className={styles.route_btn}>
-				<Link href="/pages/debtor">Debtor</Link>
-			</span>
+			<Link href="/pages/debtor" className={styles.route_btn}>Debtor</Link>
 
-			<span className={styles.route_btn}>
-				<Link href="/pages/creditor">Creditor</Link>
-			</span>
-			
-			<span className={styles.route_btn}>
-				<Link href="/pages/category">Category</Link>
-			</span>
-			
-			<span className={styles.route_btn}>
-				<Link href="/pages/supplier">Suppliers</Link>
-			</span>
+			<Link href="/pages/creditor" className={styles.route_btn}>Creditor</Link>
+		
+			<Link href="/pages/category" className={styles.route_btn}>Category</Link>
+		
+			<Link href="/pages/supplier" className={styles.route_btn}>Suppliers</Link>
 
 		</main>
 	)

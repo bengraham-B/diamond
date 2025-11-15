@@ -4,5 +4,4 @@ CREATE TABLE IF NOT EXISTS supplier (
     name TEXT,
     details TEXT,
     time_stamp TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-
 );
