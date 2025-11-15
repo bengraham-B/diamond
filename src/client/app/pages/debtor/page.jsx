@@ -3,8 +3,28 @@ import React, { useEffect, useState } from 'react'
 import "./debtor.scss"
 import Link from 'next/link'
 
+import AddDebtorModal from './AddDebtorModal'
+import EditDebtorModal from './EditDebtorModal'
+
 export default function page() {
 	const [debtors, setDebtors] = useState()
+
+    //Y Modal
+    const [isOpenTransactionModal, setIsOpenTransactionModal] = useState(false)
+    const [isOpenEditModal, setIsOpenEditModal] = useState(false)
+    const [isOpenCategoryModal, setIsOpenCategoryModal] = useState(false)
+    const [objectState, setObjectState] = useState()
+
+        //? Modals
+    const showAddDebtorModal = (id) => {
+        setObjectState(id); // Extract and set the admin's ID
+        setIsOpenTransactionModal(true);
+    };
+   
+    const showEditDebtorModal = (id) => {
+        setObjectState(id); // Extract and set the admin's ID
+        setIsOpenEditModal(true);
+    };
 
 
     const fetchDebtors = async () => {
@@ -37,6 +57,18 @@ export default function page() {
 
 	return (
 		<main className='debtor'>
+            <section id="Title-Container" className="flex justify-center text-4xl">
+                <h1>Debtor</h1>
+            </section>
+
+            <section id="Add-Transaction-Container" className="flex justify-end">
+                <div className="flex space-x-4">
+                    <button onClick={showAddDebtorModal} className="add_transaction_button">
+                        Add Debtor
+                    </button>
+                </div>
+            </section>
+
 			<section id="Table-Container" className="mt-6">
                 <table className="w-full border border-gray-300 rounded-md border-collapse ">
                     <thead className="bg-gray-50 border-b-2 border-gray-200">
@@ -85,9 +117,6 @@ export default function page() {
 							    <td className="p-3 text-md text-gray-700">
                                     <button className='edit-debtor-btn action-btn'>Edit Debtor</button>
                                 </td>
-                               
-                   
-
                             </tr>
                         ))}
                     </tbody>
