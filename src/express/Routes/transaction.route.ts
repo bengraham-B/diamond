@@ -2,8 +2,8 @@ import express from "express"
 const router = express.Router()
 
 // Importing Controllers
-import { createTransaction, deleteTransaction, editTransaction, expenseChart } from "../Controllers/Transaction/transactionControllers"
-import { getTransactions } from "../Controllers/Transaction/transactionControllers"
+import { createTransaction, deleteTransaction, editTransaction, expenseChart } from "../Controllers/Transaction/transaction.controller"
+import { getTransactions } from "../Controllers/Transaction/transaction.controller"
 
 router.post("/", createTransaction)
 

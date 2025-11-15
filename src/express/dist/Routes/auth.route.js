@@ -7,4 +7,5 @@ const express_1 = __importDefault(require("express"));
 const auth_controller_1 = require("../Controllers/Auth/auth.controller");
 const router = express_1.default.Router();
 router.post("/", auth_controller_1.diamondUserAuth);
+router.post("/provider", auth_controller_1.diamondUserAuthProvider);
 exports.default = router;

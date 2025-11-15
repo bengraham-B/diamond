@@ -12,7 +12,6 @@ export default function EditTransactionModal({ isVisible, onClose, editObject })
 
 
     //Y State Variables For Transaction
-    const [accountID, setAccountID] = useState()
     const [details, setDetails] = useState()
     const [amount, setAmount] = useState()
     const [type, setType] = useState()
@@ -23,7 +22,6 @@ export default function EditTransactionModal({ isVisible, onClose, editObject })
 
     useEffect(() => {
         if (editObject) {
-            setAccountID(editObject.accountID)
             setDetails(editObject.details || "");
             setAmount(editObject.amount || "");
             setType(editObject.type || "");
@@ -32,10 +30,6 @@ export default function EditTransactionModal({ isVisible, onClose, editObject })
             setCategoryID(editObject.categoryID || "");
         }
     }, [editObject]);
-
-    //Y Server Base
-    const [serverbase, setServerBase] = useState("")
-
 
     function postgresDate(date){
 		if (!date) return ''; // Return an empty string if date is null or undefined
@@ -66,11 +60,11 @@ export default function EditTransactionModal({ isVisible, onClose, editObject })
 
     const fetchCategories = async () => {
         try {
-            const accountID = 'ced66b1b-be88-4163-8ba1-77207ec20ca9'
+
             const response = await fetch(`${process.env.NEXT_PUBLIC_ENV_SERVER_BASE}/api/category/get_user_categories`, {
                 method: "POST",
                 body: JSON.stringify({
-                    accountID: accountID
+                    accountID: session.diamond.accountID
                 }),
                 headers: {
                     "Content-Type": "application/json"
@@ -120,45 +114,9 @@ export default function EditTransactionModal({ isVisible, onClose, editObject })
         }
     }
 
-    //Y ----- Add Transaction  -----
-    const postTransaction = async () => {
-        try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_ENV_SERVER_BASE}/api/transaction`, {
-                method: "POST",
-                body: JSON.stringify({
-                    accountID: session.diamond.accountID,
-                    amount: amount,
-                    details: details,
-                    date: postgresDate(date),
-                    type: transactionType,
-                    categoryID: categoryID,
-                    supplierID: supplierID
-                }),
-                headers: {
-                    "content-Type": "application/json"
-                }
-            })
-
-            if (response.ok) {
-                notifySuccess("Successfully Added Transaction")
-                const data = await response.json()
-
-            } else {
-                notifyError("Could not Add Transaction")
-            }
-
-        } catch (error) {
-            notifyError("Could not Add Transaction", error)
-        }
-    }
     //Y --------------------- Update Transaction ---------------------
     const updateTransaction = async () => {
         try {
-            // Gets the User's Account ID from Local storage
-		    if(!localStorage.getItem("accountID")){
-                notifyError("Could not get Account ID")
-            }
-
             try {
                 const response = await fetch(`${process.env.NEXT_PUBLIC_ENV_SERVER_BASE}/api/transaction/edit`, {
                     method: "PUT",
@@ -169,8 +127,8 @@ export default function EditTransactionModal({ isVisible, onClose, editObject })
                         details: details,
                         date: postgresDate(date),
                         type: type,
-                        categoryID: categoryID,
-                        supplierID: supplierID,
+                        categoryID: categoryID || null,
+                        supplierID: supplierID || null,
                     }),
                     headers: {
                         "content-Type": "application/json"
@@ -304,12 +262,6 @@ export default function EditTransactionModal({ isVisible, onClose, editObject })
 
                        
                     </div>
-
-                    {/* Action Buttons
-                    <div className="flex justify-between mt-6">
-                        <button onClick={onClose} className="bg-red-600 hover:bg-red-700 text-white rounded text-lg px-6 py-2 w-48">Close</button>
-                        <button onClick={postTransaction} className="bg-green-600 hover:bg-green-700 text-white rounded text-lg px-6 py-2 w-48">Add Transaction</button>
-                    </div> */}
 
                      {/* Action Buttons */}
                     <div className='flex flex-col space-y-8'>

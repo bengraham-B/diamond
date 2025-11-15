@@ -3,8 +3,8 @@ import pool from "../../Database/postgres"
 import { Response, Request } from "express";
 
 export const diamondUserAuth = async (req: Request, res: Response) => {
-    const {firstName, lastName, email, password} = req.body
-    console.log({firstName, lastName, email, password})
+    const {name, email, password} = req.body
+    console.log({name, email, password})
 
     try {
         const SQL_VERIFY_DIAMOND_USER: string = `SELECT * FROM diamond_user WHERE email=$1`
@@ -28,7 +28,8 @@ export const diamondUserAuth = async (req: Request, res: Response) => {
                         account.id AS "account_id",
                         account.name AS "account_name",
                         diamond_user.email,
-                        diamond_user.id AS "diamond_user_id"
+                        diamond_user.id AS "diamond_user_id",
+                        diamond_user.role
                     FROM account
 
                     INNER JOIN diamond_user ON account.diamond_user_id = diamond_user.id
@@ -44,7 +45,8 @@ export const diamondUserAuth = async (req: Request, res: Response) => {
                         accountID: existingDiamondUser.rows[0].account_id,
                         accountName: existingDiamondUser.rows[0].account_name,
                         diamondUserID: existingDiamondUser.rows[0].diamond_user_id,
-                        diamondUserEmail: existingDiamondUser.rows[0].email
+                        diamondUserEmail: existingDiamondUser.rows[0].email,
+                        diamondUserRole: existingDiamondUser.rows[0].role,
                     }, 
                     msg: `[Success]: Auth details of existing Diamond_User 003`
                 })
@@ -62,8 +64,8 @@ export const diamondUserAuth = async (req: Request, res: Response) => {
 
             //Y Add Diamond_User to DB (DIMAOND_USER table) 
             try {
-                const SQL_ADD_DIAMOND_USER_TO_DB: string = `INSERT INTO diamond_user (first_name, last_name, email, password_hash) VALUES ($1, $2, $3, $4) RETURNING id`
-                const values = [firstName, lastName, email, password]
+                const SQL_ADD_DIAMOND_USER_TO_DB: string = `INSERT INTO diamond_user (name, email, password_hash) VALUES ($1, $2, $3) RETURNING id`
+                const values = [name, email, password]
                 const diamondUserCreated = await pool.query(SQL_ADD_DIAMOND_USER_TO_DB, values)
 
                 const newDiamondUserCreatedID = diamondUserCreated.rows[0].id
@@ -83,7 +85,8 @@ export const diamondUserAuth = async (req: Request, res: Response) => {
                                     account.id AS "account_id",
                                     account.name AS "account_name",
                                     diamond_user.email,
-                                    diamond_user.id AS "diamond_user_id"
+                                    diamond_user.id AS "diamond_user_id",
+                                    diamond_user.role
                                 FROM account
 
                                 INNER JOIN diamond_user ON account.diamond_user_id = diamond_user.id
@@ -99,7 +102,9 @@ export const diamondUserAuth = async (req: Request, res: Response) => {
                                     accountID: receivedNewlyCreatedDiamondUser.rows[0].account_id,
                                     accountName: receivedNewlyCreatedDiamondUser.rows[0].account_name,
                                     diamondUserID: receivedNewlyCreatedDiamondUser.rows[0].diamond_user_id,
-                                    diamondUserEmail: receivedNewlyCreatedDiamondUser.rows[0].email
+                                    diamondUserEmail: receivedNewlyCreatedDiamondUser.rows[0].email,
+                                    diamondUserRole: receivedNewlyCreatedDiamondUser.rows[0].role,
+
                                 }, 
                                 msg: `[Success]: Newly Created Diamond User Details 005`
                             })
@@ -131,5 +136,16 @@ export const diamondUserAuth = async (req: Request, res: Response) => {
     } catch (error) {
         console.log("diamondUser.controller", error)
         return res.status(500).json({error: error, msg: `Cannot Verify diamond_user in DB 010`})
+    }
+}
+
+export const diamondUserAuthProvider = async (req: Request, res: Response) => {
+    try {
+        const {email, name} = req.body
+        console.log({email, name}, "0011")
+        return res.status(200).json({msg: `[Success] 0011`})
+
+    } catch (error) {
+        return res.status(500).json({error: `Could not get User, once the account was created 0013: ${error}`})
     }
 }

@@ -153,6 +153,7 @@ export default function page() {
     useEffect(() => {
 		fetchTransactions()
 	}, [isOpenTransactionModal, isOpenEditModal, session])
+    console.log("ppppp", {session})
 
     if (!session) {
         return ""
@@ -163,10 +164,6 @@ export default function page() {
             <section id="Title-Container" className="flex justify-center text-4xl">
                 <h1>Transactions</h1>
             </section>
-
-            {session.diamond.accountID}
-            {session.diamond.email}
-
 
             <section id="Add-Transaction-Container" className="flex justify-end">
                 <div className="flex space-x-4">

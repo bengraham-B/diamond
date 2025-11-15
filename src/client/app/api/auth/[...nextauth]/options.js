@@ -2,7 +2,34 @@ import GithubProvider from "next-auth/providers/github"
 import GoogleProvider from "next-auth/providers/google"
 import CredentialsProvider from "next-auth/providers/credentials"
 
+const fetchProviderUserDetails = async (emailFromProvider, nameFromProvider, provider) => {
+    if(!emailFromProvider) throw new Error("Could not get Email 0001")
+     //Y API call to get all User Info
+    try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_ENV_SERVER_BASE}/api/auth`, {
+            method: "POST",
+            body: JSON.stringify({
+                email: emailFromProvider,
+                name: nameFromProvider
+            }),
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+        const data = await response.json()
+        if(response.ok){
+            console.log({data}, "00001")
+        }else {
+            throw new Error(error, "00001")
+        }
+        return data
+    } catch (error) {
+        throw new Error(`Could not make API call to get Diamond User's details from Server using Provider:[${provider}] 0001.1`, error)
+    }
+}
+
 export const options = {
+    
     providers: [
         GithubProvider({
             profile(profile){
@@ -55,66 +82,66 @@ export const options = {
 
         }),
 
-        CredentialsProvider({
-            name:"Credentials",
-            credentials: {
+        // CredentialsProvider({
+        //     name:"Credentials",
+        //     credentials: {
 
-                email: {
-                    label:"Email",
-                    type: "text",
-                    placeholder: "Email"
-                },
+        //         email: {
+        //             label:"Email",
+        //             type: "text",
+        //             placeholder: "Email"
+        //         },
                 
-                password: {
-                    label: "Password",
-                    type: "password",
-                    placeholder: "Password"
-                },
+        //         password: {
+        //             label: "Password",
+        //             type: "password",
+        //             placeholder: "Password"
+        //         },
                 
-            },
+        //     },
 
-            async authorize(credentials){
-                // console.log("Credentials Provider 003", credentials)
-                try {
-                    //Y API call to express Server to verify if the user exists
-                    const response = await fetch(`${process.env.NEXT_PUBLIC_ENV_SERVER_BASE}/api/auth`, {
-                        method: "POST",
-                        body: JSON.stringify({
-                            email: credentials.email,
-                            password: credentials.password
+        //     async authorize(credentials){
+        //         // console.log("Credentials Provider 003", credentials)
+        //         try {
+        //             //Y API call to express Server to verify if the user exists
+        //             const response = await fetch(`${process.env.NEXT_PUBLIC_ENV_SERVER_BASE}/api/auth`, {
+        //                 method: "POST",
+        //                 body: JSON.stringify({
+        //                     email: credentials.email,
+        //                     password: credentials.password
                             
-                        }),
-                        headers: {
-                            "Content-Type": "application/json"
-                        }
-                    })
+        //                 }),
+        //                 headers: {
+        //                     "Content-Type": "application/json"
+        //                 }
+        //             })
                     
-                    //! Error in the API call
-                    if(!response.ok){
-                        const data = response.json()
-                        console.log("Error Credientials provider [API call to DIAMOND_USER_AUTH] 004", data)
-                        return null
-                    }
+        //             //! Error in the API call
+        //             if(!response.ok){
+        //                 const data = response.json()
+        //                 console.log("Error Credientials provider [API call to DIAMOND_USER_AUTH] 004", data)
+        //                 return null
+        //             }
                     
-                    else {
-                        console.log("Credentials Provider: User exists 005")
-                        console.log({credentials}, "006")
-                        const data = await response.json()
-                        console.log("Authenticated User 007", {data})
+        //             else {
+        //                 console.log("Credentials Provider: User exists 005")
+        //                 console.log({credentials}, "006")
+        //                 const data = await response.json()
+        //                 console.log("Authenticated User 007", {data})
 
-                        //Y If the user is found 1:23:08 & Return User
-                        console.log(data.authenticatedDiamondUser, "008")
-                        return data.authenticatedDiamondUser
-                    }
+        //                 //Y If the user is found 1:23:08 & Return User
+        //                 console.log(data.authenticatedDiamondUser, "008")
+        //                 return data.authenticatedDiamondUser
+        //             }
 
                     
-                } catch (error) {
-                    console.log("Credentials Provider Error 009", error)
-                    return null; //Y This means that. the credentials where incorrect so will not return a user
-                }
-                return null //Y This means we do not return a user, so authentication failed
-            }
-        }),
+        //         } catch (error) {
+        //             console.log("Credentials Provider Error 009", error)
+        //             return null; //Y This means that. the credentials where incorrect so will not return a user
+        //         }
+        //         return null //Y This means we do not return a user, so authentication failed
+        //     }
+        // }),
 
         // GoogleProvider({})
     ],
@@ -124,8 +151,11 @@ export const options = {
         // X Server Side
         async jwt({token, user}){
             if (user) {
+                const diamondUser = await fetchProviderUserDetails(user.email, user.name, "Github") 
+                console.log({diamondUser}, "0010")
                 token.role = user.role;          // you already have this
-                token.diamond = user;            // store ENTIRE authenticatedDiamondUser object
+                token.user = user;            // store ENTIRE authenticatedDiamondUser object
+                token.diamond = diamondUser //Y This is the Auth Object for DIAMOND_AUTH
             }
             return token;
         }, 
@@ -134,7 +164,7 @@ export const options = {
         async session({session, token}){
             if (session.user) {
                 session.user.role = token.role;  // your existing code
-                session.diamond = token.diamond; // expose diamond user data to client 
+                session.diamond = token.diamond.authenticatedDiamondUser; // expose diamond user data to client 
             }
             return session;
         }

@@ -12,12 +12,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.diamondUserAuth = void 0;
+exports.diamondUserAuthProvider = exports.diamondUserAuth = void 0;
 const postgres_1 = __importDefault(require("../../Database/postgres"));
 const diamondUserAuth = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
-    const { firstName, lastName, email, password } = req.body;
-    console.log({ firstName, lastName, email, password });
+    const { name, email, password } = req.body;
+    console.log({ name, email, password });
     try {
         const SQL_VERIFY_DIAMOND_USER = `SELECT * FROM diamond_user WHERE email=$1`;
         const values = [email];
@@ -37,7 +37,8 @@ const diamondUserAuth = (req, res) => __awaiter(void 0, void 0, void 0, function
                         account.id AS "account_id",
                         account.name AS "account_name",
                         diamond_user.email,
-                        diamond_user.id AS "diamond_user_id"
+                        diamond_user.id AS "diamond_user_id",
+                        diamond_user.role
                     FROM account
 
                     INNER JOIN diamond_user ON account.diamond_user_id = diamond_user.id
@@ -51,7 +52,8 @@ const diamondUserAuth = (req, res) => __awaiter(void 0, void 0, void 0, function
                         accountID: existingDiamondUser.rows[0].account_id,
                         accountName: existingDiamondUser.rows[0].account_name,
                         diamondUserID: existingDiamondUser.rows[0].diamond_user_id,
-                        diamondUserEmail: existingDiamondUser.rows[0].email
+                        diamondUserEmail: existingDiamondUser.rows[0].email,
+                        diamondUserRole: existingDiamondUser.rows[0].role,
                     },
                     msg: `[Success]: Auth details of existing Diamond_User 003`
                 });
@@ -66,8 +68,8 @@ const diamondUserAuth = (req, res) => __awaiter(void 0, void 0, void 0, function
             console.log({ f: "USER DOES NOT EXIST 004" });
             //Y Add Diamond_User to DB (DIMAOND_USER table) 
             try {
-                const SQL_ADD_DIAMOND_USER_TO_DB = `INSERT INTO diamond_user (first_name, last_name, email, password_hash) VALUES ($1, $2, $3, $4) RETURNING id`;
-                const values = [firstName, lastName, email, password];
+                const SQL_ADD_DIAMOND_USER_TO_DB = `INSERT INTO diamond_user (name, email, password_hash) VALUES ($1, $2, $3) RETURNING id`;
+                const values = [name, email, password];
                 const diamondUserCreated = yield postgres_1.default.query(SQL_ADD_DIAMOND_USER_TO_DB, values);
                 const newDiamondUserCreatedID = diamondUserCreated.rows[0].id;
                 console.log("---------");
@@ -84,7 +86,8 @@ const diamondUserAuth = (req, res) => __awaiter(void 0, void 0, void 0, function
                                     account.id AS "account_id",
                                     account.name AS "account_name",
                                     diamond_user.email,
-                                    diamond_user.id AS "diamond_user_id"
+                                    diamond_user.id AS "diamond_user_id",
+                                    diamond_user.role
                                 FROM account
 
                                 INNER JOIN diamond_user ON account.diamond_user_id = diamond_user.id
@@ -98,7 +101,8 @@ const diamondUserAuth = (req, res) => __awaiter(void 0, void 0, void 0, function
                                     accountID: receivedNewlyCreatedDiamondUser.rows[0].account_id,
                                     accountName: receivedNewlyCreatedDiamondUser.rows[0].account_name,
                                     diamondUserID: receivedNewlyCreatedDiamondUser.rows[0].diamond_user_id,
-                                    diamondUserEmail: receivedNewlyCreatedDiamondUser.rows[0].email
+                                    diamondUserEmail: receivedNewlyCreatedDiamondUser.rows[0].email,
+                                    diamondUserRole: receivedNewlyCreatedDiamondUser.rows[0].role,
                                 },
                                 msg: `[Success]: Newly Created Diamond User Details 005`
                             });
@@ -130,3 +134,14 @@ const diamondUserAuth = (req, res) => __awaiter(void 0, void 0, void 0, function
     }
 });
 exports.diamondUserAuth = diamondUserAuth;
+const diamondUserAuthProvider = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { email, name } = req.body;
+        console.log({ email, name }, "0011");
+        return res.status(200).json({ msg: `[Success] 0011` });
+    }
+    catch (error) {
+        return res.status(500).json({ error: `Could not get User, once the account was created 0013: ${error}` });
+    }
+});
+exports.diamondUserAuthProvider = diamondUserAuthProvider;

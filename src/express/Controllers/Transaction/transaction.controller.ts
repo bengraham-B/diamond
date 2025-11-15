@@ -92,6 +92,7 @@ export const deleteTransaction = async (req:Request, res: Response) => {
     console.log("DELETE TXN")
     try {
         const {accountID, transactionID} = req.body
+        console.log({accountID, transactionID})
         const SQL: string = `DELETE FROM transaction WHERE account_id=$1 AND id=$2`
         const values = [accountID, transactionID]
         await pool.query(SQL, values)
@@ -105,7 +106,9 @@ export const deleteTransaction = async (req:Request, res: Response) => {
 
 export const editTransaction = async (req:Request, res: Response) => {
     try {
-        const {acountID, transactionID, supplierID, categoryID, details, amount, type, date } = req.body
+        const { accountID, transactionID, supplierID, categoryID, details, amount, type, date } = req.body
+        console.log({accountID, transactionID})
+
         const func = new Functions()
         const {day, week, month, monthName, year} = func.breakDownDate(date)
         const SQL: string = `UPDATE transaction SET supplier_id=$1, category_id=$2, details=$3, amount=$4, type=$5, date=$6, day=$7, week=$8, month=$9, month_name=$10, year=$11 WHERE id=$12`
