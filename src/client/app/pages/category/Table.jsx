@@ -43,19 +43,23 @@ try {
     if (!session) return
 
     return (
-        <main>
+        <main className='category-table-main'>
             <table>
-                <thead>
+                <thead cellSpacing="0">
                     <tr>
                         <th>Nr</th>
                         <th>name</th>
                         <th>Details</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
                     {categories && categories.map((C, i) => (
                         <tr key={C.id}>
                             <td>{i+1}</td>
+                            <td>{C.name}</td>
+                            <td>{C.details}</td>
+                            <td><button>Edit</button></td>
                         </tr>
                     ))}
                 </tbody>
