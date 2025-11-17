@@ -9,5 +9,8 @@ const router = express_1.default.Router();
 const debtor_controller_js_1 = require("../Controllers/Debtors/Debtor/debtor.controller.js");
 router.post("/", debtor_controller_js_1.createDebtor);
 router.post("/get_balance_per_outstanding_debtor", debtor_controller_js_1.getOutstandingBalancePerDebtor);
-router.post("/get_debtor_details", debtor_controller_js_1.getDebtorDetails);
+router.post("/get_debtors", debtor_controller_js_1.getDebtors);
+// router.post("/get_debtor_details", getDebtorDetails)
+router.put("/", debtor_controller_js_1.updateDebtor);
+router.delete("/", debtor_controller_js_1.deleteDebtor);
 exports.default = router;

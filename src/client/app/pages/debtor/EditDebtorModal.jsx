@@ -1,41 +1,24 @@
 "use client"
-import React, { useState, useEffect, use } from 'react'
+import React, { useState, useEffect } from 'react'
 import { ToastContainer, toast } from 'react-toastify';
 import { useSession } from "next-auth/react";
 import 'react-toastify/dist/ReactToastify.css';
-
-import Select from 'react-select' //? https://react-select.com/home#welcome
 
 export default function EditDebtorModal({ isVisible, onClose, editObject }) {
     const { data: session } = useSession()
 
 
-
-    //Y State Variables For Transaction
+    //Y State Variables For Debtor
+    const [name, setName] = useState()
     const [details, setDetails] = useState()
-    const [amount, setAmount] = useState()
-    const [type, setType] = useState()
-    const [date, setDate] = useState(new Date())
-    const [categoryID, setCategoryID] = useState()
-    const [supplierID, setSupplierID] = useState()
-
 
     useEffect(() => {
-        if (editObject) {
-            setDetails(editObject.details || "");
-            setAmount(editObject.amount || "");
-            setType(editObject.type || "");
-            setDate(editObject.date || "");
-            setSupplierID(editObject.supplierID || "");
-            setCategoryID(editObject.categoryID || "");
-        }
-    }, [editObject]);
+        if(!editObject) return
 
-    function postgresDate(date){
-		if (!date) return ''; // Return an empty string if date is null or undefined
-		const timestamp = date;
-		return timestamp.split('T')[0];
-	}
+        setName(editObject.debtorName)
+        setDetails(editObject.debtorDetails || "");
+
+    }, [editObject]);
 
     //Y React Toast functions
     const notifySuccess = (msg) => {
@@ -55,113 +38,46 @@ export default function EditDebtorModal({ isVisible, onClose, editObject }) {
         if (e.target.id === "wrapper") onClose()
     }
 
-    //X Fetch the Categories
-    const [categories, setCategories] = useState([])
-
-    const fetchCategories = async () => {
-        try {
-
-            const response = await fetch(`${process.env.NEXT_PUBLIC_ENV_SERVER_BASE}/api/category/get_user_categories`, {
-                method: "POST",
-                body: JSON.stringify({
-                    accountID: session.diamond.accountID
-                }),
-                headers: {
-                    "Content-Type": "application/json"
-                }
-            })
-            
-            if(response.ok){
-                const data = await response.json()
-                setCategories(data.categories)
-                console.log(data.categories)
-
-            } else {
-                notifyError("Could not Fetch Categories")
-            }
-
-        } catch (error) {
-            notifyError("Could not Fetch Categories", error)
-        }
-    }
-   
-    //X Fetch Suppliers
-    const [suppliers, setSuppliers] = useState([])
-
-    const fetchSuppliers = async () => {
-        try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_ENV_SERVER_BASE}/api/supplier/get_user_suppliers`, {
-                method: "POST",
-                body: JSON.stringify({
-                    accountID: session.diamond.accountID
-                }),
-                headers: {
-                    "Content-Type": "application/json"
-                }
-            })
-            
-            if(response.ok){
-                const data = await response.json()
-                setSuppliers(data.suppliers)
-                console.log(data.suppliers)
-
-            } else {
-                notifyError("Could not Fetch Suppliers")
-            }
-
-        } catch (error) {
-            notifyError("Could not Fetch Suppliers", error)
-        }
-    }
 
     //Y --------------------- Update Transaction ---------------------
-    const updateTransaction = async () => {
+    const updateDebtor = async () => {
+
         try {
-            try {
-                const response = await fetch(`${process.env.NEXT_PUBLIC_ENV_SERVER_BASE}/api/transaction/edit`, {
-                    method: "PUT",
-                    body: JSON.stringify({
-                        transactionID: editObject.id,
-                        accountID: session.diamond.accountID, 
-                        amount: amount,
-                        details: details,
-                        date: postgresDate(date),
-                        type: type,
-                        categoryID: categoryID || null,
-                        supplierID: supplierID || null,
-                    }),
-                    headers: {
-                        "content-Type": "application/json"
-                    }
-                })
-    
-                if (response.ok) {
-                    notifySuccess("Successfully Update Transaction")
-                    const data = await response.json()
-                    console.log(data.flight)
-    
-                } else {
-                    notifyError("Could not Update Transaction")
+            const response = await fetch(`${process.env.NEXT_PUBLIC_ENV_SERVER_BASE}/api/debtor/`, {
+                method: "PUT",
+                body: JSON.stringify({
+                    debtorID: editObject.debtorID,
+                    accountID: session.diamond.accountID,
+                    name: name,
+                    details: details
+                }),
+                headers: {
+                    "content-Type": "application/json"
                 }
-    
-            } catch (error) {
-                notifyError("Could not Update Transaction", error)
-                console.log(error)
+            })
+
+            if (response.ok) {
+                notifySuccess("Successfully Update Debtor")
+                const data = await response.json()
+
+            } else {
+                notifyError("Could not Update Debtor")
+                throw new Error("Could not Update Debtor")
             }
+
         } catch (error) {
-            notifyError("Could Get Account ID ", error)
-        }
-       
+            notifyError("Could not Update Debtor", error)
+            console.error(error)
+        }   
     }
 
     //Y --------------------- Delete Transaction ---------------------
-    const deleteTransaction = async () => {
-
+    const deleteDebtor = async () => {
         try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_ENV_SERVER_BASE}/api/transaction/delete`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_ENV_SERVER_BASE}/api/debtor/`, {
                 method: "DELETE",
                 body: JSON.stringify({
-                    transactionID: editObject.id,
+                    debtorID: editObject.debtorID,
                     accountID: session.diamond.accountID
                 }),
                 headers: {
@@ -170,42 +86,16 @@ export default function EditDebtorModal({ isVisible, onClose, editObject }) {
             })
             const data = await response.json()
             if (response.ok){
-                notifySuccess("Successfully Deleted Transaction")
+                notifySuccess("Successfully Deleted Debtor")
                 
             } else {
-                notifyError("Could not Delete Transaction")
-                console.log(data.error)
+                notifyError("Could not Delete Debtor")
+                console.error(data.error)
             }
         } catch (error) {
-            notifyError("Could not Delete Transaction: " + error)
+            notifyError("Could not Delete Debtor: " + error)
         }
     }
-
-    // ----- React Select -----
-    const optionTransactionType = [
-        { value: 'debit', label: 'debit' },
-        { value: 'credit', label: 'credit' },
-    ]
-
-    const optionCategories = (categories || []).map((C) => ({
-        value: C.id,
-        label: C.name,
-    }));
-    
-    const optionSuppliers = (suppliers || []).map((S) => ({
-        value: S.id,
-        label: S.name,
-    }));
-    
-    // Ensure "None" is at the end
-    const noneOption = { value: "", label: "None" }; // Use an empty string for compatibility
-    optionCategories.push(noneOption );
-    optionSuppliers.push(noneOption)
-
-    useEffect(() => {
-        fetchCategories()
-        fetchSuppliers()
-    }, [session])
 
     // Early return moved after hook calls
     if (!isVisible) return null
@@ -219,48 +109,22 @@ export default function EditDebtorModal({ isVisible, onClose, editObject }) {
                     
                     {/* Modal Header */}
                     <div className="flex justify-center items-center mb-6">
-                        <h1 className="text-3xl text-blue-600">Edit Transaction</h1>
+                        <h1 className="text-3xl text-blue-600">Edit Debtor</h1>
                     </div>
 
 
                     <div className='space-y-4'>
-                        {/* Details */}
+                        {/* Debtor Name */}
                         <div className="w-full flex flex-col">
-                            <label htmlFor="pilot" className="text-xl">Details</label>
+                            <label htmlFor="pilot" className="text-xl">Debtor Name</label>
+                            <input name="colors"  className='pl-1 p-1 rounded border border-gray-400' value={name ? name: ""} onChange={(e) => setName(e.target.value)} />
+                        </div>
+                        
+                        {/* Debtor Details */}
+                        <div className="w-full flex flex-col">
+                            <label htmlFor="pilot" className="text-xl">Debtor Details</label>
                             <input name="colors"  className='pl-1 p-1 rounded border border-gray-400' value={details ? details: ""} onChange={(e) => setDetails(e.target.value)} />
                         </div>
-                        
-                        {/* Amount */}
-                        <div className="w-full flex flex-col">
-                            <label htmlFor="pilot" className="text-xl">Amount</label>
-                            <input name="colors" type="number" className={`pl-1 p-1 rounded border border-gray-400 `} value={amount ? amount: ""} onChange={(e) => setAmount(e.target.value)} />
-                        </div>
-                        
-                         {/* Category */}
-                         <div className="w-full">
-                            <label htmlFor="pilot" className="text-xl">Category</label>
-                            <Select name="colors" options={optionCategories} className="basic-multi-select" classNamePrefix="select" value={optionCategories.find((CAT) => CAT.value === categoryID)} onChange={(selectedOption) => setCategoryID(selectedOption.value)} />
-                        </div>
-                        
-                         {/* Supplier */}
-                         <div className="w-full">
-                            <label htmlFor="pilot" className="text-xl">Supplier</label>
-                            <Select name="colors" options={optionSuppliers} className="basic-multi-select" classNamePrefix="select" value={optionSuppliers.find((SUP) => SUP.value === supplierID)} onChange={(selectedOption) => setSupplierID(selectedOption.value)} />
-                        </div>
-
-                        {/* Transaction Type */}
-                        <div className="w-full">
-                            <label htmlFor="pilot" className="text-xl">Transaction Type</label>
-                            <Select name="colors" options={optionTransactionType} className="basic-multi-select" classNamePrefix="select" value={optionTransactionType.find((option) => option.value === type)} onChange={(selectedOption) => setType(selectedOption.value)} />
-                        </div>
-
-                         {/* Date */}
-                         <div className="w-full flex flex-col">
-                            <label htmlFor="pilot" className="text-xl">Date</label>
-                            <input name="colors" type="date" className='pl-1 p-1 rounded border border-gray-400' value={date ? date: ""} onChange={(e) => setDate(e.target.value)} />
-                        </div>
-
-                       
                     </div>
 
                      {/* Action Buttons */}
@@ -268,11 +132,11 @@ export default function EditDebtorModal({ isVisible, onClose, editObject }) {
 
                         <div className="flex justify-between mt-6">
                             <button onClick={onClose} className=" bg-orange-600 hover:bg-orange-700 text-white rounded text-lg px-6 w-44 py-2">Close</button>
-                            <button onClick={updateTransaction} className="bg-blue-600 hover:bg-blue-700 text-white rounded text-lg px-6  w-44 py-2">Update</button>
+                            <button onClick={updateDebtor} className="bg-blue-600 hover:bg-blue-700 text-white rounded text-lg px-6  w-44 py-2">Update</button>
                         </div>
 
                         <div className='flex justify-center'>
-                            <button onClick={deleteTransaction} className="w-full bg-red-600 hover:bg-red-700 text-white rounded text-lg px-6 py-2">Delete</button>
+                            <button onClick={deleteDebtor} className="w-full bg-red-600 hover:bg-red-700 text-white rounded text-lg px-6 py-2">Delete</button>
                         </div>
                     </div>
 

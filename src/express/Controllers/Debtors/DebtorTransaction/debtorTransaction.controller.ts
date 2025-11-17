@@ -21,6 +21,7 @@ export const createDebtorTransaction = async (req: Request, res: Response) => {
 export const getDebtorTransaction = async (req: Request, res: Response) => {
     try {
         const {accountID, debtorID} = req.body
+        if(!accountID || !debtorID) throw new Error("No AccountID or DebtorID")
         const SQL:string = `
         SELECT
             debtor_transaction.account_id,
@@ -42,8 +43,8 @@ export const getDebtorTransaction = async (req: Request, res: Response) => {
             debtor_transaction
 
 
-        INNER JOIN supplier on debtor_transaction.supplier_id = supplier.id
-        INNER JOIN category on debtor_transaction.category_id = category.id
+        LEFT JOIN supplier on debtor_transaction.supplier_id = supplier.id
+        LEFT JOIN category on debtor_transaction.category_id = category.id
 
         WHERE
         debtor_transaction.account_id =$1 AND
@@ -58,6 +59,8 @@ export const getDebtorTransaction = async (req: Request, res: Response) => {
  
         return res.status(200).json({
             msg: 'Retrived Transaction by month Successfully',
+            debtorID: debtorID,
+            accountID: accountID,
             debtorTransactions:  query.rows
         })
         

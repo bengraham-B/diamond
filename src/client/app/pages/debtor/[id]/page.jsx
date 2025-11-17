@@ -1,7 +1,11 @@
 "use client";
-import React, { useState, useEffect, useParams } from "react";
+import React, { useState, useEffect } from "react";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useSession } from "next-auth/react";
+import { useParams } from "next/navigation";   // ✅ FIX
+
+
 // import Select from 'react-select' //? https://react-select.com/home#welcome
 
 import dynamic from "next/dynamic";
@@ -11,31 +15,15 @@ import './DebtorTransactions.scss'
 // Dynamically import react-select to disable SSR
 const Select = dynamic(() => import("react-select"), { ssr: false });
 
-
-import TransactionModal from "./AddDebtorTransaction/AddDebtorTransactionModal";
-import EditTransactionModal from "./EditDebtorTransaction/EditDebtorTransactionModal";
 import AddDebtorTransactionModal from "./AddDebtorTransaction/AddDebtorTransactionModal";
 import EditDebtorTransactionModal from "./EditDebtorTransaction/EditDebtorTransactionModal";
 
-export default function page({params}) {
+export default function Page({}) {
+	const { data: session } = useSession()
 	
-	 const { id } = React.use(params) // ✅ unwrap the async params
-	console.log(id)
-	const debtorIDParam = id
-
-		const fetchDebtorDetails = async () => {
-			try {
-				const response = await fetch(`${process.env.NEXT_PUBLIC_ENV_SERVER_BASE}/api/debtor/get_debtor_details`)
-				
-			} catch (error) {
-				console.log(error)
-			}
-		}
-
-
-		useEffect(() => {
-			fetchDebtorDetails()
-		}, [])
+	
+	const { id } = useParams()
+    const debtorIDParam = id
 
 
 	//Y Modal
@@ -133,54 +121,42 @@ export default function page({params}) {
 
 	const [debtorTransactions, setDebtorTransactions] = useState();
 	
-	const fetchDebtorTransactionsByMonth = async () => {
+	const fetchDebtorTransactions = async () => {
 		try {
-
-			if(localStorage.getItem("accountID")){
-
-			} else {
-				notifyError("Cannot Retrive Account ID")
-				//X Make a function to fetch Account ID's
+			const response = await fetch(`${process.env.NEXT_PUBLIC_ENV_SERVER_BASE}/api/debtorTransaction/getDebtorTransactions`, {
+				method: "POST",
+				body: JSON.stringify({
+					accountID: session.diamond.accountID,
+					debtorID: debtorIDParam
+				}),
+				headers: {
+					"Content-Type": "application/json"
+				}
+			})
+			
+			if(response.ok){
+				const data = await response.json()
+				console.log("Debtor Transactions", data.debtorTransactions)
+				console.log(response.status)
+				setDebtorTransactions(data.debtorTransactions)
 			}
 			
-			try {
-				const accountID = 'ced66b1b-be88-4163-8ba1-77207ec20ca9'
-				const response = await fetch(`${process.env.NEXT_PUBLIC_ENV_SERVER_BASE}/api/debtorTransaction/getDebtorTransactions`, {
-					method: "POST",
-					body: JSON.stringify({
-						accountID: accountID,
-    					debtorID: debtorIDParam
-					}),
-					headers: {
-						"Content-Type": "application/json"
-					}
-				})
-				// const response = await fetch(`/api/transaction?accountId=${accountID}`)
-				
-				if(response.ok){
-					const data = await response.json()
-					console.log("Debtor Transactions", data.debtorTransactions)
-					console.log(response.status)
-					setDebtorTransactions(data.debtorTransactions)
-				}
-				
-			} catch (error) {
-				notifyError("Could not fetch Records: " + error)
-				console.log("Could not fetch Records: " + error)
-				
-			}
 		} catch (error) {
-			console.log("Could not fetch Records: " + error)
-		}	
+			notifyError("[160] Could not fetch Records: " + error)
+			console.error("Could not fetch Records: " + error)
+			
+		}
+		
 	}
 
-	useEffect(() => {
-		fetchDebtorTransactionsByMonth()
-	}, [])
+	// useEffect(() => {
+	// 	fetchDebtorTransactions()
+	// }, [session, isOpenTransactionModal, isOpenEditModal])
 	
 	useEffect(() => {
-		fetchDebtorTransactionsByMonth()
-	}, [isOpenTransactionModal, isOpenEditModal])
+    if (!session?.diamond?.accountID) return;
+    fetchDebtorTransactions();
+}, [session, isOpenTransactionModal, isOpenEditModal, debtorIDParam]);
 
 	return (
 		<main className="space-y-6 py-4 px-8">
@@ -195,6 +171,8 @@ export default function page({params}) {
 					</button>
 				</div>
 			</section>
+
+			{debtorIDParam}
 
 			<section id="Add-Transaction-Container" className="flex justify-center">
 				<div className="flex justify-around space-x-12">
@@ -251,9 +229,9 @@ export default function page({params}) {
 									type: DT.type,
 									date: dateFormater(DT.date),
 									category: DT.category_name,
-									categoryID: DT.category_id,
-									supplierID: DT.supplier_id,
-									accountID: DT.account_id
+									categoryID: DT.category_id || null,
+									supplierID: DT.supplier_id || null,
+									accountID: session.diamond.accountID
 								})
 							}>
 						 
