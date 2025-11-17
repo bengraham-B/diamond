@@ -1,0 +1,38 @@
+.category-page {
+    width: 100vw;
+    min-height: 50vh;
+
+    display: flex;
+    flex-direction: column;
+
+
+    .header-section {
+        width: 100%;
+        text-align: center;
+        padding: 20px 0;
+
+        h1 {
+            font-size: 35px;
+        }
+    }
+
+    .category-body-section {
+        padding: 0 30px;
+        width: 100%;
+        min-height: 200px;
+        background: blue;
+        display: flex;
+
+        .left{
+            width: 50%;
+            height: 40px;
+            background: red;
+        }
+
+        .right{
+            width: 50%;
+            height: 40px;
+            background: greenyellow;
+        }
+    }
+}
