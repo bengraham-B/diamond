@@ -173,7 +173,7 @@ export default function page() {
                 </div>
             </section>
 
-            <section id="Add-Transaction-Container" className="flex justify-center">
+            <section id="Add-Transaction-Container" className="flex justify-center ">
                 <div className="flex justify-around space-x-12">
                     <div className="flex justify-center flex-col">
                         {/* <label htmlFor="pilot" className="text-xl">Year</label> */}
@@ -208,8 +208,8 @@ export default function page() {
 
             <section id="Table-Container" className="mt-6">
                 <table className="w-full border-collapse">
-                    <thead className="bg-gray-50 border-b-2 border-gray-200">
-                        <tr>
+                    <thead className="bg-gray-200 border-b-2 border-gray-200 sticky top-0 z-10">
+                        <tr className="">
 
                             <th className="px-4 w-44 text-lg font-light tracking-wide text-left">Date</th>
                             <th className="px-4 text-lg font-light tracking-wide text-left">Details</th>

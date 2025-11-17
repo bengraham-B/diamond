@@ -30,7 +30,7 @@ export default function RootLayout({ children }) {
 			<AuthProvider>
 				<Header />
 				<Nav />
-				{/* <NavAuth className="This is used for Auth"/>  */}
+			
 				{children}
 			</AuthProvider>
 		</body>
