@@ -1,9 +1,18 @@
 "use client"
 import React, {useState, useEffect} from 'react'
 import { useSession } from 'next-auth/react'
+
 import "./Table.scss"
+
+import EditcategoryModal from './EditCategory/EditCategoryModal'
+
 export default function Table() {
     const { data: session } = useSession()
+
+    const [isOpenEditCategoryModal, setIsOpenEditCategoryModal] = useState(false)
+        const [objectState, setObjectState] = useState()
+    
+    
     
 
     const [categories, setCategories] = useState();
@@ -35,10 +44,15 @@ try {
         }
     }
 
+    const showEditModal = ({name, details, categoryID, accountID}) => {
+        setObjectState({categoryID, name, details, categoryID, accountID}); // Extract and set the admin's ID
+        setIsOpenEditCategoryModal(true);
+    };
+
     useEffect(() => {
         if(!session) return
         fetchCategories()
-    },[session])
+    },[session, isOpenEditCategoryModal])
 
     if (!session) return
 
@@ -50,6 +64,9 @@ try {
                         <th>Nr</th>
                         <th>name</th>
                         <th>Details</th>
+                        <th>Transactions</th>
+                        <th>Debtor Transaction</th>
+                        <th>Status</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -59,11 +76,17 @@ try {
                             <td>{i+1}</td>
                             <td>{C.name}</td>
                             <td>{C.details}</td>
-                            <td><button>Edit</button></td>
+                            <td>Transactions</td>
+                            <td>Debtor Transaction</td>
+                            <td>Status</td>
+                            <td><button onClick={() => showEditModal({name: C.name, details: C.details, categoryID: C.id, accountID: C.account_id}) }>Edit</button></td>
                         </tr>
                     ))}
                 </tbody>
             </table>
+            <section>
+                <EditcategoryModal isVisible={isOpenEditCategoryModal} onClose={() => setIsOpenEditCategoryModal(false)} editObject={objectState}/>
+            </section>
         </main>
     )
 }
