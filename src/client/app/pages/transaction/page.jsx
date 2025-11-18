@@ -38,10 +38,7 @@ export default function page() {
     const [monthFilter, setMonthFilter] = useState(monthNames[currentMonthForFilter])
     const [yearFilter, setYearFilter] = useState(currentYearForFilter)
     const [transactionTypeFilter, setTransactionTypeFilter] = useState("all")
-
-    console.log(yearFilter, monthFilter)
     
-
     const transactionTypeFilterOptions = [
         { value: 'all', label: 'All' },
         { value: 'debit', label: 'debit' },

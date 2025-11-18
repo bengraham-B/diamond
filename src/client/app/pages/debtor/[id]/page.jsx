@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect, useParams } from "react";
+import React, { useState, useEffect } from "react";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 // import Select from 'react-select' //? https://react-select.com/home#welcome
@@ -144,7 +144,7 @@ export default function page({params}) {
 			}
 			
 			try {
-				const accountID = 'ced66b1b-be88-4163-8ba1-77207ec20ca9'
+
 				const response = await fetch(`${process.env.NEXT_PUBLIC_ENV_SERVER_BASE}/api/debtorTransaction/getDebtorTransactions`, {
 					method: "POST",
 					body: JSON.stringify({

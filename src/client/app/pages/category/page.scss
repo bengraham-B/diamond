@@ -1,6 +1,7 @@
 .category-page {
     width: 100vw;
-    min-height: 50vh;
+    // min-height: 45vh;
+    overflow: hidden;
 
     display: flex;
     flex-direction: column;
@@ -20,20 +21,10 @@
         padding: 0 25px;
         width: 100%;
         min-height: 200px;
-        height: 500px;
+        height: auto;
+        overflow: auto;
         background: blue;
         display: flex;
-
-        .left{
-            width: 50%;
-            height: 40px;
-            background: red;
-        }
-
-        .right{
-            width: 50%;
-            height: 40px;
-            background: greenyellow;
-        }
+        justify-content: center;
     }
 }

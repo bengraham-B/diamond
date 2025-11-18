@@ -9,5 +9,6 @@ const router = express_1.default.Router();
 const CategoryController_1 = require("../Controllers/Category/CategoryController");
 router.post("/", CategoryController_1.createCategory);
 router.post("/get_user_categories", CategoryController_1.getUserCategories);
-// router
+router.put("/", CategoryController_1.updateCategory);
+router.delete("/", CategoryController_1.deleteCategory);
 exports.default = router;
