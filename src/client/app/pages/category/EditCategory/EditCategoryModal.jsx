@@ -120,7 +120,7 @@ export default function EditcategoryModal({ isVisible, onClose, editObject }) {
 
     return (
         <main>
-            <div   className="fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center z-10 " id="wrapper" onClick={handleClose}>
+            <div   className="fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center z-20 " id="wrapper" onClick={handleClose}>
                 <div className="bg-white w-full max-w-[600px] rounded-lg flex flex-col p-6 mx-4 max-h-auto">
                     
                     {/* Modal Header */}

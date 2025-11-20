@@ -15,9 +15,10 @@ export default function EditTransactionModal({ isVisible, onClose, editObject })
     const [details, setDetails] = useState()
     const [amount, setAmount] = useState()
     const [type, setType] = useState()
-    const [date, setDate] = useState(new Date())
     const [categoryID, setCategoryID] = useState()
     const [supplierID, setSupplierID] = useState()
+    const [date, setDate] = useState(new Date())
+    const [time, setTime] = useState()
 
 
     useEffect(() => {
@@ -25,14 +26,16 @@ export default function EditTransactionModal({ isVisible, onClose, editObject })
             setDetails(editObject.details || "");
             setAmount(editObject.amount || "");
             setType(editObject.type || "");
-            setDate(editObject.date || "");
+            setDate(new Date(editObject.date) || "");
             setSupplierID(editObject.supplierID || "");
             setCategoryID(editObject.categoryID || "");
+            setTime(editObject.time || "")
         }
-    }, [editObject]);
+    }, [editObject, session]);
 
     function postgresDate(date){
 		if (!date) return ''; // Return an empty string if date is null or undefined
+        console.log("postgres", date)
 		const timestamp = date;
 		return timestamp.split('T')[0];
 	}
@@ -126,6 +129,7 @@ export default function EditTransactionModal({ isVisible, onClose, editObject })
                         amount: amount,
                         details: details,
                         date: postgresDate(date),
+                        time: time,
                         type: type,
                         categoryID: categoryID || null,
                         supplierID: supplierID || null,
@@ -203,6 +207,8 @@ export default function EditTransactionModal({ isVisible, onClose, editObject })
     optionSuppliers.push(noneOption)
 
     useEffect(() => {
+        if(!session) return
+        // postgresDate(date)
         fetchCategories()
         fetchSuppliers()
     }, [session])
@@ -214,13 +220,14 @@ export default function EditTransactionModal({ isVisible, onClose, editObject })
 
     return (
         <main>
-            <div   className="fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center" id="wrapper" onClick={handleClose}>
+            <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center z-10" id="wrapper" onClick={handleClose}>
                 <div className="bg-white w-full max-w-[600px] rounded-lg flex flex-col p-6 mx-4 max-h-auto">
                     
                     {/* Modal Header */}
                     <div className="flex justify-center items-center mb-6">
                         <h1 className="text-3xl text-blue-600">Edit Transaction</h1>
                     </div>
+                    {postgresDate(editObject.date)}
 
 
                     <div className='space-y-4'>
@@ -258,6 +265,12 @@ export default function EditTransactionModal({ isVisible, onClose, editObject })
                          <div className="w-full flex flex-col">
                             <label htmlFor="pilot" className="text-xl">Date</label>
                             <input name="colors" type="date" className='pl-1 p-1 rounded border border-gray-400' value={date ? date: ""} onChange={(e) => setDate(e.target.value)} />
+                        </div>
+
+                        {/* Time */}
+                         <div className="w-full flex flex-col">
+                            <label htmlFor="pilot" className="text-xl">Time</label>
+                            <input name="colors" type="time" className='pl-1 p-1 rounded border border-gray-400' value={time ? time: ""} onChange={(e) => setTime(e.target.value)} />
                         </div>
 
                        
