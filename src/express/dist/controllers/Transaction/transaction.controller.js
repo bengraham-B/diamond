@@ -18,11 +18,11 @@ const Transaction_1 = require("../../Class/Transaction");
 const postgres_1 = __importDefault(require("../../Database/postgres"));
 const Functions_1 = require("../../Class/Functions");
 const createTransaction = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { details, amount, supplierID, location, type, accountID, categoryID, date, day, week, month, monthName, year } = req.body;
+    const { details, amount, supplierID, location, type, accountID, categoryID, date, time, day, week, month, monthName, year } = req.body;
     // console.log(details)
     console.log(req.body);
     try {
-        const transaction = new Transaction_1.Transaction({ details: details, amount: amount, supplierID: supplierID, location: location, type: type, accountID: accountID, categoryID: categoryID, date: date, day: day, week: week, month: month, monthName: monthName, year: year });
+        const transaction = new Transaction_1.Transaction({ details: details, amount: amount, supplierID: supplierID, location: location, type: type, accountID: accountID, categoryID: categoryID, date: date, time: time, day: day, week: week, month: month, monthName: monthName, year: year });
         const { id, returnWeek } = yield transaction.createTransaction();
         res.status(200).json({
             msg: `Transaction Added: ${id}`,
@@ -45,6 +45,7 @@ const getTransactions = (req, res) => __awaiter(void 0, void 0, void 0, function
                 transaction.details,
                 transaction.type,
                 transaction.date,
+                transaction.time,
                 transaction.day,
                 transaction.week,
                 transaction.month,
@@ -101,16 +102,14 @@ const deleteTransaction = (req, res) => __awaiter(void 0, void 0, void 0, functi
 exports.deleteTransaction = deleteTransaction;
 const editTransaction = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { accountID, transactionID, supplierID, categoryID, details, amount, type, date } = req.body;
-        console.log({ accountID, transactionID });
+        const { accountID, transactionID, supplierID, categoryID, details, amount, type, date, time } = req.body;
         const func = new Functions_1.Functions();
         const { day, week, month, monthName, year } = func.breakDownDate(date);
-        const SQL = `UPDATE transaction SET supplier_id=$1, category_id=$2, details=$3, amount=$4, type=$5, date=$6, day=$7, week=$8, month=$9, month_name=$10, year=$11 WHERE id=$12`;
-        const values = [supplierID, categoryID, details, amount, type, date, day, week, month, monthName, year, transactionID];
-        yield postgres_1.default.query(SQL, values);
-        console.log(`Txn: ${transactionID} Updated`);
-        console.log(`Txn: ${categoryID} Category ID`);
-        console.log(`Txn: ${transactionID} Transaction ID`);
+        const SQL = `UPDATE transaction SET supplier_id=$1, category_id=$2, details=$3, amount=$4, type=$5, date=$6, time=$7 day=$8, week=$9, month=$10, month_name=$11, year=$12 WHERE id=$13 AND account_id=$14`;
+        const values = [supplierID, categoryID, details, amount, type, date, time, day, week, month, monthName, year, transactionID, accountID];
+        const query = yield postgres_1.default.query(SQL, values);
+        if ((query.rowCount || 0) === 0)
+            throw new Error(`Could not execute SQL Edit TXN Controller`);
         return res.status(200).json({ msg: `Txn: ${transactionID} Updated` });
     }
     catch (error) {

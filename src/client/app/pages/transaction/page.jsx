@@ -157,7 +157,7 @@ export default function page() {
     }
 
     return (
-        <main className="space-y-6 py-4 px-8">
+        <main className="space-y-6 py-4 px-8 ">
             <section id="Title-Container" className="flex justify-center text-4xl">
                 <h1>Transactions</h1>
             </section>
@@ -208,7 +208,8 @@ export default function page() {
                     <thead className="bg-gray-200 border-b-2 border-gray-200 sticky top-0 z-10">
                         <tr className="">
 
-                            <th className="px-4 w-44 text-lg font-light tracking-wide text-left">Date</th>
+                            <th className="px-4 w-36 text-lg font-light tracking-wide text-left">Date</th>
+                            <th className="pr-3 w-24 text-lg font-light tracking-wide text-left">Time</th>
                             <th className="px-4 text-lg font-light tracking-wide text-left">Details</th>
                             <th className="px-4 w-40 text-lg font-light tracking-wide text-left">Amount (R)</th>
                             <th className="px-4 w-40 text-lg font-light tracking-wide text-left">Type</th>
@@ -228,7 +229,8 @@ export default function page() {
                                     details: T.details,
                                     amount: T.amount,
                                     type: T.type,
-                                    date: postgresDate(T.date),
+                                    date: T.date,
+                                    time: T.time,
                                     category: T.category_name,
                                     categoryID: T.category_id,
                                     supplierID: T.supplier_id,
@@ -241,10 +243,15 @@ export default function page() {
                                     <span>{formatDate(T.date)}</span>
                                 </td>
 
+                                 <td className="pr-3 text-sm text-gray-700">
+                                    <span>{T.time}</span>
+                                </td>
+
                                 <td className="p-3 text-sm text-gray-700">
                                     <span>{T.details}</span>
                                 </td>
-
+                                
+                               
                                 <td className="p-3 text-sm text-gray-700">
                                     <div>
                                         <span className="text-gray-400 pr-1">(R)</span><span>{T.amount}</span>
