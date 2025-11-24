@@ -4,6 +4,7 @@ import cors from "cors"
 
 const port: Number = 8000
 const host: string = process.env.DB_HOST || ""
+const DB_NAME = process.env.DB_NAME
 const app: Express = express()
 
 app.use(express.json());
@@ -36,5 +37,5 @@ app.get("/", (req: Request, res: Response) => {
 
 app.listen(port, () => {
     verifyConnection()    
-    console.log(`Server running: [${host}]:${port}`)
+    console.log(`Server running: [${host}]:${port} @ ${DB_NAME}`)
 })

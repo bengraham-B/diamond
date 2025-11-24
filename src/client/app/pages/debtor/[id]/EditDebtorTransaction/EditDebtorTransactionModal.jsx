@@ -18,7 +18,6 @@ export default function EditDebtorTransactionModal({ isVisible, onClose, editObj
 
 
     useEffect(() => {
-        console.log("------------------------------------------------------")
         if (editObject) {
             setAccountID(editObject.accountID)
             setDetails(editObject.details || "");
@@ -230,7 +229,6 @@ export default function EditDebtorTransactionModal({ isVisible, onClose, editObj
                     <div className="flex justify-center items-center mb-6">
                         <h1 className="text-3xl text-blue-600">Edit Debtor Transaction</h1>
                     </div>
-
 
                     <div className='space-y-4'>
                         {/* Details */}
