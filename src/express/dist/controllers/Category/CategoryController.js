@@ -42,7 +42,6 @@ exports.getUserCategories = getUserCategories;
 const updateCategory = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { name, details, accountID, categoryID } = req.body;
-        console.log({ name, details, accountID, categoryID });
         const SQL = `UPDATE category SET name=$1, details=$2 WHERE id=$3 AND account_id=$4`;
         const values = [name, details, categoryID, accountID];
         const query = yield postgres_1.default.query(SQL, values);

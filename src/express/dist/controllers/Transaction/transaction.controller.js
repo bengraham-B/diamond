@@ -19,8 +19,6 @@ const postgres_1 = __importDefault(require("../../Database/postgres"));
 const Functions_1 = require("../../Class/Functions");
 const createTransaction = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { details, amount, supplierID, location, type, accountID, categoryID, date, time, day, week, month, monthName, year } = req.body;
-    // console.log(details)
-    console.log(req.body);
     try {
         const transaction = new Transaction_1.Transaction({ details: details, amount: amount, supplierID: supplierID, location: location, type: type, accountID: accountID, categoryID: categoryID, date: date, time: time, day: day, week: week, month: month, monthName: monthName, year: year });
         const { id, returnWeek } = yield transaction.createTransaction();
