@@ -15,6 +15,7 @@ interface transactionInterface {
     accountID: string
     categoryID?: string
     date: Date
+    time: String,
     day: number
     week: number
     month: number
@@ -32,8 +33,8 @@ export class Transaction {
         try {
             const hashString = `${this.props.details}+${this.props.amount}+${this.props.supplierID || null}+${this.props.location}+${this.props.type}+${this.props.accountID}+${this.props.categoryID || null}+${this.props.date}+${dateBrokenDown.day}+${dateBrokenDown.week}+${dateBrokenDown.month}+${dateBrokenDown.monthName}+${dateBrokenDown.year}`
             
-            const SQL: string = "INSERT INTO transaction(details, amount, supplier_id, location, type, account_id, category_id, date, day, week, month, month_name,year, txn_hash, txn_base64) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12 ,$13, $14, $15) RETURNING *;"
-            const values = [this.props.details, this.props.amount, this.props.supplierID || null, this.props.location, this.props.type, this.props.accountID, this.props.categoryID || null , this.props.date, dateBrokenDown.day, dateBrokenDown.week, dateBrokenDown.month, dateBrokenDown.monthName , dateBrokenDown.year, hashTransaction(hashString),base64Encode(hashString) ]
+            const SQL: string = "INSERT INTO transaction(details, amount, supplier_id, location, type, account_id, category_id, date, time, day, week, month, month_name,year, txn_hash, txn_base64) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12 ,$13, $14, $15, $16) RETURNING *;"
+            const values = [this.props.details, this.props.amount, this.props.supplierID || null, this.props.location, this.props.type, this.props.accountID, this.props.categoryID || null , this.props.date, this.props.time, dateBrokenDown.day, dateBrokenDown.week, dateBrokenDown.month, dateBrokenDown.monthName , dateBrokenDown.year, hashTransaction(hashString),base64Encode(hashString) ]
             const query = await pool.query(SQL, values)
             console.log(`Transaction Added: ${query.rows[0].id}`)
             return {id: query.rows[0].id, returnWeek: query.rows[0].week}

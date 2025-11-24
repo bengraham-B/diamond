@@ -1,0 +1,50 @@
+.category-table-main {
+    width: 100%;
+    background: yellow;
+    height: 470px;
+
+    
+    table {
+        overflow: auto;
+        height: inherit;
+        background: peru;
+        width: 100%;
+        margin: 0 auto;
+        border-collapse: collapse;
+        border-top: 1px solid #999999;
+        border-bottom: 1px solid #999999;
+
+        th, td {
+            padding: 0.4em;
+        }
+        
+        thead {
+            width: 100%;
+            text-align: left;
+            top: 0;
+            font-size: 1.2rem;
+            z-index: 1;
+            position: sticky;
+            background: palevioletred;
+    
+        }
+    
+        tbody {
+            width: inherit;
+            overflow: auto;
+
+            button {
+                background: blue;
+                color: white;
+                border: 1 solid inherit;
+                border-radius: 4px;
+                padding: 5px 20px;
+            }
+        }
+
+        tbody tr:nth-child(odd) {
+            background-color: #eeeeee;
+        }
+    }
+    
+}

@@ -17,9 +17,10 @@ export default function TransactionModal({ isVisible, onClose }) {
     const [details, setDetails] = useState()
     const [amount, setAmount] = useState()
     const [transactionType, setTransactionType] = useState()
-    const [date, setDate] = useState(new Date())
     const [categoryID, setCategoryID] = useState()
     const [supplierID, setSupplierID] = useState()
+    const [date, setDate] = useState(new Date())
+    const [time, setTime] = useState()
 
     function postgresDate(date){
 		if (!date) return ''; // Return an empty string if date is null or undefined
@@ -104,6 +105,11 @@ export default function TransactionModal({ isVisible, onClose }) {
 
     //Y ----- Add Transaction  -----
     const postTransaction = async () => {
+        console.log(time)
+
+        if(!date) return notifyError("Missing Date")
+        else if(!transactionType) return notifyError("Missing Type")
+        else if(!amount) return notifyError("Missing Amount")
         try {
             const response = await fetch(`${process.env.NEXT_PUBLIC_ENV_SERVER_BASE}/api/transaction`, {
                 method: "POST",
@@ -112,6 +118,7 @@ export default function TransactionModal({ isVisible, onClose }) {
                     amount: amount,
                     details: details,
                     date: postgresDate(date),
+                    time: time,
                     type: transactionType,
                     categoryID: categoryID,
                     supplierID: supplierID
@@ -170,7 +177,7 @@ export default function TransactionModal({ isVisible, onClose }) {
     return (
         <main>
             {session.diamond.accountID}
-            <div   className="fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center" id="wrapper" onClick={handleClose}>
+            <div   className="fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center z-10" id="wrapper" onClick={handleClose}>
                 <div className="bg-white w-full max-w-[600px] rounded-lg flex flex-col p-6 mx-4 max-h-auto">
                     
                     {/* Modal Header */}
@@ -215,8 +222,13 @@ export default function TransactionModal({ isVisible, onClose }) {
                             <label htmlFor="pilot" className="text-xl">Date</label>
                             <input name="colors" type="date" className='pl-1 p-1 rounded border border-gray-400' onChange={(e) => setDate(e.target.value)} />
                         </div>
+                         
+                         {/* Time */}
+                         <div className="w-full flex flex-col">
+                            <label htmlFor="pilot" className="text-xl">Time</label>
+                            <input name="colors" type="time" className='pl-1 p-1 rounded border border-gray-400' onChange={(e) => setTime(e.target.value)} />
+                        </div>
 
-                       
                     </div>
 
                     {/* Action Buttons */}
