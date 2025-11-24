@@ -99,6 +99,7 @@ export default function AddDebtorTransactionModal({ isVisible, onClose, debtorID
     const [amount, setAmount] = useState()
     const [transactionType, setTransactionType] = useState()
     const [date, setDate] = useState(new Date())
+    const [time, setTime] = useState()
     const [categoryID, setCategoryID] = useState()
     const [supplierID, setSupplierID] = useState()
 
@@ -113,6 +114,7 @@ export default function AddDebtorTransactionModal({ isVisible, onClose, debtorID
                     amount: amount,
                     details: details,
                     date: postgresDate(date),
+                    time: time,
                     type: transactionType,
                     categoryID: categoryID || null,
                     supplierID: supplierID || null
@@ -158,6 +160,7 @@ export default function AddDebtorTransactionModal({ isVisible, onClose, debtorID
     optionSuppliers.push(noneOption)
 
     useEffect(() => {
+        // if(!session.diamond)
         fetchCategories()
         fetchSuppliers()
 
@@ -165,7 +168,6 @@ export default function AddDebtorTransactionModal({ isVisible, onClose, debtorID
 
     // Early return moved after hook calls
     if (!isVisible) return null
-    console.log(debtorIDParam)
 
     return (
         <main>
@@ -212,6 +214,12 @@ export default function AddDebtorTransactionModal({ isVisible, onClose, debtorID
                          <div className="w-full flex flex-col">
                             <label htmlFor="pilot" className="text-xl">Date</label>
                             <input name="colors" type="date" className='pl-1 p-1 rounded border border-gray-400' onChange={(e) => setDate(e.target.value)} />
+                        </div>
+
+                        {/* Time */}
+                         <div className="w-full flex flex-col">
+                            <label htmlFor="pilot" className="text-xl">Time</label>
+                            <input name="colors" type="time" className='pl-1 p-1 rounded border border-gray-400' onChange={(e) => setTime(e.target.value)} />
                         </div>
 
                        

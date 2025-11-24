@@ -72,8 +72,8 @@ const getTransactions = (req, res) => __awaiter(void 0, void 0, void 0, function
         `;
         const values = [accountID];
         const query = yield postgres_1.default.query(SQL, values);
-        console.log(`Transaction Amount: ${query.rows.length}`);
-        console.log(`Retrived Transactions by Account: ${accountID}`);
+        if ((query.rowCount || 0) === 0)
+            throw new Error(`Could not execute SQL Get TXN Controller`);
         res.status(200).json({
             txn: query.rows,
         });
@@ -90,7 +90,9 @@ const deleteTransaction = (req, res) => __awaiter(void 0, void 0, void 0, functi
         console.log({ accountID, transactionID });
         const SQL = `DELETE FROM transaction WHERE account_id=$1 AND id=$2`;
         const values = [accountID, transactionID];
-        yield postgres_1.default.query(SQL, values);
+        const query = yield postgres_1.default.query(SQL, values);
+        if ((query.rowCount || 0) === 0)
+            throw new Error(`Could not execute SQL Delete TXN Controller`);
         console.log(`DELETD TXN: ${transactionID}`);
         res.status(200).json({ message: `Delete TXN: ${transactionID}` });
     }

@@ -22,8 +22,6 @@ export const createTransaction = async (req: Request, res: Response) => {
         year 
     } = req.body
 
-    // console.log(details)
-    console.log(req.body)
     try {
         const transaction: Transaction = new Transaction({details: details, amount: amount, supplierID: supplierID, location: location, type: type, accountID: accountID, categoryID: categoryID, date: date, time: time, day: day, week: week, month: month, monthName: monthName, year: year})
         const {id, returnWeek } = await transaction.createTransaction()
@@ -77,9 +75,7 @@ export const getTransactions = async (req: Request, res: Response) => {
         `
         const values: (string | number)[] = [accountID]
         const query = await pool.query(SQL, values)
-        console.log(`Transaction Amount: ${query.rows.length}`)
-        console.log(`Retrived Transactions by Account: ${accountID}`)
-
+        if((query.rowCount || 0) === 0) throw new Error(`Could not execute SQL Get TXN Controller`)
         res.status(200).json(
             {
                 txn: query.rows,
@@ -97,7 +93,8 @@ export const deleteTransaction = async (req:Request, res: Response) => {
         console.log({accountID, transactionID})
         const SQL: string = `DELETE FROM transaction WHERE account_id=$1 AND id=$2`
         const values = [accountID, transactionID]
-        await pool.query(SQL, values)
+        const query = await pool.query(SQL, values)
+        if((query.rowCount || 0) === 0) throw new Error(`Could not execute SQL Delete TXN Controller`)
         console.log(`DELETD TXN: ${transactionID}`)
         res.status(200).json({message: `Delete TXN: ${transactionID}`})
     } catch (error) {

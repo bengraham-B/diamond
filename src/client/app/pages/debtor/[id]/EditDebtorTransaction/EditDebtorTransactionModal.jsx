@@ -5,6 +5,11 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import Select from 'react-select' //? https://react-select.com/home#welcome
 
+// =======================================================================================================
+//  										Edit Debtor Transaction Modal
+// =======================================================================================================
+
+
 export default function EditDebtorTransactionModal({ isVisible, onClose, editObject }) {
 
     //Y State Variables For Transaction
@@ -13,6 +18,7 @@ export default function EditDebtorTransactionModal({ isVisible, onClose, editObj
     const [amount, setAmount] = useState()
     const [type, setType] = useState()
     const [date, setDate] = useState(new Date())
+    const [time, setTime] = useState()
     const [categoryID, setCategoryID] = useState()
     const [supplierID, setSupplierID] = useState()
 
@@ -24,6 +30,7 @@ export default function EditDebtorTransactionModal({ isVisible, onClose, editObj
             setAmount(editObject.amount || "");
             setType(editObject.type || "");
             setDate(editObject.date || "");
+            setTime(editObject.time || null);
             setSupplierID(editObject.supplierID || "");
             setCategoryID(editObject.categoryID || "");
         }
@@ -132,6 +139,7 @@ export default function EditDebtorTransactionModal({ isVisible, onClose, editObj
                         amount: amount,
                         details: details,
                         date: postgresDate(date),
+                        time: time,
                         type: type,
                         categoryID: categoryID,
                         supplierID: supplierID,
@@ -265,6 +273,12 @@ export default function EditDebtorTransactionModal({ isVisible, onClose, editObj
                          <div className="w-full flex flex-col">
                             <label htmlFor="pilot" className="text-xl">Date</label>
                             <input name="colors" type="date" className='pl-1 p-1 rounded border border-gray-400' value={date ? date: ""} onChange={(e) => setDate(e.target.value)} />
+                        </div>
+
+                        {/* Time */}
+                        <div className="w-full flex flex-col">
+                            <label htmlFor="pilot" className="text-xl">Time</label>
+                            <input name="colors" type="time" className='pl-1 p-1 rounded border border-gray-400' value={time ? time : ""} onChange={(e) => setTime(e.target.value)} />
                         </div>
 
                        
