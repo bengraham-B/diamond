@@ -91,11 +91,6 @@ export default function Page() {
                 <h1>Debtor</h1>
             </section>
 
-            <section>
-                <h1> <strong className='text-blue-600'>AccountID:</strong>{session.diamond.accountID} </h1>
-            </section>
-
-
             <section id="Add-Transaction-Container" className="flex justify-end">
                 <div className="flex space-x-4">
                     <button onClick={showAddDebtorModal} className="add_transaction_button">
@@ -105,7 +100,7 @@ export default function Page() {
             </section>
 
 			<section id="Table-Container" className="mt-6">
-                <h1 className='w-full flex justify-center text-2xl items-center bg-orange-400 text-center'>Outstanding Balance Per Debtor</h1>
+                <h1 className='w-full flex justify-start items-center p-2 text-2xl text-start'>Outstanding Balance Per Debtor</h1>
 
                 <table className="w-full border border-gray-300 rounded-md border-collapse ">
                     <thead className="bg-gray-50 border-b-2 border-gray-200">
@@ -128,7 +123,7 @@ export default function Page() {
                                 </td>
 
                                 <td className="p-3 text-md text-gray-700">
-                                    <span>{D.name} {D.debtor_id}</span>
+                                    <span>{D.name}</span>
                                 </td>
                                 
 								<td className="p-3 text-md text-gray-700">
@@ -159,7 +154,7 @@ export default function Page() {
             </section>
 			
             <section id="Table-Container" className="mt-6">
-                <h1 className='w-full flex justify-center text-2xl items-center bg-red-500 text-center'>All Debtors</h1>
+                <h1 className='w-full flex justify-start items-center p-2 text-2xl text-start'>All Debtors</h1>
                 <table className="w-full border border-gray-300 rounded-md border-collapse ">
                     <thead className="bg-gray-50 border-b-2 border-gray-200">
                         <tr>
@@ -214,7 +209,6 @@ export default function Page() {
             <section>
                 <AddDebtorModal isVisible={isOpenAddDebtorModal} onClose={() => setIsOpenAddDebtorModal(false)}/>
                 <EditDebtorModal isVisible={isOpenEditDebtorModal} onClose={() => setIsOpenEditDebtorModal(false)} editObject={objectState}/>
-
             </section>
 		</main>
 	)

@@ -172,8 +172,6 @@ export default function Page({}) {
 				</div>
 			</section>
 
-			{debtorIDParam}
-
 			<section id="Add-Transaction-Container" className="flex justify-center">
 				<div className="flex justify-around space-x-12">
 					<div className="flex justify-center flex-col">

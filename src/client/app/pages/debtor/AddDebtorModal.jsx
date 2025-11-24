@@ -77,7 +77,6 @@ export default function AddDebtorModal({ isVisible, onClose }) {
 
     return (
         <main>
-            {session.diamond.accountID}
             <div   className="fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center" id="wrapper" onClick={handleClose}>
                 <div className="bg-white w-full max-w-[600px] rounded-lg flex flex-col p-6 mx-4 max-h-auto">
                     

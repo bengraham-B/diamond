@@ -169,15 +169,13 @@ export default function AddDebtorTransactionModal({ isVisible, onClose, debtorID
 
     return (
         <main>
-            <div   className="fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center" id="wrapper" onClick={handleClose}>
+            <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center" id="wrapper" onClick={handleClose}>
                 <div className="bg-white w-full max-w-[600px] rounded-lg flex flex-col p-6 mx-4 max-h-auto">
                     
                     {/* Modal Header */}
                     <div className="flex justify-center items-center mb-6">
                         <h1 className="text-3xl text-green-600">Add Debtor Transaction</h1>
                     </div>
-                    {debtorIDParam}
-
 
                     <div className='space-y-4'>
                         {/* Details */}
