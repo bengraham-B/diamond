@@ -25,7 +25,7 @@ class Transaction {
         return __awaiter(this, void 0, void 0, function* () {
             const dateBrokenDown = func.breakDownDate(this.props.date);
             try {
-                const hashString = `${this.props.details}+${this.props.amount}+${this.props.supplierID || null}+${this.props.location}+${this.props.type}+${this.props.accountID}+${this.props.categoryID || null}+${this.props.date}+${this.props.time}+${dateBrokenDown.day}+${dateBrokenDown.week}+${dateBrokenDown.month}+${dateBrokenDown.monthName}+${dateBrokenDown.year}`;
+                const hashString = `${this.props.details}+${this.props.amount}+${this.props.supplierID || null}+${this.props.location}+${this.props.type}+${this.props.accountID}+${this.props.categoryID || null}+${this.props.date}+${dateBrokenDown.day}+${dateBrokenDown.week}+${dateBrokenDown.month}+${dateBrokenDown.monthName}+${dateBrokenDown.year}`;
                 const SQL = "INSERT INTO transaction(details, amount, supplier_id, location, type, account_id, category_id, date, time, day, week, month, month_name,year, txn_hash, txn_base64) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12 ,$13, $14, $15, $16) RETURNING *;";
                 const values = [this.props.details, this.props.amount, this.props.supplierID || null, this.props.location, this.props.type, this.props.accountID, this.props.categoryID || null, this.props.date, this.props.time, dateBrokenDown.day, dateBrokenDown.week, dateBrokenDown.month, dateBrokenDown.monthName, dateBrokenDown.year, (0, hash_1.hashTransaction)(hashString), (0, hash_1.base64Encode)(hashString)];
                 const query = yield postgres_1.default.query(SQL, values);

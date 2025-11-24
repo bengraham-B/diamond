@@ -45,6 +45,7 @@ export const deleteCategory = async (req: Request, res: Response) => {
         //TODO: Remove category from TXN which have it as their categoryID
 
         const {categoryID, accountID} = req.body
+        console.log({categoryID, accountID} )
         const SQL:string = `DELETE FROM category WHERE id=$1 AND account_id=$2`
         const query = await pool.query(SQL,[categoryID, accountID])
         if((query.rowCount || 0 ) === 0) return res.status(500).json({msg: `Could not delete Category`})
