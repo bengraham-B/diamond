@@ -34,6 +34,8 @@ exports.createDebtorTransaction = createDebtorTransaction;
 const getDebtorTransaction = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { accountID, debtorID } = req.body;
+        if (!accountID || !debtorID)
+            throw new Error("No AccountID or DebtorID");
         const SQL = `
         SELECT
             debtor_transaction.account_id,
@@ -55,8 +57,8 @@ const getDebtorTransaction = (req, res) => __awaiter(void 0, void 0, void 0, fun
             debtor_transaction
 
 
-        INNER JOIN supplier on debtor_transaction.supplier_id = supplier.id
-        INNER JOIN category on debtor_transaction.category_id = category.id
+        LEFT JOIN supplier on debtor_transaction.supplier_id = supplier.id
+        LEFT JOIN category on debtor_transaction.category_id = category.id
 
         WHERE
         debtor_transaction.account_id =$1 AND
@@ -70,6 +72,8 @@ const getDebtorTransaction = (req, res) => __awaiter(void 0, void 0, void 0, fun
         const query = yield postgres_1.default.query(SQL, values);
         return res.status(200).json({
             msg: 'Retrived Transaction by month Successfully',
+            debtorID: debtorID,
+            accountID: accountID,
             debtorTransactions: query.rows
         });
     }

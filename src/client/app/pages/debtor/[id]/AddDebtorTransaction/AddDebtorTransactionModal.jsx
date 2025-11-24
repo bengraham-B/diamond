@@ -1,13 +1,14 @@
 "use client"
 import React, { useState, useEffect } from 'react'
 import { ToastContainer, toast } from 'react-toastify';
+import { useSession } from "next-auth/react";
 import 'react-toastify/dist/ReactToastify.css';
 
 
 import Select from 'react-select' //? https://react-select.com/home#welcome
 
 export default function AddDebtorTransactionModal({ isVisible, onClose, debtorIDParam }) {
-
+    const { data: session } = useSession()
 
     function postgresDate(date){
 		if (!date) return ''; // Return an empty string if date is null or undefined
@@ -100,22 +101,21 @@ export default function AddDebtorTransactionModal({ isVisible, onClose, debtorID
     const [date, setDate] = useState(new Date())
     const [categoryID, setCategoryID] = useState()
     const [supplierID, setSupplierID] = useState()
-    const accountID = 'ced66b1b-be88-4163-8ba1-77207ec20ca9'
 
     //Y ----- Add Transaction  -----
-    const postTransaction = async () => {
+    const addDebtorTXN = async () => {
         try {
             const response = await fetch(`${process.env.NEXT_PUBLIC_ENV_SERVER_BASE}/api/debtorTransaction`, {
                 method: "POST",
                 body: JSON.stringify({
-                    accountID: accountID,
+                    accountID: session.diamond.accountID,
                     debtorID: debtorIDParam,
                     amount: amount,
                     details: details,
                     date: postgresDate(date),
                     type: transactionType,
-                    categoryID: categoryID,
-                    supplierID: supplierID
+                    categoryID: categoryID || null,
+                    supplierID: supplierID || null
                 }),
                 headers: {
                     "content-Type": "application/json"
@@ -165,17 +165,17 @@ export default function AddDebtorTransactionModal({ isVisible, onClose, debtorID
 
     // Early return moved after hook calls
     if (!isVisible) return null
+    console.log(debtorIDParam)
 
     return (
         <main>
-            <div   className="fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center" id="wrapper" onClick={handleClose}>
+            <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center" id="wrapper" onClick={handleClose}>
                 <div className="bg-white w-full max-w-[600px] rounded-lg flex flex-col p-6 mx-4 max-h-auto">
                     
                     {/* Modal Header */}
                     <div className="flex justify-center items-center mb-6">
                         <h1 className="text-3xl text-green-600">Add Debtor Transaction</h1>
                     </div>
-
 
                     <div className='space-y-4'>
                         {/* Details */}
@@ -220,7 +220,7 @@ export default function AddDebtorTransactionModal({ isVisible, onClose, debtorID
                     {/* Action Buttons */}
                     <div className="flex justify-between mt-6">
                         <button onClick={onClose} className="bg-red-600 hover:bg-red-700 text-white rounded text-lg px-6 py-2 w-48">Close</button>
-                        <button onClick={postTransaction} className="bg-green-600 hover:bg-green-700 text-white rounded text-lg px-6 py-2 w-48">Add Transaction</button>
+                        <button onClick={addDebtorTXN} className="bg-green-600 hover:bg-green-700 text-white rounded text-lg px-6 py-2 w-48">Add Transaction</button>
                     </div>
 
                     {/* Toast Notification */}

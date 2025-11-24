@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getDebtorDetails = exports.getOutstandingBalancePerDebtor = exports.createDebtor = void 0;
+exports.getDebtors = exports.updateDebtor = exports.deleteDebtor = exports.getOutstandingBalancePerDebtor = exports.createDebtor = void 0;
 const Debtor_1 = require("../../../Class/Debtor");
 const postgres_1 = __importDefault(require("../../../Database/postgres"));
 const createDebtor = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -20,6 +20,7 @@ const createDebtor = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         const { name, details, accountID } = req.body;
         const debtor = new Debtor_1.Debtor({ name: name, details: details, accountID: accountID });
         debtor.createDebtor();
+        console.log("[Success]: Debtor Created");
         res.status(200).json({ msg: "Added Debtor Successfully" });
     }
     catch (error) {
@@ -99,10 +100,73 @@ const getOutstandingBalancePerDebtor = (req, res) => __awaiter(void 0, void 0, v
     }
 });
 exports.getOutstandingBalancePerDebtor = getOutstandingBalancePerDebtor;
-const getDebtorDetails = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const deleteDebtor = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        const { debtorID, accountID } = req.body;
+        //Y Check if their are TXN for specific Debtor
+        const SQL_DELETE_DEBTOR_CHECK_IF_THEIR_ARE_TEXN = `SELECT * FROM debtor_transaction WHERE debtor_id=$1 AND account_id=$2`;
+        const checkDebtorTXN = yield postgres_1.default.query(SQL_DELETE_DEBTOR_CHECK_IF_THEIR_ARE_TEXN, [debtorID, accountID]);
+        if ((checkDebtorTXN.rowCount || 0) > 0) {
+            console.log("Debtor Has TXN which need to be Deleted");
+            //Y Delete Debtpr Transactions
+            const SQL_DELETE_DEBTOR_TXN = `DELETE FROM debtor_transaction WHERE debtor_id=$1 AND account_id=$2`;
+            const VALUES_SQL_DELETE_DEBTOR_TXN = [debtorID, accountID];
+            const queryDeleteDebtorTXN = yield postgres_1.default.query(SQL_DELETE_DEBTOR_TXN, VALUES_SQL_DELETE_DEBTOR_TXN);
+            if ((queryDeleteDebtorTXN.rowCount || 0) > 0) {
+                //Y Delete Debtor 
+                const SQL_DELETE_DEBTOR = `DELETE FROM debtor WHERE id=$1 AND account_id=$2`;
+                const VALUES_SQL_DELETE_DEBTOR = [debtorID, accountID];
+                const queryDeleteDebtor = yield postgres_1.default.query(SQL_DELETE_DEBTOR, VALUES_SQL_DELETE_DEBTOR);
+                return res.status(200).json({ msg: `[Success]: Debtor and Debtor TXN deleted` });
+            }
+            else {
+                throw new Error(`Could not Delete Debtor Or Transactions:`);
+            }
+        }
+        else {
+            console.log("Debtor Has not TXN");
+            //Y Delete Debtor 
+            const SQL_DELETE_DEBTOR = `DELETE FROM debtor WHERE id=$1 AND account_id=$2`;
+            const VALUES_SQL_DELETE_DEBTOR = [debtorID, accountID];
+            const queryDeleteDebtor = yield postgres_1.default.query(SQL_DELETE_DEBTOR, VALUES_SQL_DELETE_DEBTOR);
+            res.status(200).json({ msg: `[Success]: Debtor Deleted` });
+        }
     }
     catch (error) {
+        return res.status(500).json({ error: `Could not Delete Debtor or Transaction: ${error}` });
     }
 });
-exports.getDebtorDetails = getDebtorDetails;
+exports.deleteDebtor = deleteDebtor;
+const updateDebtor = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { name, details, debtorID, accountID } = req.body;
+        console.log("Update Debtor");
+        console.log({ name, details, debtorID, accountID });
+        const SQL_UPDATE_DEBTOR = `UPDATE debtor SET name=$1, details=$2 WHERE id=$3 AND account_id=$4`;
+        const valuesUpdateDebtor = [name, details, debtorID, accountID];
+        const query = yield postgres_1.default.query(SQL_UPDATE_DEBTOR, valuesUpdateDebtor);
+        if ((query.rowCount || 0) > 0) {
+            return res.status(200).json({ msg: `[Success]: Debtor Updated` });
+        }
+        else {
+            res.status(500).json({ error: `Could not updated debtor` });
+        }
+    }
+    catch (error) {
+        res.status(500).json({ error: `${error}` });
+    }
+});
+exports.updateDebtor = updateDebtor;
+const getDebtors = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { accountID } = req.body;
+        const SQL = `SELECT * FROM debtor WHERE account_id=$1`;
+        const values = [accountID];
+        const query = yield postgres_1.default.query(SQL, values);
+        return res.status(200).json({ debtors: query.rows });
+    }
+    catch (error) {
+        res.status(500).json({ error: `${error}` });
+    }
+});
+exports.getDebtors = getDebtors;
