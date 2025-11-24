@@ -5,6 +5,9 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useSession } from "next-auth/react";
 import { useParams } from "next/navigation";   // ✅ FIX
 
+// =======================================================================================================
+//  										Debtor Transaction Page
+// =======================================================================================================
 
 // import Select from 'react-select' //? https://react-select.com/home#welcome
 
@@ -20,11 +23,8 @@ import EditDebtorTransactionModal from "./EditDebtorTransaction/EditDebtorTransa
 
 export default function Page({}) {
 	const { data: session } = useSession()
-	
-	
 	const { id } = useParams()
     const debtorIDParam = id
-
 
 	//Y Modal
 	const [isOpenTransactionModal, setIsOpenTransactionModal] = useState(false)
@@ -177,7 +177,7 @@ export default function Page({}) {
 				<h1>Debtor Transactions</h1>
 			</section>
 
-			<section id="Add-Transaction-Container" className="flex justify-end">
+			<section id="Add-Transaction-Container" className="flex justify-end px-4">
 				<div className="flex space-x-4">
 					<button onClick={showTransactionModal} className="add_transaction_button">
 						Add Transaction
@@ -219,6 +219,7 @@ export default function Page({}) {
 						<tr>
 
                            <th className="px-4 w-36 text-lg font-light tracking-wide text-left">Date</th>
+                           <th className="px-4 w-36 text-lg font-light tracking-wide text-left">Time</th>
                             <th className="px-4 w-56 text-lg font-light tracking-wide text-left">Details</th>
                             <th className="px-4 w-40 text-lg font-light tracking-wide text-left">Amount (R)</th>
                             <th className="px-4 w-40 text-lg font-light tracking-wide text-left">Type</th>
@@ -239,6 +240,7 @@ export default function Page({}) {
 									amount: DT.amount,
 									type: DT.type,
 									date: dateFormater(DT.date),
+									time: DT.time,
 									category: DT.category_name,
 									categoryID: DT.category_id || null,
 									supplierID: DT.supplier_id || null,
@@ -249,6 +251,10 @@ export default function Page({}) {
 
 								<td className="p-3 text-sm text-gray-700">
 									<span>{formatDate(DT.date)}</span>
+								</td>
+								
+								<td className="p-3 text-sm text-gray-700">
+									<span>{DT.time}</span>
 								</td>
 
 								<td className="p-3 text-sm text-gray-700">

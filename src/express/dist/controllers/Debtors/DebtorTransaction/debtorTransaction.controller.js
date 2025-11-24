@@ -18,8 +18,8 @@ const postgres_1 = __importDefault(require("../../../Database/postgres"));
 const Functions_1 = require("../../../Class/Functions");
 const createDebtorTransaction = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { accountID, debtorID, categoryID, type, amount, details, location, supplierID, date, day, week, month, monthName, year } = req.body;
-        const debtorTransaction = new DebtorTransaction_1.DebtorTransaction({ accountID, debtorID, categoryID, type, amount, details, location, supplierID, date, day, week, month, monthName, year });
+        const { accountID, debtorID, categoryID, type, amount, details, location, supplierID, date, time, day, week, month, monthName, year } = req.body;
+        const debtorTransaction = new DebtorTransaction_1.DebtorTransaction({ accountID, debtorID, categoryID, type, amount, details, location, supplierID, date, time, day, week, month, monthName, year });
         const debtorTXN = yield debtorTransaction.createDebtorsTransaction();
         res.status(200).json({
             msg: `Added Debtor Transaction Successfully: ${debtorTXN}`,
@@ -43,6 +43,7 @@ const getDebtorTransaction = (req, res) => __awaiter(void 0, void 0, void 0, fun
             debtor_transaction.amount,
             debtor_transaction.details,
             debtor_transaction.date,
+            debtor_transaction.time,
             debtor_transaction.type,
             debtor_transaction.monthname,
             debtor_transaction.year,
@@ -89,12 +90,10 @@ const getDebtorTransactionByID = (req, res) => __awaiter(void 0, void 0, void 0,
         const SQL = 'SELECT * FROM debtor_transaction WHERE id=$1';
         const values = [debtorTxnID];
         const query = yield postgres_1.default.query(SQL, values);
-        // return query.rows
         res.status(200).json({
             msg: 'Retrived Transaction by ID Successfully',
             debtorTransaction: query.rows
         });
-        console.log(`${debtorTxnID}: Retrived Debtor Transaction `);
     }
     catch (error) {
         res.status(500).json({ error: `${error}` });
@@ -103,19 +102,19 @@ const getDebtorTransactionByID = (req, res) => __awaiter(void 0, void 0, void 0,
 exports.getDebtorTransactionByID = getDebtorTransactionByID;
 const updateDebtorTransaction = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { accountID, debtorTransactionID, supplierID, categoryID, details, amount, type, date } = req.body;
+        const { accountID, debtorTransactionID, supplierID, categoryID, details, amount, type, date, time } = req.body;
         if (!accountID || !debtorTransactionID)
             return res.status(500).json({ error: `Debtor TXN ID or Account ID missings` });
-        console.log({ accountID, debtorTransactionID, supplierID, categoryID, details, amount, type, date });
         const func = new Functions_1.Functions();
         const { day, week, month, monthName, year } = func.breakDownDate(date);
-        const SQL = `UPDATE debtor_transaction SET supplier_id=$1, category_id=$2, details=$3, amount=$4, type=$5, date=$6, day=$7, week=$8, month=$9, monthname=$10, year=$11 WHERE id=$12 AND account_id=$13`;
-        const values = [supplierID, categoryID, details, amount, type, date, day, week, month, monthName, year, debtorTransactionID, accountID];
-        yield postgres_1.default.query(SQL, values);
+        const SQL = `UPDATE debtor_transaction SET supplier_id=$1, category_id=$2, details=$3, amount=$4, type=$5, date=$6, time=$7, day=$8, week=$9, month=$10, monthname=$11, year=$12 WHERE id=$13 AND account_id=$14`;
+        const values = [supplierID, categoryID, details, amount, type, date, time, day, week, month, monthName, year, debtorTransactionID, accountID];
+        const query = yield postgres_1.default.query(SQL, values);
+        if ((query.rowCount || 0) === 0)
+            throw new Error(`Could not update Debtor TXN.`);
         return res.status(200).json({ msg: `DEBTOR TXN: ${debtorTransactionID} Updated` });
     }
     catch (error) {
-        console.log(error);
         return res.status(500).json({ error: `${error}` });
     }
 });
@@ -125,7 +124,6 @@ const deleteDebtorTransaction = (req, res) => __awaiter(void 0, void 0, void 0, 
         const { accountID, debtorTransactionID } = req.body;
         if (!accountID || !debtorTransactionID)
             return res.status(500).json({ error: `Debtor TXN ID or Account ID missings` });
-        console.log({ accountID, debtorTransactionID });
         const SQL = `DELETE FROM debtor_transaction WHERE id=$1 AND account_id=$2`;
         const values = [debtorTransactionID, accountID];
         yield postgres_1.default.query(SQL, values);

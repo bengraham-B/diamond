@@ -42,7 +42,6 @@ exports.getUserCategories = getUserCategories;
 const updateCategory = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { name, details, accountID, categoryID } = req.body;
-        console.log({ name, details, accountID, categoryID });
         const SQL = `UPDATE category SET name=$1, details=$2 WHERE id=$3 AND account_id=$4`;
         const values = [name, details, categoryID, accountID];
         const query = yield postgres_1.default.query(SQL, values);
@@ -60,7 +59,6 @@ const deleteCategory = (req, res) => __awaiter(void 0, void 0, void 0, function*
     try {
         //TODO: Remove category from TXN which have it as their categoryID
         const { categoryID, accountID } = req.body;
-        console.log({ categoryID, accountID });
         const SQL = `DELETE FROM category WHERE id=$1 AND account_id=$2`;
         const query = yield postgres_1.default.query(SQL, [categoryID, accountID]);
         if ((query.rowCount || 0) === 0)

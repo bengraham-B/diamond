@@ -26,11 +26,9 @@ class DebtorTransaction {
                 if (!this.props.accountID || !this.props.debtorID || !this.props.date) {
                     throw new Error("AccountID is required");
                 }
-                console.log(this.props.date);
-                // this.props.date = new Date(this.props)
                 const dateBrokenDown = func.breakDownDate(new Date(this.props.date));
-                const SQL = 'INSERT INTO debtor_transaction(account_id, debtor_id, category_id, type, amount, details, location, supplier_id, date, day, week, month, monthName, year) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) RETURNING id, week, month, details, amount;';
-                const values = [this.props.accountID, this.props.debtorID, this.props.categoryID || null, this.props.type || "", this.props.amount || "", this.props.details || "", this.props.location || "", this.props.supplierID || null, this.props.date, dateBrokenDown.day, dateBrokenDown.week, dateBrokenDown.month, dateBrokenDown.monthName, dateBrokenDown.year];
+                const SQL = 'INSERT INTO debtor_transaction(account_id, debtor_id, category_id, type, amount, details, location, supplier_id, date, time, day, week, month, monthName, year) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15) RETURNING id, week, month, details, amount;';
+                const values = [this.props.accountID, this.props.debtorID, this.props.categoryID || null, this.props.type || "", this.props.amount || "", this.props.details || "", this.props.location || "", this.props.supplierID || null, this.props.date, this.props.time || null, dateBrokenDown.day, dateBrokenDown.week, dateBrokenDown.month, dateBrokenDown.monthName, dateBrokenDown.year];
                 const query = yield postgres_1.default.query(SQL, values);
                 console.log(`Successfully added Debtors Transaction: ${query.rows[0].id}`);
                 return query.rows[0].id;

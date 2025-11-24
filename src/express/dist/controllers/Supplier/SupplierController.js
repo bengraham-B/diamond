@@ -19,7 +19,6 @@ const getUserSuppliers = (req, res) => __awaiter(void 0, void 0, void 0, functio
         const { accountID } = req.body;
         const SQL = `SELECT * FROM supplier WHERE account_id=$1 ORDER BY name ASC`;
         const values = [accountID];
-        console.log("Fteched Suppliers");
         return res.status(200).json({ suppliers: (yield postgres_1.default.query(SQL, values)).rows });
     }
     catch (error) {

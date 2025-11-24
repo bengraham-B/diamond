@@ -26,4 +26,4 @@ const func = new Functions()
 // const weekNumber = func.weekNumber(new Date("2025-04-17"))
 const sillyDate = func.breakDownDate(new Date("2025-08-01"))
 
-console.log(sillyDate)
+// console.log(sillyDate)
