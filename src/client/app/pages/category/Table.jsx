@@ -58,8 +58,9 @@ try {
 
     return (
         <main className='category-table-main'>
-            <table>
-                <thead cellSpacing="0">
+
+            <table className='content-table'>
+                <thead>
                     <tr>
                         <th>Nr</th>
                         <th>name</th>

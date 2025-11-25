@@ -123,14 +123,7 @@ export default function EditDebtorTransactionModal({ isVisible, onClose, editObj
 
     //Y --------------------- Update Transaction ---------------------
     const updateTransaction = async () => {
-        try {
-            // Gets the User's Account ID from Local storage
-		    if(!localStorage.getItem("accountID")){
-                notifyError("Could not get Account ID")
-                // git
-            }
-
-            try {
+         try {
                 const response = await fetch(`${process.env.NEXT_PUBLIC_ENV_SERVER_BASE}/api/debtorTransaction/update`, {
                     method: "PUT",
                     body: JSON.stringify({
@@ -162,9 +155,6 @@ export default function EditDebtorTransactionModal({ isVisible, onClose, editObj
                 notifyError("Could not Update Transaction", error)
                 console.log(error)
             }
-        } catch (error) {
-            notifyError("Could Get Account ID ", error)
-        }
        
     }
 

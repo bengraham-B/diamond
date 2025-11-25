@@ -3,6 +3,11 @@ import React, {useState, useEffect} from 'react'
 import { useSession } from "next-auth/react";
 import "./page.scss"
 
+// =======================================================================================================
+//  										Category Page
+// =======================================================================================================
+
+
 import Table from './Table'
 import AddCategoryModal from './AddCategory/AddCategoryModal'
 
