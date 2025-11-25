@@ -9,7 +9,7 @@ export default async function Header() {
     return (
         <main className={styles.header}>
             <span>
-                <h1>Diamond</h1>
+                <Link href="/" className={styles.title}>Diamond</Link>
             </span>
             <span className={styles.left}>
                 <h3>Account</h3>

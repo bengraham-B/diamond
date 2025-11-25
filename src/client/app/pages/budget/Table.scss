@@ -1,0 +1,49 @@
+.content-table {
+    border-collapse: collapse; // Reduces amount of sapce between cells
+    font-size: 0.9em;
+    width: 95vw;
+    margin: 0 20px;
+    min-width: 800px;
+    border-radius: 5px 5px 0 0;
+    overflow: hidden; //Y Need to add this for the border-radius to be applied
+    box-shadow: 0 0 20px rgba(0,0,0,0.15);
+}
+
+.content-table thead tr{
+    //b background-color: #009879;
+    background-color: $black;
+    color: $diamond-light-blue;
+    text-align: left;
+    font-weight: bold;
+}
+
+// Adding Padding
+.content-table th,
+.content-table td {
+    padding: 12px 15px;
+}
+
+.content-table tbody tr {
+    border-bottom: 1px solid #dddddd;
+}
+
+//Y Second row is a light color
+.content-table tbody tr:nth-last-of-type(even){
+    background-color: #f3f3f3;
+}
+
+.content-table tbody tr:last-of-type {
+    border-bottom: 2px solid #009879;
+}
+
+//Y Active row - Can add this class to the html
+.content-table tbody tr.active-row{
+    font-weight: bold;
+    color: #009879;
+}
+
+// .content-table tbody tr:hover {
+//     // font-weight: bold;
+//     background-color: rgba(28, 211, 174, 0.75);
+//     color: #ffffff;
+// }

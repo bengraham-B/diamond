@@ -104,6 +104,7 @@ export default function Table() {
                     ))}
                 </tbody>
             </table>
+            
             <section>
                 <EditcategoryModal isVisible={isOpenEditCategoryModal} onClose={() => setIsOpenEditCategoryModal(false)} editObject={objectState}/>
                 <ToastContainer />
