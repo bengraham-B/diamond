@@ -73,26 +73,28 @@ const deleteCategory = (req, res) => __awaiter(void 0, void 0, void 0, function*
 exports.deleteCategory = deleteCategory;
 const balancePerDebtorAdnTxn = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { accountID } = req.body;
+        const { accountID, month } = req.body;
         const SQL = `
             SELECT
                 c.id,
                 c.name,
+                c.details,
+                c.type,
                 t.txn,
-                d.debtor_txn
+                d.debtor
             FROM category c
 
             -- Aggregate normal transactions first
             LEFT JOIN (
                 SELECT
                     category_id,
-                    SUM(
-                        CASE
-                            WHEN type = 'debit'  THEN -amount
-                            WHEN type = 'credit' THEN  amount
-                        END
-                    ) AS txn
+                    SUM( CASE
+                WHEN type = 'debit'  THEN -amount
+                WHEN type = 'credit' THEN  amount
+            END) as txn
                 FROM transaction
+                WHERE month=$1
+
                 GROUP BY category_id
             ) t ON t.category_id = c.id
 
@@ -100,20 +102,27 @@ const balancePerDebtorAdnTxn = (req, res) => __awaiter(void 0, void 0, void 0, f
             LEFT JOIN (
                 SELECT
                     category_id,
-                    SUM(
-                        CASE
-                            WHEN type = 'debit'  THEN  amount
-                            WHEN type = 'credit' THEN -amount
-                        END
-                    ) AS debtor_txn
+                    SUM(CASE
+                WHEN type = 'debit'  THEN amount
+                WHEN type = 'credit' THEN -amount
+            END) AS debtor
                 FROM debtor_transaction
+                WHERE month=$2
                 GROUP BY category_id
             ) d ON d.category_id = c.id
 
-            WHERE c.account_id = $1
-            ORDER BY c.name;
+            LEFT JOIN transaction ON c.id = transaction.category_id
+
+
+            WHERE 
+                c.account_id = $3
+                AND transaction.month=$4
+                
+                GROUP BY
+                c.id, c.name, t.txn, d.debtor
+                ORDER BY c.name;
     `;
-        const values = [accountID];
+        const values = [month, month, accountID, month];
         const query = yield postgres_1.default.query(SQL, values);
         if ((query.rowCount || 0) === 0)
             throw new Error("Could not Get Category Balance Per Debtor & TXN Category");

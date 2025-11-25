@@ -105,7 +105,7 @@ const editTransaction = (req, res) => __awaiter(void 0, void 0, void 0, function
         const { accountID, transactionID, supplierID, categoryID, details, amount, type, date, time } = req.body;
         const func = new Functions_1.Functions();
         const { day, week, month, monthName, year } = func.breakDownDate(date);
-        const SQL = `UPDATE transaction SET supplier_id=$1, category_id=$2, details=$3, amount=$4, type=$5, date=$6, time=$7 day=$8, week=$9, month=$10, month_name=$11, year=$12 WHERE id=$13 AND account_id=$14`;
+        const SQL = `UPDATE transaction SET supplier_id=$1, category_id=$2, details=$3, amount=$4, type=$5, date=$6, time=$7, day=$8, week=$9, month=$10, month_name=$11, year=$12 WHERE id=$13 AND account_id=$14`;
         const values = [supplierID, categoryID, details, amount, type, date, time, day, week, month, monthName, year, transactionID, accountID];
         const query = yield postgres_1.default.query(SQL, values);
         if ((query.rowCount || 0) === 0)

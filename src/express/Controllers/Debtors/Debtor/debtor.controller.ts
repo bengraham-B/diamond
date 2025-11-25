@@ -51,7 +51,10 @@ export const getOutstandingBalancePerDebtor = async (req: Request, res: Response
             GROUP BY 
                 debtor_id, 
                 debtor.name,
-                debtor.details;
+                debtor.details
+                
+            ORDER BY
+                debtor.name;
         `
         const SQL2: string = `
             SELECT
@@ -71,8 +74,18 @@ export const getOutstandingBalancePerDebtor = async (req: Request, res: Response
 
             FROM debtor_transaction
 
+            LEFT JOIN debtor ON debtor_transaction.debtor_id = debtor.id
+
+            
             WHERE 
-                account_id=$1
+            debtor_transaction.account_id=$1
+            
+            GROUP BY 
+                debtor.name
+
+            ORDER BY 
+                debtor.name ASC
+
         `
         const values = [accountID]
 
@@ -156,7 +169,7 @@ export const updateDebtor = async (req: Request, res: Response) => {
 export const getDebtors = async (req: Request, res: Response) => {
     try {
         const {accountID} = req.body
-        const SQL:string = `SELECT * FROM debtor WHERE account_id=$1`
+        const SQL:string = `SELECT * FROM debtor WHERE account_id=$1 ORDER BY name`
         const values =[accountID]
         const query = await pool.query(SQL, values)
         return res.status(200).json({debtors: query.rows})

@@ -47,3 +47,27 @@
 //     background-color: rgba(28, 211, 174, 0.75);
 //     color: #ffffff;
 // }
+
+//Y Pills
+.pill{
+    border-radius: 16px;
+    text-align: center;
+    padding: 5px 10px;
+    display: inline-block;
+    margin: 4px 2px;
+    cursor: pointer;
+    min-width: 100px;
+
+
+}
+.credit-pill {
+    background-color: oklch(84.5% 0.143 164.978);
+    // border: 1px solid rgb(0, 96, 69);
+    color: rgb(0, 96, 69);
+    
+}
+.debit-pill{
+    background-color: rgb(255, 201, 201);
+    // border: 1px solid rgb(231, 0, 11);
+    color: oklch(57.7% 0.245 27.325);
+}
