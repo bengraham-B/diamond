@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getUserWeekBudgets = exports.createBudget = void 0;
+exports.getBudgets = exports.createBudget = void 0;
 const Budget_1 = require("../../Class/Budget");
 const postgres_1 = __importDefault(require("../../Database/postgres"));
 const createBudget = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -32,57 +32,55 @@ const createBudget = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     }
 });
 exports.createBudget = createBudget;
-const getUserWeekBudgets = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getBudgets = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { accountID } = yield req.body;
+        const { accountID } = req.body;
         const SQL = `
             SELECT
-                SUM(transaction.amount) AS money_spent,
-                transaction.category_id,
-                transaction.week,
-                transaction.account_id,
+                category.id,
+                category.name,
+                category.type AS cat_type,
+                SUM(CASE WHEN transaction.month_name = 'Jan' THEN transaction.amount ELSE 0 END) AS jan,
+                SUM(CASE WHEN transaction.month_name = 'Feb' THEN transaction.amount ELSE 0 END) AS feb,
+                SUM(CASE WHEN transaction.month_name = 'Mar' THEN transaction.amount ELSE 0 END) AS mar,
+                SUM(CASE WHEN transaction.month_name = 'Apr' THEN transaction.amount ELSE 0 END) AS apr,
+                SUM(CASE WHEN transaction.month_name = 'May' THEN transaction.amount ELSE 0 END) AS may,
+                SUM(CASE WHEN transaction.month_name = 'Jun' THEN transaction.amount ELSE 0 END) AS jun,
+                SUM(CASE WHEN transaction.month_name = 'Jul' THEN transaction.amount ELSE 0 END) AS jul,
+                SUM(CASE WHEN transaction.month_name = 'Aug' THEN transaction.amount ELSE 0 END) AS aug,
+                SUM(CASE WHEN transaction.month_name = 'Sept' THEN transaction.amount ELSE 0 END) AS sept,
+                SUM(CASE WHEN transaction.month_name = 'Oct'  THEN transaction.amount ELSE 0 END) AS oct,
+                SUM(CASE WHEN transaction.month_name = 'Nov' THEN transaction.amount ELSE 0 END) AS nov,
+                SUM(CASE WHEN transaction.month_name = 'Dec' THEN transaction.amount ELSE 0 END) AS dec,
+                AVG(transaction.amount) AS AVG_PER_TXN,
+                COUNT(transaction.amount) AS Count,
+                SUM(transaction.amount) AS total
 
-                budget.amount,
-                budget.details,
-                budget.budget_period,
-                budget.type,
-
-            CASE
-                WHEN SUM(transaction.amount) > budget.amount THEN 'OVER'
-                ELSE 'GOOD'
-            END AS "budget_inidcator",
-                ROUND((SUM(transaction.amount::numeric) / budget.amount::numeric) * 100, 2) AS percent_of_budget,
-                (budget.amount - SUM(transaction.amount)) AS diif
-            
-                FROM
+            FROM 
                 transaction
 
-            RIGHT JOIN budget ON
-                transaction.category_id = budget.category_id
-
-            WHERE
-                budget.budget_period = 'week' AND
+            LEFT JOIN category On transaction.category_id = category.id
+        
+            WHERE 
                 transaction.account_id=$1
-
             GROUP BY 
-                transaction.week, 
-                transaction.category_id, 
-                transaction.account_id,
-                budget.details, 
-                budget.type, 
-                budget.amount, 
-                budget.budget_period
-                
+                category_id, 
+                category.name, 
+                transaction.year,
+                category.id,
+                category.type
+
             ORDER BY 
-                budget.details ASC, 
-                transaction.week ASC;
+                category.name        
         `;
         const values = [accountID];
-        return res.status(200).json({
-            budgets: (yield postgres_1.default.query(SQL, values)).rows
-        });
+        const query = yield postgres_1.default.query(SQL, values);
+        if ((query.rowCount || 0) === 0)
+            throw new Error("Could not get Budgets");
+        res.status(200).json({ budget: query.rows });
     }
     catch (error) {
+        res.status(500).json({ error: `${error}` });
     }
 });
-exports.getUserWeekBudgets = getUserWeekBudgets;
+exports.getBudgets = getBudgets;

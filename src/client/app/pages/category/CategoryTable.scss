@@ -21,6 +21,7 @@
 .content-table th,
 .content-table td {
     padding: 12px 15px;
+    
 }
 
 .content-table tbody tr {
@@ -33,7 +34,7 @@
 }
 
 .content-table tbody tr:last-of-type {
-    border-bottom: 2px solid #009879;
+    border-bottom: 2px solid $diamond-light-blue;
 }
 
 //Y Active row - Can add this class to the html
@@ -42,8 +43,8 @@
     color: #009879;
 }
 
-// .content-table tbody tr:hover {
-//     // font-weight: bold;
-//     background-color: rgba(28, 211, 174, 0.75);
-//     color: #ffffff;
-// }
+.content-table tbody tr:hover {
+    // font-weight: bold;
+    // background-color: rgba(28, 211, 174, 0.75);
+    color: $diamond-light-blue;
+}

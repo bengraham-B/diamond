@@ -20,60 +20,55 @@ export const createBudget = async (req:Request, res: Response) => {
     }
 }
 
-export const getUserWeekBudgets = async (req:Request, res: Response) => {
+export const getBudgets = async (req:Request, res: Response) => {
     try {
-        const {accountID} = await req.body
+        const { accountID } = req.body
+
         const SQL:string = `
             SELECT
-                SUM(transaction.amount) AS money_spent,
-                transaction.category_id,
-                transaction.week,
-                transaction.account_id,
+                category.id,
+                category.name,
+                category.type AS cat_type,
+                SUM(CASE WHEN transaction.month_name = 'Jan' THEN transaction.amount ELSE 0 END) AS jan,
+                SUM(CASE WHEN transaction.month_name = 'Feb' THEN transaction.amount ELSE 0 END) AS feb,
+                SUM(CASE WHEN transaction.month_name = 'Mar' THEN transaction.amount ELSE 0 END) AS mar,
+                SUM(CASE WHEN transaction.month_name = 'Apr' THEN transaction.amount ELSE 0 END) AS apr,
+                SUM(CASE WHEN transaction.month_name = 'May' THEN transaction.amount ELSE 0 END) AS may,
+                SUM(CASE WHEN transaction.month_name = 'Jun' THEN transaction.amount ELSE 0 END) AS jun,
+                SUM(CASE WHEN transaction.month_name = 'Jul' THEN transaction.amount ELSE 0 END) AS jul,
+                SUM(CASE WHEN transaction.month_name = 'Aug' THEN transaction.amount ELSE 0 END) AS aug,
+                SUM(CASE WHEN transaction.month_name = 'Sept' THEN transaction.amount ELSE 0 END) AS sept,
+                SUM(CASE WHEN transaction.month_name = 'Oct'  THEN transaction.amount ELSE 0 END) AS oct,
+                SUM(CASE WHEN transaction.month_name = 'Nov' THEN transaction.amount ELSE 0 END) AS nov,
+                SUM(CASE WHEN transaction.month_name = 'Dec' THEN transaction.amount ELSE 0 END) AS dec,
+                AVG(transaction.amount) AS AVG_PER_TXN,
+                COUNT(transaction.amount) AS Count,
+                SUM(transaction.amount) AS total
 
-                budget.amount,
-                budget.details,
-                budget.budget_period,
-                budget.type,
-
-            CASE
-                WHEN SUM(transaction.amount) > budget.amount THEN 'OVER'
-                ELSE 'GOOD'
-            END AS "budget_inidcator",
-                ROUND((SUM(transaction.amount::numeric) / budget.amount::numeric) * 100, 2) AS percent_of_budget,
-                (budget.amount - SUM(transaction.amount)) AS diif
-            
-                FROM
+            FROM 
                 transaction
 
-            RIGHT JOIN budget ON
-                transaction.category_id = budget.category_id
-
-            WHERE
-                budget.budget_period = 'week' AND
+            LEFT JOIN category On transaction.category_id = category.id
+        
+            WHERE 
                 transaction.account_id=$1
-
             GROUP BY 
-                transaction.week, 
-                transaction.category_id, 
-                transaction.account_id,
-                budget.details, 
-                budget.type, 
-                budget.amount, 
-                budget.budget_period
-                
+                category_id, 
+                category.name, 
+                transaction.year,
+                category.id,
+                category.type
+
             ORDER BY 
-                budget.details ASC, 
-                transaction.week ASC;
+                category.name        
         `
         const values = [accountID]
+        const query = await pool.query(SQL, values)
+        if((query.rowCount || 0) === 0) throw new Error("Could not get Budgets")
 
-        return res.status(200).json(
-            {
-                budgets: (await pool.query(SQL,values)).rows
-            }
-        )
+        res.status(200).json({budget: query.rows})
     } catch (error) {
+        res.status(500).json({error: `${error}`})
         
     }
-
 }

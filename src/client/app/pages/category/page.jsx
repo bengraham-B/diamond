@@ -7,8 +7,8 @@ import "./page.scss"
 //  										Category Page
 // =======================================================================================================
 
-
-import Table from './Table'
+import DebitCategoryTable from './DebitCategoryTable';
+import CreditCategoryTable from './CreditCategoryTable';
 import AddCategoryModal from './AddCategory/AddCategoryModal'
 
 export default function Page() {
@@ -26,8 +26,6 @@ export default function Page() {
 	
 		}, [session])
 	
-		// Early return moved after hook calls
-	
 		if (!session) return 
 	
 	return (
@@ -44,8 +42,9 @@ export default function Page() {
 			</section>
 
 			<section className="category-body-section">
-				<div className="table-container">
-					<Table/>
+				<div className="table-container space-y-4 my-2">
+					<CreditCategoryTable/>
+					<DebitCategoryTable/>
 				</div>
 
 			</section>

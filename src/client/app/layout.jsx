@@ -3,8 +3,8 @@ import "./globals.css";
 
 import Header from "./Components/Header/Header.jsx";
 import Nav from "./Components/Nav/Nav";
-import NavAuth from "./(components)/NavAuth";
 import AuthProvider from "./(components)/AuthProvider";
+import Footer from "./Components/Footer/Footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,6 +32,7 @@ export default function RootLayout({ children }) {
 				<Nav />
 			
 				{children}
+				<Footer/>
 			</AuthProvider>
 		</body>
 		</html>
