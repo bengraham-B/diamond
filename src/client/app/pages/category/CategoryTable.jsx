@@ -65,7 +65,7 @@ export default function CategoryTable() {
         if (!session) return
 
     return (
-        <section>
+        <section className='content-table-wrapper'>
             <table className='content-table'>
                 <thead>
                     <tr>

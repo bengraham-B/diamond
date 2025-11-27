@@ -20,7 +20,7 @@ export default function Page() {
 
 	
 
-	const showTransactionModal = (id) => {
+	const showAddCategoryModal = (id) => {
 		// setObjectState(id); // Extract and set the admin's ID
 		setIsOpenAddCategoryModal(true);
 	};
@@ -45,7 +45,7 @@ export default function Page() {
 
 			<section className="add-cat-section">
 				<div className='name flex justify-end p-2 pr-4 '>
-					<button onClick={showTransactionModal} className='bg-yellow-300 py-2 px-4 mx-6 my-2 rounded'>Add Category</button>
+					<button onClick={showAddCategoryModal} className='bg-yellow-300 py-2 px-4 mx-6 my-2 rounded'>Add Category</button>
 					<button onClick={showEditCategoryModal} className='bg-yellow-300 py-2 px-4 mx-6 my-2 rounded'>Edit Category</button>
 				</div>
 			</section>

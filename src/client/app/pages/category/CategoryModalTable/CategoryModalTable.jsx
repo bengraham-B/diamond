@@ -6,6 +6,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import "./CategoryModalTable.scss"
 
 import EditCategoryModal from './EditCategory/EditCategoryModal';
+import AddCategoryModal from '../AddCategory/AddCategoryModal';
 
 // =======================================================================================================
 //  										Edit Category Modal
@@ -16,6 +17,8 @@ export default function CategoryModalTable({ isVisible, onClose }) {
     const { data: session } = useSession()
 
     const [isOpenEditCategoryModal, setIsOpenEditCategoryModal] = useState(false)
+    const [isOpenAddCategoryModal, setIsOpenAddCategoryModal] = useState(false)
+    
     const [categoryID, setCategoryID] = useState()
     const [categoryName, setCategoryName] = useState()
     const [categoryDetails, setCategoryDetails] = useState()
@@ -28,6 +31,10 @@ export default function CategoryModalTable({ isVisible, onClose }) {
         setCategoryDetails(details)
         setCategoryType(type)
 	}
+
+    const showAddCategoryModal = () => {
+		setIsOpenAddCategoryModal(true);
+	};
     
 
     //Y State Variables For Transaction
@@ -114,7 +121,7 @@ export default function CategoryModalTable({ isVisible, onClose }) {
     useEffect(() => {
         if(!session) return
         getUserCategories()
-    }, [session])
+    }, [session, showAddCategoryModal])
 
     // Early return moved after hook calls
     if (!isVisible) return null
@@ -150,7 +157,11 @@ export default function CategoryModalTable({ isVisible, onClose }) {
                                         <td>{i + 1}</td>
                                         <td>{C.name}</td>
                                         <td>{C.details}</td>
-                                        <td>{C.type}</td>
+                                        <td>
+                                            <span className={`${C.type === 'credit' ? 'bg-green-300 text-green-600' : 'bg-red-300 text-red-600'}  rounded px-4 py-1 text-center`}>
+                                                {C.type}
+                                            </span>
+                                        </td>
                                         <td>
                                             <button className='bg-blue-600 rounded px-4 py-1 text-center  text-white hover:bg-blue-700' onClick={() => showEditCategoryModal({name: C.name, details: C.details, id: C.id, type: C.type})}>
                                                 Edit
@@ -171,19 +182,20 @@ export default function CategoryModalTable({ isVisible, onClose }) {
 
 
                      {/* Action Buttons */}
-                    {/* <div className='flex flex-col space-y-8'>
+                    <div className='flex flex-col space-y-8'>
 
                         <div className="flex justify-between mt-6">
                             <button onClick={onClose} className=" bg-orange-600 hover:bg-orange-700 text-white rounded text-lg px-6 w-44 py-2">Close</button>
-                            <button onClick={updateCategory} className="bg-blue-600 hover:bg-blue-700 text-white rounded text-lg px-6  w-44 py-2">Update</button>
+                            <button onClick={showAddCategoryModal} className="bg-blue-600 hover:bg-blue-700 text-white rounded text-lg px-6  w-44 py-2">Add Category</button>
                         </div>
 
-                        <div className='flex justify-center'>
+                        {/* <div className='flex justify-center'>
                             <button onClick={deleteCategory} className="w-full bg-red-600 hover:bg-red-700 text-white rounded text-lg px-6 py-2">Delete</button>
-                        </div>
-                    </div> */}
+                        </div> */}
+                    </div>
 
                     <EditCategoryModal isVisible={isOpenEditCategoryModal} onClose={() => setIsOpenEditCategoryModal(false)} accountIDParam={session.diamond.accountID} nameParam={categoryName} detailsParam={categoryDetails} categoryIDParam={categoryID} categotyTypeParam={categoryType}/>
+                    <AddCategoryModal isVisible={isOpenAddCategoryModal} onClose={() => setIsOpenAddCategoryModal(false)} accountIDParam={session.diamond.accountID}/>
                     <ToastContainer />
                 </div>
             </div>
