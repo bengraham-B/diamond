@@ -4,9 +4,12 @@ import pool from "../../Database/postgres";
 
 export const createCategory = async (req: Request, res: Response) => {
     try {
-        const {name, details, accountID} = req.body
-        const category: Category = new Category({name: name, details: details, accountID: accountID})
-        category.createCategory()
+        const {accountID, name, details, categoryType} = req.body
+        if(!accountID || !name || !details || !categoryType) throw new Error(`Missing fields`)
+        const SQL: string = `INSERT INTO category(account_id, name, details, type) VALUES($1, $2, $3, $4) RETURNING id;`
+        const values: string[] = [accountID, name, details, categoryType]
+        const query = await pool.query(SQL, values)
+        if((query.rowCount || 0) === 0) throw new Error(`Could not create Category`)
         res.status(200).json({msg: "Created Category Successfully"})
     } catch (error) {
         res.status(500).json({error: error})
@@ -16,7 +19,7 @@ export const createCategory = async (req: Request, res: Response) => {
 export const getUserCategories = async (req: Request, res: Response) => {
     try{
         const  {accountID } = req.body
-        const SQL:string = `SELECT * FROM category WHERE account_id=$1 ORDER BY name ASC`
+        const SQL:string = `SELECT * FROM category WHERE account_id=$1 ORDER BY type, name ASC`
         const values: string[] = [accountID]
         return res.status(200).json({categories: (await pool.query(SQL, values)).rows})
     } catch(error){
@@ -26,9 +29,10 @@ export const getUserCategories = async (req: Request, res: Response) => {
 
 export const updateCategory = async (req: Request, res: Response) => {
     try {
-        const {name, details, accountID, categoryID} = req.body
-        const SQL:string = `UPDATE category SET name=$1, details=$2 WHERE id=$3 AND account_id=$4`
-        const values = [name, details, categoryID, accountID]
+        const {name, details, accountID, categoryID, categoryType} = req.body
+        if(!accountID || !categoryID) throw new Error(`AccountID or CategoryID is missing`)
+        const SQL:string = `UPDATE category SET name=$1, details=$2, type=$3 WHERE id=$4 AND account_id=$5`
+        const values = [name, details, categoryType, categoryID, accountID]
         const query = await pool.query(SQL,values)
         if((query.rowCount || 0 ) === 0) return res.status(500).json({msg: `Could not update Category`})
         return res.status(200).json({msg: `Category Update Successfully`})
@@ -56,66 +60,74 @@ export const deleteCategory = async (req: Request, res: Response) => {
     }
 }
 
-export const balancePerDebtorAdnTxn =  async (req: Request, res: Response) => {
+export const getMonthTotalPerCategory = async (req:Request, res: Response) => {
     try {
-        const {accountID, month} = req.body
-        const SQL: string = `
+        const { accountID, year } = req.body
+
+        const SQL:string = `
             SELECT
-                c.id,
-                c.name,
-                c.details,
-                c.type,
-                t.txn,
-                d.debtor
-            FROM category c
+                category.id,
+                category.name,
+                category.type AS cat_type,
+                SUM(CASE WHEN transaction.month_name = 'Jan' THEN transaction.amount ELSE 0 END) AS jan,
+                SUM(CASE WHEN transaction.month_name = 'Feb' THEN transaction.amount ELSE 0 END) AS feb,
+                SUM(CASE WHEN transaction.month_name = 'Mar' THEN transaction.amount ELSE 0 END) AS mar,
+                SUM(CASE WHEN transaction.month_name = 'Apr' THEN transaction.amount ELSE 0 END) AS apr,
+                SUM(CASE WHEN transaction.month_name = 'May' THEN transaction.amount ELSE 0 END) AS may,
+                SUM(CASE WHEN transaction.month_name = 'Jun' THEN transaction.amount ELSE 0 END) AS jun,
+                SUM(CASE WHEN transaction.month_name = 'Jul' THEN transaction.amount ELSE 0 END) AS jul,
+                SUM(CASE WHEN transaction.month_name = 'Aug' THEN transaction.amount ELSE 0 END) AS aug,
+                SUM(CASE WHEN transaction.month_name = 'Sept' THEN transaction.amount ELSE 0 END) AS sept,
+                SUM(CASE WHEN transaction.month_name = 'Oct'  THEN transaction.amount ELSE 0 END) AS oct,
+                SUM(CASE WHEN transaction.month_name = 'Nov' THEN transaction.amount ELSE 0 END) AS nov,
+                SUM(CASE WHEN transaction.month_name = 'Dec' THEN transaction.amount ELSE 0 END) AS dec,
+                AVG(transaction.amount) AS AVG_PER_TXN,
+                COUNT(transaction.amount) AS Count,
+                SUM(transaction.amount) AS total
 
-            -- Aggregate normal transactions first
-            LEFT JOIN (
-                SELECT
-                    category_id,
-                    SUM( CASE
-                WHEN type = 'debit'  THEN -amount
-                WHEN type = 'credit' THEN  amount
-            END) as txn
-                FROM transaction
-                WHERE month=$1
+            FROM 
+                transaction
 
-                GROUP BY category_id
-            ) t ON t.category_id = c.id
-
-            -- Aggregate debtor transactions separately
-            LEFT JOIN (
-                SELECT
-                    category_id,
-                    SUM(CASE
-                WHEN type = 'debit'  THEN amount
-                WHEN type = 'credit' THEN -amount
-            END) AS debtor
-                FROM debtor_transaction
-                WHERE month=$2
-                GROUP BY category_id
-            ) d ON d.category_id = c.id
-
-            LEFT JOIN transaction ON c.id = transaction.category_id
-
-
-            WHERE 
-                c.account_id = $3
-                AND transaction.month=$4
-                
-                GROUP BY
-                c.id, c.name, t.txn, d.debtor
-                ORDER BY c.name;
-    `
-    const values =[ month, month, accountID, month]
-    const query = await pool.query(SQL, values)
-    if((query.rowCount || 0) === 0) throw new Error("Could not Get Category Balance Per Debtor & TXN Category")
-    res.status(200).json({balances: query.rows})
+            LEFT JOIN category On transaction.category_id = category.id
         
+            WHERE 
+                transaction.account_id=$1
+            GROUP BY 
+                category_id, 
+                category.name, 
+                transaction.year,
+                category.id,
+                category.type
+
+            ORDER BY 
+                category.name        
+        `
+        const values = [accountID]
+        const query = await pool.query(SQL, values)
+        if((query.rowCount || 0) === 0) throw new Error("Could not get Budgets [Query 1]")
+
+        //Y This is the debit can credit balance for the year: Query2
+        const SQL_2: string = `
+            SELECT
+                SUM(CASE WHEN type='debit' THEN amount ELSE 0 END) AS year_debit_total,
+                SUM(CASE WHEN type='credit' THEN amount ELSE 0 END) AS year_credit_total,
+                SUM(CASE WHEN type='credit' THEN amount ELSE 0 END) - SUM(CASE WHEN type='debit' THEN amount ELSE 0 END) AS year_balance
+
+            FROM
+                transaction
+
+            WHERE
+                category_id IS NOT NULL AND
+                account_id=$1 AND
+                year =$2
+    `
+        const values_2 = [accountID, year]
+        const query2 = await pool.query(SQL_2, values_2)
+        if((query2.rowCount || 0) === 0) throw new Error("Could not get Debit and Credit balance [Query 2]")
+
+        res.status(200).json({budget: query.rows, balance: query2.rows})
     } catch (error) {
-        console.error(`Could not Get Category Balance Per Debtor & TXN Category: ${error}`)
-        res.status(500).json({error: error})
+        res.status(500).json({error: `${error}`})
+        
     }
-
 }
-

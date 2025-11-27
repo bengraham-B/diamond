@@ -2,13 +2,13 @@ import express from "express"
 const router = express.Router()
 
 // Importing Controllers
-import { balancePerDebtorAdnTxn, createCategory, deleteCategory, getUserCategories, updateCategory } from "../Controllers/Category/Category.controller"
+import { getMonthTotalPerCategory, createCategory, deleteCategory, getUserCategories, updateCategory } from "../Controllers/Category/Category.controller"
 
 router.post("/", createCategory)
 
 router.post("/get_user_categories", getUserCategories)
 
-router.post("/balance_per_debtor_&_txn", balancePerDebtorAdnTxn)
+router.post("/get_month_total_per_category", getMonthTotalPerCategory)
 
 router.put("/", updateCategory)
 

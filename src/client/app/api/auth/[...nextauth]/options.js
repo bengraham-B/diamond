@@ -18,7 +18,7 @@ const fetchProviderUserDetails = async (emailFromProvider, nameFromProvider, pro
         })
         const data = await response.json()
         if(response.ok){
-            console.log({data}, "00001")
+            // console.log({data}, "00001")
         }else {
             throw new Error(error, "00001")
         }
@@ -33,7 +33,7 @@ export const options = {
     providers: [
         GithubProvider({
             profile(profile){
-                console.log("Profile Github: 001", profile)
+                // console.log("Profile Github: 001", profile)
 
                 let userRole = "Github User"
                 if(profile?.email === "grahamben7@gmail.com"){
@@ -54,7 +54,7 @@ export const options = {
        
         GoogleProvider({
             profile(profile){
-                console.log("Profile Google: 002", profile)
+                // console.log("Profile Google: 002", profile)
 
                 let userRole = "Google User"
                 if(profile?.email === "grahamben7@gmail.com"){
@@ -152,7 +152,7 @@ export const options = {
         async jwt({token, user}){
             if (user) {
                 const diamondUser = await fetchProviderUserDetails(user.email, user.name, "Github") 
-                console.log({diamondUser}, "0010")
+                // console.log({diamondUser}, "0010")
                 token.role = user.role;          // you already have this
                 token.user = user;            // store ENTIRE authenticatedDiamondUser object
                 token.diamond = diamondUser //Y This is the Auth Object for DIAMOND_AUTH

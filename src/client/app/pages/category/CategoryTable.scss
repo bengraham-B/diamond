@@ -5,8 +5,13 @@
     margin: 0 20px;
     min-width: 800px;
     border-radius: 5px 5px 0 0;
-    overflow: hidden; //Y Need to add this for the border-radius to be applied
+    // overflow: hidden; //Y Need to add this for the border-radius to be applied
     box-shadow: 0 0 20px rgba(0,0,0,0.15);
+}
+
+th {
+    position: sticky;
+    top: 0;
 }
 
 .content-table thead tr{

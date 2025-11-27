@@ -3,8 +3,8 @@ import { NextResponse } from 'next/server'
 
 export default withAuth(
     function middleware(req){
-        console.log(req.nextUrl.pathname)
-        console.log(req.nextauth.token.role)
+        // console.log(req.nextUrl.pathname)
+        // console.log(req.nextauth.token.role)
 
         //Y Implement Logic - can customise
             //Y Only Admins can visit a specific page

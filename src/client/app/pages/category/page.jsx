@@ -7,19 +7,27 @@ import "./page.scss"
 //  										Category Page
 // =======================================================================================================
 
-import DebitCategoryTable from './DebitCategoryTable';
-import CreditCategoryTable from './CreditCategoryTable';
+import CategoryTable from './CategoryTable';
+
 import AddCategoryModal from './AddCategory/AddCategoryModal'
+import EditcategoryModal from './CategoryModalTable/CategoryModalTable';
 
 export default function Page() {
 	const { data: session } = useSession()
 	
 	const [isOpenAddCategoryModal, setIsOpenAddCategoryModal] = useState(false)
+	const [isOpenEditCategoryModal, setIsOpenEditCategoryModal] = useState(false)
+
+	
 
 	const showTransactionModal = (id) => {
 		// setObjectState(id); // Extract and set the admin's ID
 		setIsOpenAddCategoryModal(true);
 	};
+
+	const showEditCategoryModal = () => {
+		setIsOpenEditCategoryModal(true)
+	}
 
 	  useEffect(() => {
 		if(!session) return
@@ -36,21 +44,22 @@ export default function Page() {
 			</section>
 
 			<section className="add-cat-section">
-				<div className='name flex justify-end p-2 '>
+				<div className='name flex justify-end p-2 pr-4 '>
 					<button onClick={showTransactionModal} className='bg-yellow-300 py-2 px-4 mx-6 my-2 rounded'>Add Category</button>
+					<button onClick={showEditCategoryModal} className='bg-yellow-300 py-2 px-4 mx-6 my-2 rounded'>Edit Category</button>
 				</div>
 			</section>
 
 			<section className="category-body-section">
 				<div className="table-container space-y-4 my-2">
-					<CreditCategoryTable/>
-					<DebitCategoryTable/>
+					<CategoryTable/>
 				</div>
 
 			</section>
 			
 			<section>
 				<AddCategoryModal isVisible={isOpenAddCategoryModal} onClose={() => setIsOpenAddCategoryModal(false)} accountIDParam={session.diamond.accountID}/>
+				<EditcategoryModal isVisible={isOpenEditCategoryModal} onClose={() => setIsOpenEditCategoryModal(false)} accountIDParam={session.diamond.accountID}/>
 			</section>
 		</main>
 	)

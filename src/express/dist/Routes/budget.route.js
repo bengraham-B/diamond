@@ -7,5 +7,4 @@ const express_1 = __importDefault(require("express"));
 const router = express_1.default.Router();
 const BudgetController_1 = require("../Controllers/Budget/BudgetController");
 router.post("/create_budget", BudgetController_1.createBudget);
-router.post("/get_budgets", BudgetController_1.getBudgets);
 exports.default = router;
