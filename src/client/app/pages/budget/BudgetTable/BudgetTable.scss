@@ -1,0 +1,65 @@
+#Budget-Table-Wrapper{
+    height: 100vh;
+	width: 100%;
+	padding: 5px;
+}
+
+#Budget-Table {
+    border-collapse: collapse;
+    width: 100%;
+
+    th, td{
+        text-align: center;
+        padding: 8px;
+		border: 1px solid #e5e7eb;
+        // border-left: none;
+        // border-right: none;
+    }
+
+	th,
+  	td {
+		border-left: none;
+		border-right: none;
+  	}
+    // --- GROUP BORDERS ---
+    // PREVIOUS MONTH = columns 2,3,4
+    th:nth-child(2),
+    td:nth-child(2) {
+        border-left: 2px solid #000;
+    }
+
+    th:nth-child(4),
+    td:nth-child(4) {
+        border-right: 2px solid #000;
+    }
+
+    // CURRENT MONTH group = columns 5,6,7
+    th:nth-child(5),
+    td:nth-child(5) {
+        border-left: 2px solid #000;
+    }
+    th:nth-child(7),
+    td:nth-child(7) {
+        border-right: 2px solid #000;
+    }
+
+	// TOTAL group = columns 8,9,10
+	th:nth-child(8),
+	td:nth-child(8) {
+		border-left: 2px solid #000;
+	}
+	th:nth-child(10),
+	td:nth-child(10) {
+		border-right: 2px solid #000;
+	}
+
+	.balance-row{
+		border-top: 2px solid #000;
+		border-bottom: 2px solid #000;
+	}
+    
+
+
+    
+
+}

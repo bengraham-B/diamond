@@ -10,13 +10,14 @@
     border-radius: 5px 5px 0 0;
     overflow: auto; //Y Need to add this for the border-radius to be applied
     box-shadow: 0 0 20px rgba(0,0,0,0.15);
+    
+    th {
+        position: sticky;
+        background-color: $black;
+        top: 0;
+    }
 }
 
-th {
-    position: sticky;
-    background-color: $black;
-    top: 0;
-}
 
 .content-table thead tr{
     //b background-color: #009879;

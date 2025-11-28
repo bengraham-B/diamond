@@ -8,19 +8,22 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createBudget = void 0;
-const Budget_1 = require("../../Class/Budget");
+const postgres_1 = __importDefault(require("../../Database/postgres"));
 const createBudget = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     console.log("Create Budget");
     try {
-        const { accountID, amount, details, categoryID, type, tableName, period } = req.body;
-        const budget = new Budget_1.Budget({ accountID: accountID, details: details, amount: amount, categoryID: categoryID, type: type, tableName: tableName, period: period });
-        const id = yield budget.createBudget();
-        res.status(200).json({
-            msg: "Budget Created Successfully",
-            id: id
-        });
+        const { accountID, amount, details, categoryID, type } = req.body;
+        const SQL = `INSERT INTO budget ("account_id", "category_id", "details", "amount", "type") VALUES ($1, $2, $3, $4, $5) RETURNING *`;
+        const values = [accountID, categoryID, details, amount, type];
+        const query = yield postgres_1.default.query(SQL, values);
+        if ((query.rowCount || 0) === 0)
+            throw new Error("Could not create Budget");
+        res.status(200).json({ msg: "Budget Created Successfully" });
     }
     catch (error) {
         console.log(`${error}`);

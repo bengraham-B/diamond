@@ -20,20 +20,15 @@ class Budget {
     }
     createBudget() {
         return __awaiter(this, void 0, void 0, function* () {
-            if (this.props.period === "week" || this.props.period === "month") {
-                try {
-                    const SQL = `INSERT INTO budget ("account_id", "category_id", "details", "amount", "table_name", "type", "budget_period") VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`;
-                    const values = [this.props.accountID, this.props.categoryID, this.props.details, this.props.amount, this.props.tableName, this.props.type, this.props.period];
-                    const query = yield postgres_1.default.query(SQL, values);
-                    console.log("Budget Created: " + query.rows[0]);
-                    return query.rows[0].id;
-                }
-                catch (error) {
-                    throw new Error("Could not create Budget");
-                }
+            try {
+                const SQL = `INSERT INTO budget ("account_id", "category_id", "details", "amount", "table_name", "type") VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`;
+                const values = [this.props.accountID, this.props.categoryID, this.props.details, this.props.amount, this.props.tableName, this.props.type];
+                const query = yield postgres_1.default.query(SQL, values);
+                console.log("Budget Created: " + query.rows[0]);
+                return query.rows[0].id;
             }
-            else {
-                throw new Error("Budget Period Not Applicable: " + this.props.period);
+            catch (error) {
+                throw new Error("Could not create Budget");
             }
         });
     }
