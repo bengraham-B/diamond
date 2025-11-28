@@ -68,52 +68,43 @@ const getBudget = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const QUERY_PREVIOUS_MONTH = yield postgres_1.default.query(SQL_PREVIOUS_MONTH, VALUES_PREVIOUS_MONTH);
         if ((QUERY_PREVIOUS_MONTH.rowCount || 0) === 0)
             throw new Error(`Could not get Previous mont's budget records`);
-        const SQL_MONTH_TOTALS = `
-        SELECT
-            transaction.month,
-            SUM(CASE WHEN transaction.month=$1 AND transaction.type='credit' THEN budget.amount ELSE 0 END) AS previous_credit_budget_total,
-            SUM(CASE WHEN transaction.month=$1 AND transaction.type='credit' THEN transaction.amount ELSE 0 END) AS previous_credit_actual_total,
-            SUM(CASE WHEN transaction.month=$1 AND transaction.type='credit' THEN budget.amount ELSE 0 END) - SUM(CASE WHEN transaction.month=$1 AND transaction.type='credit' THEN transaction.amount ELSE 0 END)  AS previous_credit_diff_total,
+        const SQL_CURRENT_MONTH = `
+            SELECT
+                budget.id,
+                transaction.month,
+                budget.type AS budget_type,
+                category.name AS category_name,
+                budget.amount AS budget,
+                SUM(transaction.amount) AS actual,
+                budget.amount- SUM(transaction.amount) AS diff
 
-            SUM(CASE WHEN transaction.month=$1 AND transaction.type='debit' THEN budget.amount ELSE 0 END) AS previous_debit_budget_total,
-            SUM(CASE WHEN transaction.month=$1 AND transaction.type='debit' THEN transaction.amount ELSE 0 END) AS previous_debit_actual_total,
-            SUM(CASE WHEN transaction.month=$1 AND transaction.type='debit' THEN budget.amount ELSE 0 END) - SUM(CASE WHEN transaction.month=$1 AND transaction.type='debit' THEN transaction.amount ELSE 0 END)  AS previous_debit_diff_total,
+            FROM
+                category
 
-            SUM(CASE WHEN transaction.month=$2 AND transaction.type='credit' THEN budget.amount ELSE 0 END) AS current_credit_budgte_total,
-            SUM(CASE WHEN transaction.month=$2 AND transaction.type='credit' THEN transaction.amount ELSE 0 END) AS current_credit_actual_total,
-            SUM(CASE WHEN transaction.month=$2 AND transaction.type='credit' THEN budget.amount ELSE 0 END) - SUM(CASE WHEN transaction.month=$2 AND transaction.type='credit' THEN transaction.amount ELSE 0 END)  AS current_credit_diff_total,
+            RIGHT JOIN budget on category.id = budget.category_id
+            RIGHT JOIN transaction ON category.id = transaction.category_id
 
-            SUM(CASE WHEN transaction.month=$2 AND transaction.type='debit' THEN budget.amount ELSE 0 END) AS current_debit_budget_total,
-            SUM(CASE WHEN transaction.month=$2 AND transaction.type='debit' THEN transaction.amount ELSE 0 END) AS current_debit_actual_total,
-            SUM(CASE WHEN transaction.month=$2 AND transaction.type='debit' THEN budget.amount ELSE 0 END) - SUM(CASE WHEN transaction.month=$2 AND transaction.type='debit' THEN transaction.amount ELSE 0 END)  AS current_debit_diff_total
+            WHERE
+                transaction.month=$1
+                AND budget.account_id=$2
 
-        FROM
-            budget
+            GROUP BY
+                category.name,
+                budget.amount,
+                budget.type,
+                transaction.month,
+                budget.id
 
-        RIGHT JOIN transaction ON budget.category_id = transaction.category_id
-        RIGHT JOIN category ON budget.category_id = category.id
-
-        WHERE
-            budget.account_id=$3
-            AND transaction.year=$4
-
-        GROUP BY
-            transaction.month
-
-
-        ORDER BY
-            transaction.month DESC;
-
-        `;
-        const VALUES_MONTH_TOTALs = [(month - 1), month, accountID, '2025'];
-        const QUERY_MONTH_TOTALs = yield postgres_1.default.query(SQL_MONTH_TOTALS, VALUES_MONTH_TOTALs);
-        if ((QUERY_MONTH_TOTALs.rowCount || 0) === 0)
-            throw new Error(`Could not get Previous mont's budget records`);
+            ORDER BY
+                budget.type;
+            `;
+        const VALUES_CURRENT_MONTH = [month, accountID];
+        const QUERY_CURRENT_MONTH = yield postgres_1.default.query(SQL_CURRENT_MONTH, VALUES_CURRENT_MONTH);
+        if ((QUERY_CURRENT_MONTH.rowCount || 0) === 0)
+            throw new Error(`Could not get Current mont's budget records`);
         res.status(200).json({
             previous_month: QUERY_PREVIOUS_MONTH.rows,
-            // current_month:QUERY_PREVIOUS_MONTH.rows,
-            // total:QUERY_PREVIOUS_MONTH.rows,
-            month_totals: QUERY_MONTH_TOTALs.rows
+            current_month: QUERY_CURRENT_MONTH.rows,
         });
     }
     catch (error) {

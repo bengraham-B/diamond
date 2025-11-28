@@ -8,6 +8,39 @@
     border-collapse: collapse;
     width: 100%;
 
+	thead, tr {
+		position: sticky;
+		top: 0;
+
+		.previous-month {
+			background-color: #fecaca; // soft red (Tailwind red-200)
+			color: #b91c1c;            // dark red (Tailwind red-700)
+			font-weight: 600;
+
+		}
+
+		.current-month {
+			background-color: #f7cc4d; // soft red (Tailwind red-200)
+			color: #b97a1c;            // dark red (Tailwind red-700)
+			font-weight: 600;
+
+
+		}
+		.total {
+			background-color: #52eb82; // soft red (Tailwind red-200)
+			color: #259f0a;            // dark red (Tailwind red-700)
+			font-weight: 600;
+		}
+	}
+
+	td {
+		cursor: pointer;
+
+		// &:hover{
+		// 	background-color: rgb(54, 232, 223);
+		// }
+	}
+
     th, td{
         text-align: center;
         padding: 8px;
@@ -21,6 +54,19 @@
 		border-left: none;
 		border-right: none;
   	}
+
+	.red-cell {
+		background-color: #fecaca; // soft red (Tailwind red-200)
+		color: #b91c1c;            // dark red (Tailwind red-700)
+		font-weight: 600;
+	}
+	
+	.green-cell {
+		background-color: #bbf7d0; // soft green (Tailwind green-200)
+		color: #15803d;            // dark green (Tailwind green-700)
+		font-weight: 600;
+	}
+
     // --- GROUP BORDERS ---
     // PREVIOUS MONTH = columns 2,3,4
     th:nth-child(2),

@@ -5,7 +5,7 @@ import { useSession } from 'next-auth/react'
 import './CategoryTable.scss'
 
 export default function CategoryTable() {
-        const { data: session } = useSession()
+    const { data: session } = useSession()
     
     const [budgets, setBudgets] = useState([])
     const [creditBalance, setCreditBalance] = useState(0)
@@ -26,8 +26,8 @@ export default function CategoryTable() {
             }
     
     
-        //Y Fetch Categories
-        const fetchBudgets = async() => {
+        //Y Fetch Categories Per Month
+        const fetchCategoriesPerMonth = async() => {
             try {
                 const response = await fetch(`${process.env.NEXT_PUBLIC_ENV_SERVER_BASE}/api/category/get_month_total_per_category`, {
                     method: "POST",
@@ -59,7 +59,7 @@ export default function CategoryTable() {
 
         useEffect(() => {
             if(!session) return
-            fetchBudgets()
+            fetchCategoriesPerMonth()
         },[session])
 
         if (!session) return

@@ -5,13 +5,14 @@ import pool from "../../Database/postgres";
 export const createCategory = async (req: Request, res: Response) => {
     try {
         const {accountID, name, details, categoryType} = req.body
-        if(!accountID || !name || !details || !categoryType) throw new Error(`Missing fields`)
+        // if(!accountID || !name || !details || !categoryType) throw new Error(`Missing fields`)
         const SQL: string = `INSERT INTO category(account_id, name, details, type) VALUES($1, $2, $3, $4) RETURNING id;`
         const values: string[] = [accountID, name, details, categoryType]
         const query = await pool.query(SQL, values)
         if((query.rowCount || 0) === 0) throw new Error(`Could not create Category`)
         res.status(200).json({msg: "Created Category Successfully"})
     } catch (error) {
+        console.error(error)
         res.status(500).json({error: error})
     }
 }

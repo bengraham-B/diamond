@@ -17,8 +17,7 @@ const postgres_1 = __importDefault(require("../../Database/postgres"));
 const createCategory = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { accountID, name, details, categoryType } = req.body;
-        if (!accountID || !name || !details || !categoryType)
-            throw new Error(`Missing fields`);
+        // if(!accountID || !name || !details || !categoryType) throw new Error(`Missing fields`)
         const SQL = `INSERT INTO category(account_id, name, details, type) VALUES($1, $2, $3, $4) RETURNING id;`;
         const values = [accountID, name, details, categoryType];
         const query = yield postgres_1.default.query(SQL, values);
@@ -27,6 +26,7 @@ const createCategory = (req, res) => __awaiter(void 0, void 0, void 0, function*
         res.status(200).json({ msg: "Created Category Successfully" });
     }
     catch (error) {
+        console.error(error);
         res.status(500).json({ error: error });
     }
 });
