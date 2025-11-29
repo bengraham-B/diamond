@@ -15,12 +15,15 @@
 
             table {
                 border-collapse: collapse;
-                width: full;
+                // table-layout: fixed;   /* FIXES WIDTH ISSUE */
+                width: 100%;           /* 'full' is invalid */
                 height: 40vh;
+                table-layout: auto;
 
                 thead {
                     .th-total, .th-name {
                         background: orange;
+                        width: 400px;
                     }
 
                     .month-th-row{
@@ -54,9 +57,11 @@
                 td:first-child {
                     position: sticky;
                     left: 0;
-                    background-color: orange;
-                    z-index: 15; // higher than header so overlapping works
-                      /* Restore borders that were being hidden */
+                    width: 2500px;
+                    min-width: 150px;
+                    max-width: 500px;
+                    background-color: magenta;
+                    z-index: 15;
                     border: 2px solid #072053 !important;
                 }
 
