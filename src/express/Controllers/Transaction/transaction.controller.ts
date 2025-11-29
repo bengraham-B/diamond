@@ -110,7 +110,7 @@ export const editTransaction = async (req:Request, res: Response) => {
         const func = new Functions()
         const {day, week, month, monthName, year} = func.breakDownDate(date)
         const SQL: string = `UPDATE transaction SET supplier_id=$1, category_id=$2, details=$3, amount=$4, type=$5, date=$6, time=$7, day=$8, week=$9, month=$10, month_name=$11, year=$12 WHERE id=$13 AND account_id=$14`
-        const values = [supplierID, categoryID, details, amount, type, date, time, day, week, month, monthName, year, transactionID, accountID]
+        const values = [supplierID, categoryID, details, amount, type, date, time || null, day, week, month, monthName, year, transactionID, accountID]
         const query = await pool.query(SQL, values)
         if((query.rowCount || 0) === 0) throw new Error(`Could not execute SQL Edit TXN Controller`)
         return res.status(200).json({msg: `Txn: ${transactionID} Updated`})

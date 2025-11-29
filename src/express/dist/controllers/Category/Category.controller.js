@@ -33,12 +33,13 @@ const createCategory = (req, res) => __awaiter(void 0, void 0, void 0, function*
 exports.createCategory = createCategory;
 const getUserCategories = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { accountID } = req.body;
+        const { accountID, year } = req.body;
         const SQL = `SELECT * FROM category WHERE account_id=$1 ORDER BY type, name ASC`;
         const values = [accountID];
         return res.status(200).json({ categories: (yield postgres_1.default.query(SQL, values)).rows });
     }
     catch (error) {
+        console.error(error);
         res.status(500).json({ error: error });
     }
 });
@@ -108,6 +109,8 @@ const getMonthTotalPerCategory = (req, res) => __awaiter(void 0, void 0, void 0,
         
             WHERE 
                 transaction.account_id=$1
+                AND transaction.year=$2
+
             GROUP BY 
                 category_id, 
                 category.name, 
@@ -118,7 +121,7 @@ const getMonthTotalPerCategory = (req, res) => __awaiter(void 0, void 0, void 0,
             ORDER BY 
                 category.name        
         `;
-        const values = [accountID];
+        const values = [accountID, year];
         const query = yield postgres_1.default.query(SQL, values);
         if ((query.rowCount || 0) === 0)
             throw new Error("Could not get Budgets [Query 1]");

@@ -6,8 +6,8 @@ import "./BudgetTable.scss"
 export default function BudgetTable() {
     const { data: session } = useSession()
 
-    const [previousMonthBudget, setPreviousMonthBudget] = useState([])
-    const [currentMonthBudget, setCurrentMonthBudget] = useState([])
+    const [creditBudgetTable, setCreditBudgetTable] = useState([])
+    const [debitBudgetTable, setDebitBudgetTable] = useState([])
 
     const [previousMonthTotals_CREDIT, setPreviousMonthTotals_CREDIT] = useState([])
     const [currentMonthTotals_CREDIT, setCurrentMonthTotals_CREDIT] = useState([])
@@ -16,13 +16,13 @@ export default function BudgetTable() {
     const [currentMonthTotals_DEBIT, setCurrentMonthTotals_DEBIT] = useState([])
 
 
-    const fetchBudget = async () => {
+    const fetchBudgetCreditTable = async () => {
         try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_ENV_SERVER_BASE}/api/budget/get_budget`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_ENV_SERVER_BASE}/api/budget/credit_budget_table`, {
                 method: "POST",
                 body: JSON.stringify({
                     accountID: session.diamond.accountID,
-                    month: 11
+                    year: 2025
                 }),
                 headers: {
                     "Content-Type": "application/json"
@@ -31,10 +31,31 @@ export default function BudgetTable() {
 
             if(response.ok){
                 const data = await response.json()
-                setPreviousMonthBudget(data.previous_month)
-                setCurrentMonthBudget(data.current_month)
+                console.log(data.creditBudgetTable)
+                setCreditBudgetTable(data.creditBudgetTable)
+            }
+        } catch (error) {
+            console.error(error)
+        }
+    }
 
-                console.log(data.month_totals)
+    const fetchBudgetDebitTable = async () => {
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_ENV_SERVER_BASE}/api/budget/debit_budget_table`, {
+                method: "POST",
+                body: JSON.stringify({
+                    accountID: session.diamond.accountID,
+                    year: 2025
+                }),
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+
+            if(response.ok){
+                const data = await response.json()
+                console.log(data.creditBudgetTable)
+                setDebitBudgetTable(data.debitBudgetTable)
             }
         } catch (error) {
             console.error(error)
@@ -91,7 +112,9 @@ export default function BudgetTable() {
 
     useEffect(() => {
         if(!session) return
-        fetchBudget()
+        fetchBudgetCreditTable()
+        fetchBudgetDebitTable()
+
         fetchBudgetTotals_CREDIT()
         fetchBudgetTotals_DEBIT()
     },[session])
@@ -105,17 +128,27 @@ export default function BudgetTable() {
                 <thead>
                     <tr>
                         <th></th>
+                        <th colSpan={3} className='previous-month'>SEPT</th>
                         <th colSpan={3} className='previous-month'>OCT</th>
                         <th colSpan={3} className='current-month'>NOV</th>
+                        <th colSpan={3} className='current-month'>DEC</th>
                         <th colSpan={3} className='total'>TOTAL</th>
                     </tr>
                     <tr className='budget-details-hr'>
-                        <th></th>
+                        <th className='top-left-conrner'></th>
                         <th>BUDGET</th>
                         <th>ACTUAL</th>
                         <th>DIFF</th>
                        
-                       <th>BUDGET</th>
+                        <th>BUDGET</th>
+                        <th>ACTUAL</th>
+                        <th>DIFF</th>
+                        
+                        <th>BUDGET</th>
+                        <th>ACTUAL</th>
+                        <th>DIFF</th>
+                        
+                        <th>BUDGET</th>
                         <th>ACTUAL</th>
                         <th>DIFF</th>
                         
@@ -126,24 +159,37 @@ export default function BudgetTable() {
                 </thead>
 
                 <tbody>
-                    <tr className='bg-green-600 text-white text-left'>
-                        <td colSpan={10} className='text-start'>CREDIT</td>
+                    <tr className='credit-row-header bg-green-600 text-white text-left'>
+                        <td colSpan={16} className='text-start'>CREDIT</td>
                     </tr>
 
-                    {previousMonthBudget && previousMonthBudget.filter((PB) => PB.budget_type === 'credit').map((PB) => (
-                        <tr key={PB.id}>
-                            <td>{PB.category_name}</td>
-                            <td>R{PB.budget}</td>
-                            <td>R{(PB.actual).toFixed(2)}</td>
-                            <td className={`${PB.diff < 0 ? 'green-cell' : 'red-cell'}`}>R{(PB.diff).toFixed(2) * -1}</td>
+                    {creditBudgetTable && creditBudgetTable.map((CB) => (
+                        <tr key={CB.id}>
+                            <td className='budget-name-credit'>{CB.name}</td>
+
+                            <td>R{CB.sept_budget}</td>
+                            <td>R{(CB.sept_actual).toFixed(2)}</td>
+                            <td className={`${CB.sept_diff < 0 ? 'green-cell' : 'red-cell'}`}>R{(CB.sept_diff).toFixed(2) * -1}</td>
                             
-                            <td>NOV B</td>
-                            <td>NOV A</td>
-                            <td>NOV D</td>
+
+                            <td>R{CB.oct_budget}</td>
+                            <td>R{(CB.oct_actual).toFixed(2)}</td>
+                            <td className={`${CB.oct_diff < 0 ? 'green-cell' : 'red-cell'}`}>R{(CB.oct_diff).toFixed(2) * -1}</td>
+                            
+
+                            <td>R{CB.nov_budget}</td>
+                            <td>R{(CB.nov_actual).toFixed(2)}</td>
+                            <td className={`${CB.nov_diff < 0 ? 'green-cell' : 'red-cell'}`}>R{(CB.nov_diff).toFixed(2) * -1}</td>
+        
+                            <td>R{CB.dec_budget}</td>
+                            <td>R{(CB.dec_actual).toFixed(2)}</td>
+                            <td className={`${CB.nov_diff < 0 ? 'green-cell' : 'red-cell'}`}>R{(CB.dec_diff).toFixed(2) * -1}</td>
+        
                             
                             <td>DEC B</td>
                             <td>DEC A</td>
                             <td>DEC D</td>
+                            
                         </tr>
                     ))}
                     
@@ -171,27 +217,37 @@ export default function BudgetTable() {
                         <td>Blank</td>
                         <td>Blank</td>
                         <td>Blank</td>
+                        <td>Blank</td>
+                        <td>Blank</td>
 
-                        <td>Blank</td>
-                        <td>Blank</td>
-                        <td>Blank</td>
+                   
                     </tr>
                     
 
                     <tr className='bg-red-600 text-white text-left'>
-                        <td colSpan={10} className='text-start'>DEBIT</td>
+                        <td colSpan={16} className='text-start'>DEBIT</td>
                     </tr>
 
-                    {previousMonthBudget && previousMonthBudget.filter((PB) => PB.budget_type === 'debit').map((PB) => (
-                        <tr key={PB.id}>
-                            <td>{PB.category_name}</td>
-                            <td>R{PB.budget}</td>
-                            <td>R{(PB.actual).toFixed(2)}</td>
-                            <td className={`${PB.diff > 0 ? 'green-cell' : 'red-cell'}`}>R{(PB.diff).toFixed(2)}</td>
+                    {debitBudgetTable && debitBudgetTable.map((DB) => (
+                        <tr key={DB.id}>
+                            <td>{DB.name}</td>
+                            <td>R{DB.sept_budget}</td>
+                            <td>R{(DB.sept_actual).toFixed(2)}</td>
+                            <td className={`${DB.sep_diff < 0 ? 'green-cell' : 'red-cell'}`}>R{(DB.sept_diff).toFixed(2) * -1}</td>
                             
-                            <td>NOV B</td>
-                            <td>NOV A</td>
-                            <td>NOV D</td>
+                            <td>{DB.name}</td>
+                            <td>R{DB.oct_budget}</td>
+                            <td>R{(DB.oct_actual).toFixed(2)}</td>
+                            <td className={`${DB.oct_diff < 0 ? 'green-cell' : 'red-cell'}`}>R{(DB.oct_diff).toFixed(2) * -1}</td>
+
+                            <td>R{DB.nov_budget}</td>
+                            <td>R{(DB.nov_actual).toFixed(2)}</td>
+                            <td className={`${DB.nov_diff < 0 ? 'green-cell' : 'red-cell'}`}>R{(DB.nov_diff).toFixed(2) * -1}</td>
+        
+                            <td>R{DB.dec_budget}</td>
+                            <td>R{(DB.dec_actual).toFixed(2)}</td>
+                            <td className={`${DB.nov_diff < 0 ? 'green-cell' : 'red-cell'}`}>R{(DB.dec_diff).toFixed(2) * -1}</td>
+        
                             
                             <td>DEC B</td>
                             <td>DEC A</td>
@@ -202,15 +258,15 @@ export default function BudgetTable() {
                         <td className='text-red-600'>DEBIT BALANCE</td>
                         <td>R{previousMonthTotals_DEBIT.previous_debit_budget}</td>
                         <td>R{previousMonthTotals_DEBIT.previous_debit_actual}</td>
-                        <td>R{previousMonthTotals_DEBIT.previous_debit_diff}</td>
+                        <td>R{(previousMonthTotals_DEBIT.previous_debit_diff || 0).toFixed(2)}</td>
 
                         <td>R{currentMonthTotals_DEBIT.current_debit_budget}</td>
                         <td>R{currentMonthTotals_DEBIT.current_debit_actual}</td>
-                        <td>R{(currentMonthTotals_DEBIT.current_debit_diff).toFixed(2)}</td>
+                        <td>R{(currentMonthTotals_DEBIT.current_debit_diff || 0).toFixed(2) || 0}</td>
                         
-                        <td>DEC B</td>
+                        {/* <td>DEC B</td>
                         <td>DEC A</td>
-                        <td>DEC D</td>
+                        <td>DEC D</td> */}
                     </tr>
                 </tbody>
 
