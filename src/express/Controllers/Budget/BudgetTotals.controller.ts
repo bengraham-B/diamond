@@ -44,7 +44,8 @@ export const budgetCreditTotal = async (req:Request, res: Response) => {
         })
         
     } catch (error) {
-        res.status(500).json()
+        console.error({error})
+        res.status(500).json({error})
     }
 }
 

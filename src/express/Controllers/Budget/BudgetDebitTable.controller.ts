@@ -13,6 +13,50 @@ export const getBudgetDebitTable = async (req:Request, res: Response) => {
             budget.id,
             category.name,
             category.type,
+            
+            -- JANUARY
+            budget.amount AS jun_budget,
+            SUM(CASE WHEN txn.month='1' AND txn.type='debit' THEN txn.amount ELSE 0 END) AS jun_actual,
+            budget.amount - SUM(CASE WHEN txn.month='1' THEN txn.amount ELSE 0 END) AS jun_diff,
+            
+            
+            -- FEBRUARY
+            budget.amount AS jun_budget,
+            SUM(CASE WHEN txn.month='2' AND txn.type='debit' THEN txn.amount ELSE 0 END) AS jun_actual,
+            budget.amount - SUM(CASE WHEN txn.month='2' THEN txn.amount ELSE 0 END) AS jun_diff,
+            
+            
+            -- MARCH
+            budget.amount AS jun_budget,
+            SUM(CASE WHEN txn.month='3' AND txn.type='debit' THEN txn.amount ELSE 0 END) AS jun_actual,
+            budget.amount - SUM(CASE WHEN txn.month='3' THEN txn.amount ELSE 0 END) AS jun_diff,
+            
+            -- APRIL
+            budget.amount AS jun_budget,
+            SUM(CASE WHEN txn.month='4' AND txn.type='debit' THEN txn.amount ELSE 0 END) AS jun_actual,
+            budget.amount - SUM(CASE WHEN txn.month='4' THEN txn.amount ELSE 0 END) AS jun_diff,
+            
+            -- May
+            budget.amount AS jun_budget,
+            SUM(CASE WHEN txn.month='5' AND txn.type='debit' THEN txn.amount ELSE 0 END) AS jun_actual,
+            budget.amount - SUM(CASE WHEN txn.month='5' THEN txn.amount ELSE 0 END) AS jun_diff,
+            
+            -- JUNE
+            budget.amount AS jun_budget,
+            SUM(CASE WHEN txn.month='6' AND txn.type='debit' THEN txn.amount ELSE 0 END) AS jun_actual,
+            budget.amount - SUM(CASE WHEN txn.month='6' THEN txn.amount ELSE 0 END) AS jun_diff,
+
+            -- JULY
+            budget.amount AS jul_budget,
+            SUM(CASE WHEN txn.month='7' AND txn.type='debit' THEN txn.amount ELSE 0 END) AS jul_actual,
+            budget.amount - SUM(CASE WHEN txn.month='7' THEN txn.amount ELSE 0 END) AS jul_diff,
+
+
+            -- AUG
+            budget.amount AS aug_budget,
+            SUM(CASE WHEN txn.month='8' AND txn.type='debit' THEN txn.amount ELSE 0 END) AS aug_actual,
+            budget.amount - SUM(CASE WHEN txn.month='8' THEN txn.amount ELSE 0 END) AS aug_diff,
+
             -- Sept
             budget.amount AS sept_budget,
             SUM(CASE WHEN txn.month='9' AND txn.type='debit' THEN txn.amount ELSE 0 END) AS sept_actual,
@@ -31,7 +75,12 @@ export const getBudgetDebitTable = async (req:Request, res: Response) => {
             -- DEC
             budget.amount AS dec_budget,
             SUM(CASE WHEN txn.month='12' AND txn.type='debit' THEN txn.amount ELSE 0 END) AS dec_actual,
-            budget.amount - SUM(CASE WHEN txn.month='12' THEN txn.amount ELSE 0 END) AS dec_diff
+            budget.amount - SUM(CASE WHEN txn.month='12' THEN txn.amount ELSE 0 END) AS dec_diff,
+
+            -- TOTAL
+            (budget.amount * 12) AS budget_year_total,
+            SUM(txn.amount) AS actual_year_total,
+            (budget.amount * 12) - SUM(txn.amount) AS diff_year_total
 
             FROM
                 transaction txn
@@ -51,7 +100,8 @@ export const getBudgetDebitTable = async (req:Request, res: Response) => {
                 budget.id
 
             ORDER BY
-                category.type
+                category.type,
+                category.name
 
         `;
         const values: (string | number)[] = [accountID, year]

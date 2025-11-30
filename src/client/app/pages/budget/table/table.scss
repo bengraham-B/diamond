@@ -30,6 +30,10 @@ th {
 
 }
 
+// .credit-header {
+//     background-color: rgb(0, 166, 62);
+// }
+
 .table-wrapper {
     max-height: 550px; // <------- Height og the table
     overflow-y: scroll;
@@ -44,6 +48,11 @@ th {
 th, td {
     border: 1px solid black;
     padding: 10px;
+}
+
+thead tr {
+    background: black;
+
 }
 
 .outer-wrapper {

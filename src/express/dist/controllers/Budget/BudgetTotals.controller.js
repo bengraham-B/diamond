@@ -49,7 +49,8 @@ const budgetCreditTotal = (req, res) => __awaiter(void 0, void 0, void 0, functi
         });
     }
     catch (error) {
-        res.status(500).json();
+        console.error({ error });
+        res.status(500).json({ error });
     }
 });
 exports.budgetCreditTotal = budgetCreditTotal;
