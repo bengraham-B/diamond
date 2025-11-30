@@ -15,31 +15,31 @@ export const getBudgetDebitTable = async (req:Request, res: Response) => {
             category.type,
             
             -- JANUARY
-            budget.amount AS jun_budget,
-            SUM(CASE WHEN txn.month='1' AND txn.type='debit' THEN txn.amount ELSE 0 END) AS jun_actual,
-            budget.amount - SUM(CASE WHEN txn.month='1' THEN txn.amount ELSE 0 END) AS jun_diff,
+            budget.amount AS jan_budget,
+            SUM(CASE WHEN txn.month='1' AND txn.type='debit' THEN txn.amount ELSE 0 END) AS jan_actual,
+            budget.amount - SUM(CASE WHEN txn.month='1' THEN txn.amount ELSE 0 END) AS jan_diff,
             
             
             -- FEBRUARY
-            budget.amount AS jun_budget,
-            SUM(CASE WHEN txn.month='2' AND txn.type='debit' THEN txn.amount ELSE 0 END) AS jun_actual,
-            budget.amount - SUM(CASE WHEN txn.month='2' THEN txn.amount ELSE 0 END) AS jun_diff,
+            budget.amount AS feb_budget,
+            SUM(CASE WHEN txn.month='2' AND txn.type='debit' THEN txn.amount ELSE 0 END) AS feb_actual,
+            budget.amount - SUM(CASE WHEN txn.month='2' THEN txn.amount ELSE 0 END) AS feb_diff,
             
             
             -- MARCH
-            budget.amount AS jun_budget,
-            SUM(CASE WHEN txn.month='3' AND txn.type='debit' THEN txn.amount ELSE 0 END) AS jun_actual,
-            budget.amount - SUM(CASE WHEN txn.month='3' THEN txn.amount ELSE 0 END) AS jun_diff,
+            budget.amount AS mar_budget,
+            SUM(CASE WHEN txn.month='3' AND txn.type='debit' THEN txn.amount ELSE 0 END) AS mar_actual,
+            budget.amount - SUM(CASE WHEN txn.month='3' THEN txn.amount ELSE 0 END) AS mar_diff,
             
             -- APRIL
-            budget.amount AS jun_budget,
-            SUM(CASE WHEN txn.month='4' AND txn.type='debit' THEN txn.amount ELSE 0 END) AS jun_actual,
-            budget.amount - SUM(CASE WHEN txn.month='4' THEN txn.amount ELSE 0 END) AS jun_diff,
+            budget.amount AS apr_budget,
+            SUM(CASE WHEN txn.month='4' AND txn.type='debit' THEN txn.amount ELSE 0 END) AS apr_actual,
+            budget.amount - SUM(CASE WHEN txn.month='4' THEN txn.amount ELSE 0 END) AS apr_diff,
             
             -- May
-            budget.amount AS jun_budget,
-            SUM(CASE WHEN txn.month='5' AND txn.type='debit' THEN txn.amount ELSE 0 END) AS jun_actual,
-            budget.amount - SUM(CASE WHEN txn.month='5' THEN txn.amount ELSE 0 END) AS jun_diff,
+            budget.amount AS may_budget,
+            SUM(CASE WHEN txn.month='5' AND txn.type='debit' THEN txn.amount ELSE 0 END) AS may_actual,
+            budget.amount - SUM(CASE WHEN txn.month='5' THEN txn.amount ELSE 0 END) AS may_diff,
             
             -- JUNE
             budget.amount AS jun_budget,

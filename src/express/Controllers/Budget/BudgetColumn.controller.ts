@@ -67,8 +67,11 @@ export const getCreditColumnTotals = async (req:Request, res: Response) => {
                 SUM(CASE WHEN txn.month='12' AND txn.type='credit' THEN txn.amount ELSE 0 END) AS DEC_ACTUAL,
                 (SELECT SUM(amount) FROM budget WHERE type='credit' AND account_id=$1) - SUM(CASE WHEN txn.month='12' AND txn.type='credit' THEN txn.amount ELSE 0 END) AS DEC_DIFF,
 
-                -- NOV
-                SUM(CASE WHEN txn.month='11' AND txn.type='credit' THEN txn.amount ELSE 0 END) AS NOV_ACTUAL
+                -- TOTAL
+                (SELECT SUM(budget.amount) * 12 FROM budget WHERE type='credit' AND account_id=$1) AS BUDGET_TOTAL,
+                SUM(CASE WHEN txn.type='credit' THEN txn.amount ELSE 0 END) AS ACTUAL_TOTAL,
+                (SELECT SUM(budget.amount) * 12 FROM budget WHERE type='credit' AND account_id=$1) - SUM(CASE WHEN txn.type='credit' THEN txn.amount ELSE 0 END) AS DIFF_TOTAL
+
 
             FROM
                 transaction txn
@@ -156,7 +159,13 @@ export const getDebitColumnTotals = async (req:Request, res: Response) => {
                 -- DEC
                 (SELECT SUM(amount) FROM budget WHERE type='debit' AND account_id=$1) AS DEC_BUDGET,
                 SUM(CASE WHEN txn.month='12' AND txn.type='debit' THEN txn.amount ELSE 0 END) AS DEC_ACTUAL,
-                (SELECT SUM(amount) FROM budget WHERE type='debit' AND account_id=$1) - SUM(CASE WHEN txn.month='12' AND txn.type='debit' THEN txn.amount ELSE 0 END) AS DEC_DIFF
+                (SELECT SUM(amount) FROM budget WHERE type='debit' AND account_id=$1) - SUM(CASE WHEN txn.month='12' AND txn.type='debit' THEN txn.amount ELSE 0 END) AS DEC_DIFF,
+
+                -- TOTAL
+                (SELECT SUM(budget.amount) * 12 FROM budget WHERE type='debit' AND account_id=$1) AS BUDGET_TOTAL,
+                SUM(CASE WHEN txn.type='debit' THEN txn.amount ELSE 0 END) AS ACTUAL_TOTAL,
+                (SELECT SUM(budget.amount) * 12 FROM budget WHERE type='debit' AND account_id=$1) - SUM(CASE WHEN txn.type='debit' THEN txn.amount ELSE 0 END) AS DIFF_TOTAL
+
 
 
             FROM
