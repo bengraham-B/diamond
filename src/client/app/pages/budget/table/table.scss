@@ -5,6 +5,8 @@
 
 }
 
+//Y Current - one
+
 #budget-table {
     border: 1px solid black;
     border-collapse: separate;
@@ -30,7 +32,7 @@
     }
 
     th, td {
-        border: 1px solid black;
+        // border: 1px solid black;
         padding: 10px;
     }
 
@@ -42,9 +44,101 @@
     .green-cell {
         background-color: #50C878;
 
+        // OR
+        background-color: #bbf7d0; // soft green (Tailwind green-200)
+		color: #15803d;            // dark green (Tailwind green-700)
+		font-weight: 600;
+
     }
     .red-cell {
         background-color: #D70040;
+        
+        // OR
+
+        background-color: #fecaca; // soft red (Tailwind red-200)
+		color: #b91c1c;            // dark red (Tailwind red-700)
+		font-weight: 600;
+    }
+
+    .debit-header,
+    .credit-header {
+        border: none;
+    }
+
+
+
+    //Y     GROUP BORDERS
+    th:nth-child(2),
+    td:nth-child(2){
+        border-left: solid 2px black;
+    }
+    
+    th:nth-child(4),
+    td:nth-child(4){
+        border-right: solid 2px black;
+    }
+    
+    th:nth-child(7),
+    td:nth-child(7){
+        border-right: solid 2px black;
+    }
+    
+    th:nth-child(10),
+    td:nth-child(10){
+        border-right: solid 2px black;
+    }
+    th:nth-child(13),
+    td:nth-child(13){
+        border-right: solid 2px black;
+    }
+
+    th:nth-child(16),
+    td:nth-child(16){
+        border-right: solid 2px black;
+    }
+
+    th:nth-child(19),
+    td:nth-child(19){
+        border-right: solid 2px black;
+    }
+
+    th:nth-child(22),
+    td:nth-child(22){
+        border-right: solid 2px black;
+    }
+
+    th:nth-child(25),
+    td:nth-child(25){
+        border-right: solid 2px black;
+    }
+
+    th:nth-child(28),
+    td:nth-child(28){
+        border-right: solid 2px black;
+    }
+    th:nth-child(31),
+    td:nth-child(31){
+        border-right: solid 2px black;
+    }
+
+    th:nth-child(34),
+    td:nth-child(34){
+        border-right: solid 2px black;
+    }
+    
+    th:nth-child(37),
+    td:nth-child(37){
+        border-right: solid 2px black;
+    }
+    
+    th:nth-child(40),
+    td:nth-child(40){
+        border-right: solid 2px black;
+    }
+    
+    .balance-row td {
+        border-top: 2px solid #000;
+        border-bottom: 2px solid #000
     }
 }
 

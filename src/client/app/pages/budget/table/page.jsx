@@ -289,7 +289,7 @@ export default function Page() {
                                 </tr>
                             ))}
 							
-							<tr>
+							<tr className='balance-row'>
 								<td>Balance</td>
 								<td>R{creditColunTotal.jan_budget}</td>
 								<td>R{creditColunTotal.jan_actual}</td>
@@ -489,7 +489,7 @@ export default function Page() {
                                 </tr>
                             ))}
 
-							<tr>
+							<tr className='balance-row'>
 								<td>Balance</td>
 								<td>R{(debitColunTotal.jan_budget|| 0).toFixed(2)}</td>
 								<td>R{(debitColunTotal.jan_actual|| 0).toFixed(2)}</td>
