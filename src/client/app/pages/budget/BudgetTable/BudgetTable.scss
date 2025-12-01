@@ -1,145 +1,145 @@
-#Budget-Table-Wrapper{
-    height: 100vh;
-	width: 1100wv;
-	padding: 5px;
-}
+// #Budget-Table-Wrapper{
+//     height: 100vh;
+// 	width: 1100wv;
+// 	padding: 5px;
+// }
 
-//!   !!!!!!!!!!!   OLD ONE   !!!!!!!!!!!
+// //!   !!!!!!!!!!!   OLD ONE   !!!!!!!!!!!
 
-#Budget-Table {
-    border-collapse: collapse;
-    width: full;
+// #Budget-Table {
+//     border-collapse: collapse;
+//     width: full;
 
-	thead {
-			position: sticky;
-			top: 0;
-		// < Month > Header
-		tr {
-			position: sticky;
-			top: 0;
+// 	thead {
+// 			position: sticky;
+// 			top: 0;
+// 		// < Month > Header
+// 		tr {
+// 			position: sticky;
+// 			top: 0;
 
-			.previous-month {
-				background-color: #fecaca; // soft red (Tailwind red-200)
-				color: #b91c1c;            // dark red (Tailwind red-700)
-				font-weight: 600;
+// 			.previous-month {
+// 				background-color: #fecaca; // soft red (Tailwind red-200)
+// 				color: #b91c1c;            // dark red (Tailwind red-700)
+// 				font-weight: 600;
 
-			}
+// 			}
 
-			.current-month {
-				background-color: #f7cc4d; // soft red (Tailwind red-200)
-				color: #b97a1c;            // dark red (Tailwind red-700)
-				font-weight: 600;
+// 			.current-month {
+// 				background-color: #f7cc4d; // soft red (Tailwind red-200)
+// 				color: #b97a1c;            // dark red (Tailwind red-700)
+// 				font-weight: 600;
 
 
-			}
-			.total {
-				background-color: #52eb82; // soft red (Tailwind red-200)
-				color: #259f0a;            // dark red (Tailwind red-700)
-				font-weight: 600;
-			}
-		}
+// 			}
+// 			.total {
+// 				background-color: #52eb82; // soft red (Tailwind red-200)
+// 				color: #259f0a;            // dark red (Tailwind red-700)
+// 				font-weight: 600;
+// 			}
+// 		}
 
-		//< BIDGET ACTUAL DIFF > header
-		.budget-details-hr {
-			background: #b97a1c;
+// 		//< BIDGET ACTUAL DIFF > header
+// 		.budget-details-hr {
+// 			background: #b97a1c;
 
-			.top-left-conrner{
-				background-color: $diamond-light-blue;
-			}
-		}
+// 			.top-left-conrner{
+// 				background-color: $diamond-light-blue;
+// 			}
+// 		}
 
-		td {
-			cursor: pointer;
-		}
+// 		td {
+// 			cursor: pointer;
+// 		}
 
-		th, td{
-			text-align: center;
-			padding: 8px;
-			border: 1px solid #e5e7eb;
-			// border-left: none;
-			// border-right: none;
-		}
+// 		th, td{
+// 			text-align: center;
+// 			padding: 8px;
+// 			border: 1px solid #e5e7eb;
+// 			// border-left: none;
+// 			// border-right: none;
+// 		}
 
-		th,
-		td {
-			border-left: none;
-			border-right: none;
-		}
+// 		th,
+// 		td {
+// 			border-left: none;
+// 			border-right: none;
+// 		}
 
-	} // thead
+// 	} // thead
 
-	tbody {
-		.credit-row-header{
-			// position: sticky;
-			// top: 0;
-		}
+// 	tbody {
+// 		.credit-row-header{
+// 			// position: sticky;
+// 			// top: 0;
+// 		}
 
-		.budget-name-credit {
-			background: green;
-			position: sticky;
-			left: 0;
-			width: 300px;
-		}
-	}
+// 		.budget-name-credit {
+// 			background: green;
+// 			position: sticky;
+// 			left: 0;
+// 			width: 300px;
+// 		}
+// 	}
 
-	.red-cell {
-		background-color: #fecaca; // soft red (Tailwind red-200)
-		color: #b91c1c;            // dark red (Tailwind red-700)
-		font-weight: 600;
-	}
+// 	.red-cell {
+// 		background-color: #fecaca; // soft red (Tailwind red-200)
+// 		color: #b91c1c;            // dark red (Tailwind red-700)
+// 		font-weight: 600;
+// 	}
 	
-	.green-cell {
-		background-color: #bbf7d0; // soft green (Tailwind green-200)
-		color: #15803d;            // dark green (Tailwind green-700)
-		font-weight: 600;
-	}
+// 	.green-cell {
+// 		background-color: #bbf7d0; // soft green (Tailwind green-200)
+// 		color: #15803d;            // dark green (Tailwind green-700)
+// 		font-weight: 600;
+// 	}
 
-	// --- GROUP BORDERS ---
-	// PREVIOUS MONTH = columns 2,3,4
-	th:nth-child(2),
-	td:nth-child(2) {
-		border-left: 2px solid #000;
-	}
+// 	// --- GROUP BORDERS ---
+// 	// PREVIOUS MONTH = columns 2,3,4
+// 	th:nth-child(2),
+// 	td:nth-child(2) {
+// 		border-left: 2px solid #000;
+// 	}
 
-	th:nth-child(4),
-	td:nth-child(4) {
-		border-right: 2px solid #000;
-	}
+// 	th:nth-child(4),
+// 	td:nth-child(4) {
+// 		border-right: 2px solid #000;
+// 	}
 
-	// CURRENT MONTH group = columns 5,6,7
-	th:nth-child(5),
-	td:nth-child(5) {
-		border-left: 2px solid #000;
-	}
+// 	// CURRENT MONTH group = columns 5,6,7
+// 	th:nth-child(5),
+// 	td:nth-child(5) {
+// 		border-left: 2px solid #000;
+// 	}
 
-	th:nth-child(7),
-	td:nth-child(7) {
-		border-right: 2px solid #000;
-	}
+// 	th:nth-child(7),
+// 	td:nth-child(7) {
+// 		border-right: 2px solid #000;
+// 	}
 
-	// TOTAL group = columns 8,9,10
-	th:nth-child(8),
-	td:nth-child(8) {
-		border-left: 2px solid #000;
-	}
+// 	// TOTAL group = columns 8,9,10
+// 	th:nth-child(8),
+// 	td:nth-child(8) {
+// 		border-left: 2px solid #000;
+// 	}
 
-	th:nth-child(10),
-	td:nth-child(10) {
-		border-right: 2px solid #000;
-	}
+// 	th:nth-child(10),
+// 	td:nth-child(10) {
+// 		border-right: 2px solid #000;
+// 	}
 	
-	th:nth-child(13),
-	td:nth-child(13) {
-		border-right: 2px solid #000;
-	}
+// 	th:nth-child(13),
+// 	td:nth-child(13) {
+// 		border-right: 2px solid #000;
+// 	}
 	
-	th:nth-child(16),
-	td:nth-child(16) {
-		border-right: 2px solid #000;
-	}
+// 	th:nth-child(16),
+// 	td:nth-child(16) {
+// 		border-right: 2px solid #000;
+// 	}
 
-	.balance-row {
-		border-top: 2px solid #000;
-		border-bottom: 2px solid #000;
-	}
-}
+// 	.balance-row {
+// 		border-top: 2px solid #000;
+// 		border-bottom: 2px solid #000;
+// 	}
+// }

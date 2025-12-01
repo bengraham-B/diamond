@@ -1,58 +1,58 @@
-tablem {
-	border-collapse: collapse;
-  	width: 100%;
+// tablem {
+// 	border-collapse: collapse;
+//   	width: 100%;
 
-	td {
-		text-align: center;
-	}
+// 	td {
+// 		text-align: center;
+// 	}
 
-	.red-cell {
-		background-color: #fecaca; // soft red (Tailwind red-200)
-		color: #b91c1c;            // dark red (Tailwind red-700)
-		font-weight: 600;
-	}
+// 	.red-cell {
+// 		background-color: #fecaca; // soft red (Tailwind red-200)
+// 		color: #b91c1c;            // dark red (Tailwind red-700)
+// 		font-weight: 600;
+// 	}
 
-	th, td {
-		padding: 8px;
-		border: 1px solid #e5e7eb; // light gray to match tailwind
-	}
+// 	th, td {
+// 		padding: 8px;
+// 		border: 1px solid #e5e7eb; // light gray to match tailwind
+// 	}
 
-  // Remove default borders so we can control group borders manually
-  th,
-  td {
-    border-left: none;
-    border-right: none;
-  }
+//   // Remove default borders so we can control group borders manually
+//   th,
+//   td {
+//     border-left: none;
+//     border-right: none;
+//   }
 
-  // --- GROUP BORDERS ---
-  // OCT group = columns 2,3,4
-  th:nth-child(2),
-  td:nth-child(2) {
-    border-left: 2px solid #000;
-  }
-  th:nth-child(4),
-  td:nth-child(4) {
-    border-right: 2px solid #000;
-  }
+//   // --- GROUP BORDERS ---
+//   // OCT group = columns 2,3,4
+//   th:nth-child(2),
+//   td:nth-child(2) {
+//     border-left: 2px solid #000;
+//   }
+//   th:nth-child(4),
+//   td:nth-child(4) {
+//     border-right: 2px solid #000;
+//   }
 
-  // NOV group = columns 5,6,7
-  th:nth-child(5),
-  td:nth-child(5) {
-    border-left: 2px solid #000;
-  }
-  th:nth-child(7),
-  td:nth-child(7) {
-    border-right: 2px solid #000;
-  }
+//   // NOV group = columns 5,6,7
+//   th:nth-child(5),
+//   td:nth-child(5) {
+//     border-left: 2px solid #000;
+//   }
+//   th:nth-child(7),
+//   td:nth-child(7) {
+//     border-right: 2px solid #000;
+//   }
 
-  // DEC group = columns 8,9,10
-  th:nth-child(8),
-  td:nth-child(8) {
-    border-left: 2px solid #000;
-  }
-  th:nth-child(10),
-  td:nth-child(10) {
-    border-right: 2px solid #000;
-  }
+//   // DEC group = columns 8,9,10
+//   th:nth-child(8),
+//   td:nth-child(8) {
+//     border-left: 2px solid #000;
+//   }
+//   th:nth-child(10),
+//   td:nth-child(10) {
+//     border-right: 2px solid #000;
+//   }
 
-}
+// }

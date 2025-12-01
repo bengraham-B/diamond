@@ -157,7 +157,7 @@ export default function page() {
     }
 
     return (
-        <main className="space-y-6 py-4 px-8 ">
+        <main className="space-y-6 py-4 px-8" id="transaction_page" >
             <section id="Title-Container" className="flex justify-center text-4xl">
                 <h1>Transactions</h1>
             </section>
@@ -170,7 +170,7 @@ export default function page() {
                 </div>
             </section>
 
-            <section id="Add-Transaction-Container" className="flex justify-center ">
+            <section id="Add-Transaction-Container" className="flex justify-center">
                 <div className="flex justify-around space-x-12">
                     <div className="flex justify-center flex-col">
                         {/* <label htmlFor="pilot" className="text-xl">Year</label> */}
@@ -205,7 +205,7 @@ export default function page() {
 
             <section id="Table-Container" className="mt-6">
                 <table className="w-full border-collapse">
-                    <thead className="bg-gray-200 border-b-2 border-gray-200 sticky top-0 z-10">
+                    <thead className="table-heading border-b-2 border-gray-200 sticky top-0 py-2">
                         <tr className="">
 
                             <th className="px-4 w-36 text-lg font-light tracking-wide text-left">Date</th>
