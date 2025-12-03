@@ -4,7 +4,11 @@ import "./globals.css";
 import Header from "./Components/Header/Header.jsx";
 import Nav from "./Components/Nav/Nav";
 import AuthProvider from "./(components)/AuthProvider";
-import Footer from "./Components/Footer/Footer";
+// import Footer from "./Components/Footer/Footer";
+
+import './layout.scss'
+import SideBar from "./Sidebar/SideBar";
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,11 +32,18 @@ export default function RootLayout({ children }) {
 
 			{/* The auth provider is for client side Auth */}
 			<AuthProvider>
-				<Header />
-				<Nav />
+				<div className="layout">
+
+					<aside className="sidebar">
+						<SideBar/>
+					</aside>
+
+					<main className="content">
+						{children}	
+
+					</main>
+				</div>
 			
-				{children}
-				<Footer/>
 			</AuthProvider>
 		</body>
 		</html>

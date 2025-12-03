@@ -1,0 +1,28 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden; /* <- THIS is the real scroll lock */
+}
+
+.layout {
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+    display: grid;
+    grid-template-columns: 225px 1fr;
+}
+
+.sidebar {
+    width: inherit;
+    min-width: inherit;
+
+}
+
+.content {
+    // width: 90vw;
+    // padding: 20px;
+    // overflow-y: auto;
+    background-color: rgba(214, 28, 28, 0.154);
+
+}
