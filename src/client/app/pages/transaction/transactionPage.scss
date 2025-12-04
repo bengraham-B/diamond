@@ -1,32 +1,57 @@
-#transaction_page {
-    #Table-Container > table > thead {
-        background-color: $black;
-        color: $diamond-light-blue;
+#TXN-PAGE {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+
+    #table-container {
+        margin-top: auto;
+        width: inherit;
+        height: 80vh;        // MUST be tall enough to scroll
+        overflow-y: auto;    // SCROLL HERE ✅
         
-        .table-heading {
-            padding: 50px 80px;
-        
+        #txn-table {
+            width: 100%;
+            height: inherit;
+
+            border-collapse: collapse;
+            margin: 25px 0;
+            margin: 0;
+
+            font-size: 0.9em;
+            min-width: 400px;
+            border-radius: 5px 5px 0 0;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+
+            thead th {
+                position: sticky;
+                background-color: $secondary;
+                top: 0;
+                // z-index: 5;           // Prevents overlap issues
+
+            }
+
+            thead tr {
+                background-color: $secondary;
+                color: $accent;
+                text-align: left;
+            }
+
+            th, td {
+                padding: 5px 15px;
+            }
+
+            tbody tr {
+                border-bottom: 1px solid #dddddd;
+            }
+
+            tbody tr:nth-of-type(even) {
+                background-color: #f3f3f3;
+
+            }
+
+            tbody tr:last-of-type {
+                border-bottom: 2px solid $accent;
+            }
         }
-    }
-    
-    .add_transaction_button {
-        display: flex;
-        text-align: center;
-        min-width: 120px;
-        color: $diamond-light-blue;
-        font-size: 19px;
-        letter-spacing: 2px;
-        border: 1px $diamond-light-blue solid;
-        border-radius: 4px;
-        padding: 5px 10px;
-    
-        &:hover {
-            border: 1px $black solid;
-            background: $black;
-            color: $diamond-light-blue;
-        }
-    
-       
     }
 }
-

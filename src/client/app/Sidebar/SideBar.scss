@@ -14,8 +14,7 @@
 }
 
 body {
-    background-color: var(--base-clr);
-    color: var(--text-clr);
+    background-color: $background;
 }
 
 #sidebar {
@@ -23,8 +22,9 @@ body {
     height: 100vh;
     width: 225px;
     padding: 5px 1em;
-    background: var(--base-clr);
+    background-color: $background;
     border-right: 1px solid var(--line-clr);
+    font-size: .9em;
 }
 
 #sidebar ul {
@@ -39,10 +39,10 @@ body {
     
 }
 #sidebar ul li.active a{
-    color: var(--accent-clr);
+    color: $accent;
 
     svg {
-        fill: var(--accent-clr)
+        fill: $accent
     }
 }
 
@@ -50,7 +50,7 @@ body {
     border-radius: .5em;
     padding: .85em;
     text-decoration: none;
-    color: var(--text-clr);
+    color: $accent;
     display: flex;
     align-items: center;
     gap: 1em; // Distance between icons and text
@@ -68,7 +68,7 @@ body {
 
 #sidebar svg {
     flex-shrink: 0;
-    fill: #5e63ff;
+    fill: $accent;
 }
 
 #sidebar a span, #sidebar .dropdown-btn span {

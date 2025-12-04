@@ -9,6 +9,7 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@untitledui/icons": "^0.0.19",
     "bcrypt": "^6.0.0",
     "daisyui": "^5.4.7",
     "flowbite": "^3.1.2",
@@ -16,11 +17,17 @@
     "flyonui": "^2.4.1",
     "next": "16.0.1",
     "next-auth": "^4.24.13",
+    "next-themes": "^0.4.6",
+    "postcss": "^8.5.6",
     "react": "19.2.0",
+    "react-aria-components": "^1.13.0",
     "react-dom": "19.2.0",
     "react-modal": "^3.16.3",
     "react-select": "^5.10.2",
-    "react-toastify": "^11.0.5"
+    "react-toastify": "^11.0.5",
+    "tailwind-merge": "^3.4.0",
+    "tailwindcss-animate": "^1.0.7",
+    "tailwindcss-react-aria-components": "^2.0.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.17",

@@ -1,8 +1,8 @@
 html, body {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  overflow: hidden; /* <- THIS is the real scroll lock */
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden; /* <- THIS is the real scroll lock */
 }
 
 .layout {
@@ -16,13 +16,8 @@ html, body {
 .sidebar {
     width: inherit;
     min-width: inherit;
-
 }
 
 .content {
-    // width: 90vw;
-    // padding: 20px;
-    // overflow-y: auto;
-    background-color: rgba(214, 28, 28, 0.154);
-
+    padding: 20px;
 }

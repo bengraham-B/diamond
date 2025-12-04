@@ -4,13 +4,15 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 // import Select from 'react-select' //? https://react-select.com/home#welcome
 import { useSession } from "next-auth/react";
+import { Select } from "@/components/base/select/select";
+
 
 import dynamic from "next/dynamic";
 
 import "./transactionPage.scss"
 
 // Dynamically import react-select to disable SSR
-const Select = dynamic(() => import("react-select"), { ssr: false });
+// const Select = dynamic(() => import("react-select"), { ssr: false });
 
 
 import TransactionModal from "./AddTransaction/AddTransactionModal";
@@ -35,9 +37,15 @@ export default function page() {
         "Jan", "Feb", "Mar", "Apr", "May", "June",
         "Jul", "Aug", "Sept", "Oct", "Nov", "Dec",
     ];
-    const [monthFilter, setMonthFilter] = useState(monthNames[currentMonthForFilter])
+    const [monthFilter, setMonthFilter] = useState('Nov')
+    // const [monthFilter, setMonthFilter] = useState(monthNames[currentMonthForFilter])
     const [yearFilter, setYearFilter] = useState(currentYearForFilter)
     const [transactionTypeFilter, setTransactionTypeFilter] = useState("all")
+
+    //Y Select Styles
+    const selectStyles = {
+        control: (styles) => ({...styles, backgroundColor: 'black', borderColor: "red", textColor: "green"})
+    }
     
     const transactionTypeFilterOptions = [
         { value: 'all', label: 'All' },
@@ -135,6 +143,7 @@ export default function page() {
                     console.log(data.txn)
                     console.log(response.status)
                     setTransactions(data.txn)
+                    notifySuccess("JK")
                 }
                 
             } catch (error) {
@@ -148,143 +157,313 @@ export default function page() {
 	}
 	
     useEffect(() => {
+        if (!session) return 
 		fetchTransactions()
 	}, [isOpenTransactionModal, isOpenEditModal, session])
-    console.log("ppppp", {session})
 
-    if (!session) {
-        return ""
-    }
+        const items = [
+        { label: "Phoenix Baker", id: "@phoenix", supportingText: "@phoenix" },
+        { label: "Olivia Rhye", id: "@olivia", supportingText: "@olivia" },
+        { label: "Lana Steiner", id: "@lana", supportingText: "@lana", disabled: true },
+        { label: "Demi Wilkinson", id: "@demi", supportingText: "@demi" },
+        { label: "Candice Wu", id: "@candice", supportingText: "@candice" },
+        { label: "Natali Craig", id: "@natali", supportingText: "@natali" },
+        { label: "Abraham Baker", id: "@abraham", supportingText: "@abraham" },
+        { label: "Adem Lane", id: "@adem", supportingText: "@adem" },
+        { label: "Jackson Reed", id: "@jackson", supportingText: "@jackson" },
+        { label: "Jessie Meyton", id: "@jessie", supportingText: "@jessie" },
+    ];
+
+    if (!session) return 
 
     return (
-        <main className="space-y-6 py-4 px-8" id="transaction_page" >
-            <section id="Title-Container" className="flex justify-center text-4xl">
-                <h1>Transactions</h1>
+        <main className="" id="TXN-PAGE" >
+
+            <section>
+                <h1>TXN</h1>
             </section>
 
-            <section id="Add-Transaction-Container" className="flex justify-end">
-                <div className="flex space-x-4">
-                    <button onClick={showTransactionModal} className="add_transaction_button">
-                        Add Transaction
-                    </button>
-                </div>
+            <section>
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Consectetur sapiente officia veniam expedita odio ad. Doloribus magni ratione dignissimos libero eius ipsam quae nobis, excepturi repudiandae suscipit. Explicabo iusto sed est dicta, doloribus praesentium expedita quas adipisci eaque libero! Ab blanditiis repellendus ad laborum magnam enim corrupti delectus, aliquid iste modi necessitatibus tempore eos illum? Quam error excepturi, a alias, porro, aut repellendus dolorem dolorum eligendi quisquam commodi ducimus vitae iure unde? Veritatis, repellendus non, nisi in voluptatum facilis labore, ipsa consequuntur autem voluptates commodi enim. Veniam ipsa adipisci quaerat quo, maiores recusandae in explicabo. Illo eos adipisci delectus rem maxime expedita facere aperiam libero eveniet, in itaque blanditiis minima ad explicabo quo magnam ut quisquam, consequatur culpa ullam error!
             </section>
 
-            <section id="Add-Transaction-Container" className="flex justify-center">
-                <div className="flex justify-around space-x-12">
-                    <div className="flex justify-center flex-col">
-                        {/* <label htmlFor="pilot" className="text-xl">Year</label> */}
-                        <Select name="colors" options={YearFilterOptions} placeholder={ "Supplier"} className="basic-multi-select" classNamePrefix="select" onChange={(selectedOption) => setYearFilter(selectedOption.value)} />
-                    </div>
-                   
-                    <div className="flex justify-center flex-col">
-                        {/* <label htmlFor="pilot" className="text-xl">Year</label> */}
-                        <Select name="colors" options={YearFilterOptions} placeholder={"Category"} className="basic-multi-select" classNamePrefix="select" onChange={(selectedOption) => setYearFilter(selectedOption.value)} />
-                    </div>
-                    
-                    <div className="">
-                        {/* <label htmlFor="pilot" className="text-xl">Month</label> */}
-                        <Select name="colors" options={transactionTypeFilterOptions} placeholder={transactionTypeFilter ? transactionTypeFilter : "Type"} className="basic-multi-select" classNamePrefix="select" onChange={(selectedOption) => setTransactionTypeFilter(selectedOption.value)} />
-                    </div>
-                    
-                    <div className="">
-                        {/* <label htmlFor="pilot" className="text-xl">Month</label> */}
-                        <Select name="colors" options={MonthFilterOptions} placeholder={monthFilter ? monthFilter : "Month"} className="basic-multi-select" classNamePrefix="select" onChange={(selectedOption) => setMonthFilter(selectedOption.value)} />
-                    </div>
+            <section id="table-container">
 
-                    <div className="flex justify-center flex-col">
-                        {/* <label htmlFor="pilot" className="text-xl">Year</label> */}
-                        <Select name="colors" options={YearFilterOptions} placeholder={yearFilter ? yearFilter : "Year"} className="basic-multi-select" classNamePrefix="select" onChange={(selectedOption) => setYearFilter(selectedOption.value)} />
-                    </div>
-                    
-                    
-                </div>
-            </section>
-
-          
-
-            <section id="Table-Container" className="mt-6">
-                <table className="w-full border-collapse">
-                    <thead className="table-heading border-b-2 border-gray-200 sticky top-0 py-2">
-                        <tr className="">
-
-                            <th className="px-4 w-36 text-lg font-light tracking-wide text-left">Date</th>
-                            <th className="pr-3 w-24 text-lg font-light tracking-wide text-left">Time</th>
-                            <th className="px-4 text-lg font-light tracking-wide text-left">Details</th>
-                            <th className="px-4 w-40 text-lg font-light tracking-wide text-left">Amount (R)</th>
-                            <th className="px-4 w-40 text-lg font-light tracking-wide text-left">Type</th>
-                            <th className="px-4 w-48 text-lg font-light tracking-wide text-left">Category</th>
-                            <th className="px-4 w-56 text-lg font-light tracking-wide text-left">Supplier</th>
+                <table id="txn-table">
+                    <thead>
+                        <tr>
+                            <th>Day</th>
+                            <th>Time</th>
+                            <th>Details</th>
+                            <th>Amount (R)</th>
+                            <th>Type</th>
+                            <th>Category</th>
+                            <th>Supplier</th>
                         </tr>
                     </thead>
-                    <tbody className="divide-y divide-gray-100">
-                        {transactions && transactions.filter(
-                           (TF) => TF.year === yearFilter && 
-                           TF.month_name === monthFilter &&
-                           (transactionTypeFilter === "all" || TF.type === transactionTypeFilter)
-                        ).map((T) => (
-                            <tr key={T.id} className={` hover:bg-gray-100`} onClick={() => showEditModal(
-                                {
-                                    id: T.id, 
-                                    details: T.details,
-                                    amount: T.amount,
-                                    type: T.type,
-                                    date: T.date,
-                                    time: T.time,
-                                    category: T.category_name,
-                                    categoryID: T.category_id,
-                                    supplierID: T.supplier_id,
-                                    accountID: T.account_id
-                                })
-                            }>
-                         
+                    <tbody>
 
-                                <td className="p-3 text-sm text-gray-700">
-                                    <span>{formatDate(T.date)}</span>
-                                </td>
+                        <tr>
+                            <td>1</td>
+                            <td>12:34</td>
+                            <td>Chic Mayo Panaini</td>
+                            <td>34.99</td>
+                            <td>Debit</td>
+                            <td>Food</td>
+                            <td>Checkers - Paardevalei</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>1</td>
+                            <td>12:34</td>
+                            <td>Chic Mayo Panaini</td>
+                            <td>34.99</td>
+                            <td>Debit</td>
+                            <td>Food</td>
+                            <td>Checkers - Paardevalei</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>1</td>
+                            <td>12:34</td>
+                            <td>Chic Mayo Panaini</td>
+                            <td>34.99</td>
+                            <td>Debit</td>
+                            <td>Food</td>
+                            <td>Checkers - Paardevalei</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>1</td>
+                            <td>12:34</td>
+                            <td>Chic Mayo Panaini</td>
+                            <td>34.99</td>
+                            <td>Debit</td>
+                            <td>Food</td>
+                            <td>Checkers - Paardevalei</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>1</td>
+                            <td>12:34</td>
+                            <td>Chic Mayo Panaini</td>
+                            <td>34.99</td>
+                            <td>Debit</td>
+                            <td>Food</td>
+                            <td>Checkers - Paardevalei</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>1</td>
+                            <td>12:34</td>
+                            <td>Chic Mayo Panaini</td>
+                            <td>34.99</td>
+                            <td>Debit</td>
+                            <td>Food</td>
+                            <td>Checkers - Paardevalei</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>1</td>
+                            <td>12:34</td>
+                            <td>Chic Mayo Panaini</td>
+                            <td>34.99</td>
+                            <td>Debit</td>
+                            <td>Food</td>
+                            <td>Checkers - Paardevalei</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>1</td>
+                            <td>12:34</td>
+                            <td>Chic Mayo Panaini</td>
+                            <td>34.99</td>
+                            <td>Debit</td>
+                            <td>Food</td>
+                            <td>Checkers - Paardevalei</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>1</td>
+                            <td>12:34</td>
+                            <td>Chic Mayo Panaini</td>
+                            <td>34.99</td>
+                            <td>Debit</td>
+                            <td>Food</td>
+                            <td>Checkers - Paardevalei</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>1</td>
+                            <td>12:34</td>
+                            <td>Chic Mayo Panaini</td>
+                            <td>34.99</td>
+                            <td>Debit</td>
+                            <td>Food</td>
+                            <td>Checkers - Paardevalei</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>1</td>
+                            <td>12:34</td>
+                            <td>Chic Mayo Panaini</td>
+                            <td>34.99</td>
+                            <td>Debit</td>
+                            <td>Food</td>
+                            <td>Checkers - Paardevalei</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>1</td>
+                            <td>12:34</td>
+                            <td>Chic Mayo Panaini</td>
+                            <td>34.99</td>
+                            <td>Debit</td>
+                            <td>Food</td>
+                            <td>Checkers - Paardevalei</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>1</td>
+                            <td>12:34</td>
+                            <td>Chic Mayo Panaini</td>
+                            <td>34.99</td>
+                            <td>Debit</td>
+                            <td>Food</td>
+                            <td>Checkers - Paardevalei</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>1</td>
+                            <td>12:34</td>
+                            <td>Chic Mayo Panaini</td>
+                            <td>34.99</td>
+                            <td>Debit</td>
+                            <td>Food</td>
+                            <td>Checkers - Paardevalei</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>1</td>
+                            <td>12:34</td>
+                            <td>Chic Mayo Panaini</td>
+                            <td>34.99</td>
+                            <td>Debit</td>
+                            <td>Food</td>
+                            <td>Checkers - Paardevalei</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>1</td>
+                            <td>12:34</td>
+                            <td>Chic Mayo Panaini</td>
+                            <td>34.99</td>
+                            <td>Debit</td>
+                            <td>Food</td>
+                            <td>Checkers - Paardevalei</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>1</td>
+                            <td>12:34</td>
+                            <td>Chic Mayo Panaini</td>
+                            <td>34.99</td>
+                            <td>Debit</td>
+                            <td>Food</td>
+                            <td>Checkers - Paardevalei</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>1</td>
+                            <td>12:34</td>
+                            <td>Chic Mayo Panaini</td>
+                            <td>34.99</td>
+                            <td>Debit</td>
+                            <td>Food</td>
+                            <td>Checkers - Paardevalei</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>1</td>
+                            <td>12:34</td>
+                            <td>Chic Mayo Panaini</td>
+                            <td>34.99</td>
+                            <td>Debit</td>
+                            <td>Food</td>
+                            <td>Checkers - Paardevalei</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>1</td>
+                            <td>12:34</td>
+                            <td>Chic Mayo Panaini</td>
+                            <td>34.99</td>
+                            <td>Debit</td>
+                            <td>Food</td>
+                            <td>Checkers - Paardevalei</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>1</td>
+                            <td>12:34</td>
+                            <td>Chic Mayo Panaini</td>
+                            <td>34.99</td>
+                            <td>Debit</td>
+                            <td>Food</td>
+                            <td>Checkers - Paardevalei</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>1</td>
+                            <td>12:34</td>
+                            <td>Chic Mayo Panaini</td>
+                            <td>34.99</td>
+                            <td>Debit</td>
+                            <td>Food</td>
+                            <td>Checkers - Paardevalei</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>1</td>
+                            <td>12:34</td>
+                            <td>Chic Mayo Panaini</td>
+                            <td>34.99</td>
+                            <td>Debit</td>
+                            <td>Food</td>
+                            <td>Checkers - Paardevalei</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>1</td>
+                            <td>12:34</td>
+                            <td>Chic Mayo Panaini</td>
+                            <td>34.99</td>
+                            <td>Debit</td>
+                            <td>Food</td>
+                            <td>Checkers - Paardevalei</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>1</td>
+                            <td>Bella</td>
+                            <td>88, 898</td>
+                            <td>Aston Martin</td>
+                        </tr>
+                    
+                        <tr>
+                            <td>1</td>
+                            <td>Max</td>
+                            <td>88, 898</td>
+                            <td>Red Bull</td>
+                        </tr>
 
-                                 <td className="pr-3 text-sm text-gray-700">
-                                    <span>{T.time}</span>
-                                </td>
-
-                                <td className="p-3 text-sm text-gray-700">
-                                    <span>{T.details}</span>
-                                </td>
-                                
-                               
-                                <td className="p-3 text-sm text-gray-700">
-                                    <div>
-                                        <span className="text-gray-400 pr-1">(R)</span><span>{T.amount}</span>
-                                    </div>
-                                </td>
-
-                                <td className="p-3 text-sm text-gray-700">
-                                    <span className={`px-2 py-1 text-xs font-medium tracking-wider uppercase rounded bg-opacity-70 ${T.type == "debit" ? "text-red-800 bg-red-200" : "text-green-800 bg-green-200"}`}>
-                                        {T.type}
-                                    </span>
-                                </td>
-
-                                <td className="p-3 text-sm text-gray-700">
-                                    <span className="px-2 py-1 text-xs font-medium tracking-wider uppercase text-yellow-800 bg-yellow-200 rounded bg-opacity-70">
-                                        {T.category_name}
-                                    </span>
-                                </td>
-                               
-                                <td className="p-3 text-sm text-gray-700">
-                                    <span className="px-2 py-1 text-xs font-medium tracking-wider uppercase text-orange-800 bg-orange-200 rounded bg-opacity-70">
-                                        {T.supplier_name}
-                                    </span>
-                                </td>
-
-                            </tr>
-                        ))}
                     </tbody>
                 </table>
+
+
+
             </section>
-            <section>
-                <TransactionModal isVisible={isOpenTransactionModal} onClose={() => setIsOpenTransactionModal(false)}/>
-                <EditTransactionModal isVisible={isOpenEditModal} onClose={() => setIsOpenEditModal(false)} editObject={objectState}/>
-            </section>
+
         </main>
     );
 }
