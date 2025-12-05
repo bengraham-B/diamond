@@ -4,16 +4,13 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 // import Select from 'react-select' //? https://react-select.com/home#welcome
 import { useSession } from "next-auth/react";
-import { Select } from "@/components/base/select/select";
+const Select = dynamic(() => import("react-select"), { ssr: false });
+
 
 
 import dynamic from "next/dynamic";
 
 import "./transactionPage.scss"
-
-// Dynamically import react-select to disable SSR
-// const Select = dynamic(() => import("react-select"), { ssr: false });
-
 
 import TransactionModal from "./AddTransaction/AddTransactionModal";
 import EditTransactionModal from "./EditTransaction/EditTransactionModal";
@@ -179,12 +176,24 @@ export default function page() {
     return (
         <main className="" id="TXN-PAGE" >
 
-            <section>
-                <h1>TXN</h1>
+            <section id="header-section">
+                <h1>Transaction</h1>
             </section>
 
-            <section>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Consectetur sapiente officia veniam expedita odio ad. Doloribus magni ratione dignissimos libero eius ipsam quae nobis, excepturi repudiandae suscipit. Explicabo iusto sed est dicta, doloribus praesentium expedita quas adipisci eaque libero! Ab blanditiis repellendus ad laborum magnam enim corrupti delectus, aliquid iste modi necessitatibus tempore eos illum? Quam error excepturi, a alias, porro, aut repellendus dolorem dolorum eligendi quisquam commodi ducimus vitae iure unde? Veritatis, repellendus non, nisi in voluptatum facilis labore, ipsa consequuntur autem voluptates commodi enim. Veniam ipsa adipisci quaerat quo, maiores recusandae in explicabo. Illo eos adipisci delectus rem maxime expedita facere aperiam libero eveniet, in itaque blanditiis minima ad explicabo quo magnam ut quisquam, consequatur culpa ullam error!
+            <section id="filter-add-txn-section">
+
+                <div className="select-wrapper">
+                    <Select name="colors" options={YearFilterOptions} placeholder={ "Supplier"} className="basic-multi-select" classNamePrefix="select" onChange={(selectedOption) => setYearFilter(selectedOption.value)} />
+                    <Select name="colors" options={YearFilterOptions} placeholder={"Category"} className="basic-multi-select" classNamePrefix="select" onChange={(selectedOption) => setYearFilter(selectedOption.value)} />
+                    <Select name="colors" options={transactionTypeFilterOptions} placeholder={"Type"} className="basic-multi-select" classNamePrefix="select" onChange={(selectedOption) => setTransactionTypeFilter(selectedOption.value)} />
+                    <Select name="colors" options={MonthFilterOptions} placeholder={monthFilter ? monthFilter : "Month"} className="basic-multi-select" classNamePrefix="select" onChange={(selectedOption) => setMonthFilter(selectedOption.value)} />
+                    <Select name="colors" options={YearFilterOptions} placeholder={yearFilter ? yearFilter : "Year"} className="basic-multi-select" classNamePrefix="select" onChange={(selectedOption) => setYearFilter(selectedOption.value)} />
+                </div>
+
+                <div className="button-wrapper">
+                    <button>Add Transaction</button>
+                </div>
+
             </section>
 
             <section id="table-container">
@@ -192,271 +201,32 @@ export default function page() {
                 <table id="txn-table">
                     <thead>
                         <tr>
-                            <th>Day</th>
-                            <th>Time</th>
-                            <th>Details</th>
-                            <th>Amount (R)</th>
-                            <th>Type</th>
-                            <th>Category</th>
-                            <th>Supplier</th>
+                            <th className="day">Day</th>
+                            <th className="time">Time</th>
+                            <th className="details">Details</th>
+                            <th className="amount">Amount (R)</th>
+                            <th className="type">Type</th>
+                            <th className="category">Category</th>
+                            <th className="supplier">Supplier</th>
                         </tr>
                     </thead>
                     <tbody>
-
-                        <tr>
-                            <td>1</td>
-                            <td>12:34</td>
-                            <td>Chic Mayo Panaini</td>
-                            <td>34.99</td>
-                            <td>Debit</td>
-                            <td>Food</td>
-                            <td>Checkers - Paardevalei</td>
-                        </tr>
-                        
-                        <tr>
-                            <td>1</td>
-                            <td>12:34</td>
-                            <td>Chic Mayo Panaini</td>
-                            <td>34.99</td>
-                            <td>Debit</td>
-                            <td>Food</td>
-                            <td>Checkers - Paardevalei</td>
-                        </tr>
-                        
-                        <tr>
-                            <td>1</td>
-                            <td>12:34</td>
-                            <td>Chic Mayo Panaini</td>
-                            <td>34.99</td>
-                            <td>Debit</td>
-                            <td>Food</td>
-                            <td>Checkers - Paardevalei</td>
-                        </tr>
-                        
-                        <tr>
-                            <td>1</td>
-                            <td>12:34</td>
-                            <td>Chic Mayo Panaini</td>
-                            <td>34.99</td>
-                            <td>Debit</td>
-                            <td>Food</td>
-                            <td>Checkers - Paardevalei</td>
-                        </tr>
-                        
-                        <tr>
-                            <td>1</td>
-                            <td>12:34</td>
-                            <td>Chic Mayo Panaini</td>
-                            <td>34.99</td>
-                            <td>Debit</td>
-                            <td>Food</td>
-                            <td>Checkers - Paardevalei</td>
-                        </tr>
-                        
-                        <tr>
-                            <td>1</td>
-                            <td>12:34</td>
-                            <td>Chic Mayo Panaini</td>
-                            <td>34.99</td>
-                            <td>Debit</td>
-                            <td>Food</td>
-                            <td>Checkers - Paardevalei</td>
-                        </tr>
-                        
-                        <tr>
-                            <td>1</td>
-                            <td>12:34</td>
-                            <td>Chic Mayo Panaini</td>
-                            <td>34.99</td>
-                            <td>Debit</td>
-                            <td>Food</td>
-                            <td>Checkers - Paardevalei</td>
-                        </tr>
-                        
-                        <tr>
-                            <td>1</td>
-                            <td>12:34</td>
-                            <td>Chic Mayo Panaini</td>
-                            <td>34.99</td>
-                            <td>Debit</td>
-                            <td>Food</td>
-                            <td>Checkers - Paardevalei</td>
-                        </tr>
-                        
-                        <tr>
-                            <td>1</td>
-                            <td>12:34</td>
-                            <td>Chic Mayo Panaini</td>
-                            <td>34.99</td>
-                            <td>Debit</td>
-                            <td>Food</td>
-                            <td>Checkers - Paardevalei</td>
-                        </tr>
-                        
-                        <tr>
-                            <td>1</td>
-                            <td>12:34</td>
-                            <td>Chic Mayo Panaini</td>
-                            <td>34.99</td>
-                            <td>Debit</td>
-                            <td>Food</td>
-                            <td>Checkers - Paardevalei</td>
-                        </tr>
-                        
-                        <tr>
-                            <td>1</td>
-                            <td>12:34</td>
-                            <td>Chic Mayo Panaini</td>
-                            <td>34.99</td>
-                            <td>Debit</td>
-                            <td>Food</td>
-                            <td>Checkers - Paardevalei</td>
-                        </tr>
-                        
-                        <tr>
-                            <td>1</td>
-                            <td>12:34</td>
-                            <td>Chic Mayo Panaini</td>
-                            <td>34.99</td>
-                            <td>Debit</td>
-                            <td>Food</td>
-                            <td>Checkers - Paardevalei</td>
-                        </tr>
-                        
-                        <tr>
-                            <td>1</td>
-                            <td>12:34</td>
-                            <td>Chic Mayo Panaini</td>
-                            <td>34.99</td>
-                            <td>Debit</td>
-                            <td>Food</td>
-                            <td>Checkers - Paardevalei</td>
-                        </tr>
-                        
-                        <tr>
-                            <td>1</td>
-                            <td>12:34</td>
-                            <td>Chic Mayo Panaini</td>
-                            <td>34.99</td>
-                            <td>Debit</td>
-                            <td>Food</td>
-                            <td>Checkers - Paardevalei</td>
-                        </tr>
-                        
-                        <tr>
-                            <td>1</td>
-                            <td>12:34</td>
-                            <td>Chic Mayo Panaini</td>
-                            <td>34.99</td>
-                            <td>Debit</td>
-                            <td>Food</td>
-                            <td>Checkers - Paardevalei</td>
-                        </tr>
-                        
-                        <tr>
-                            <td>1</td>
-                            <td>12:34</td>
-                            <td>Chic Mayo Panaini</td>
-                            <td>34.99</td>
-                            <td>Debit</td>
-                            <td>Food</td>
-                            <td>Checkers - Paardevalei</td>
-                        </tr>
-                        
-                        <tr>
-                            <td>1</td>
-                            <td>12:34</td>
-                            <td>Chic Mayo Panaini</td>
-                            <td>34.99</td>
-                            <td>Debit</td>
-                            <td>Food</td>
-                            <td>Checkers - Paardevalei</td>
-                        </tr>
-                        
-                        <tr>
-                            <td>1</td>
-                            <td>12:34</td>
-                            <td>Chic Mayo Panaini</td>
-                            <td>34.99</td>
-                            <td>Debit</td>
-                            <td>Food</td>
-                            <td>Checkers - Paardevalei</td>
-                        </tr>
-                        
-                        <tr>
-                            <td>1</td>
-                            <td>12:34</td>
-                            <td>Chic Mayo Panaini</td>
-                            <td>34.99</td>
-                            <td>Debit</td>
-                            <td>Food</td>
-                            <td>Checkers - Paardevalei</td>
-                        </tr>
-                        
-                        <tr>
-                            <td>1</td>
-                            <td>12:34</td>
-                            <td>Chic Mayo Panaini</td>
-                            <td>34.99</td>
-                            <td>Debit</td>
-                            <td>Food</td>
-                            <td>Checkers - Paardevalei</td>
-                        </tr>
-                        
-                        <tr>
-                            <td>1</td>
-                            <td>12:34</td>
-                            <td>Chic Mayo Panaini</td>
-                            <td>34.99</td>
-                            <td>Debit</td>
-                            <td>Food</td>
-                            <td>Checkers - Paardevalei</td>
-                        </tr>
-                        
-                        <tr>
-                            <td>1</td>
-                            <td>12:34</td>
-                            <td>Chic Mayo Panaini</td>
-                            <td>34.99</td>
-                            <td>Debit</td>
-                            <td>Food</td>
-                            <td>Checkers - Paardevalei</td>
-                        </tr>
-                        
-                        <tr>
-                            <td>1</td>
-                            <td>12:34</td>
-                            <td>Chic Mayo Panaini</td>
-                            <td>34.99</td>
-                            <td>Debit</td>
-                            <td>Food</td>
-                            <td>Checkers - Paardevalei</td>
-                        </tr>
-                        
-                        <tr>
-                            <td>1</td>
-                            <td>12:34</td>
-                            <td>Chic Mayo Panaini</td>
-                            <td>34.99</td>
-                            <td>Debit</td>
-                            <td>Food</td>
-                            <td>Checkers - Paardevalei</td>
-                        </tr>
-                        
-                        <tr>
-                            <td>1</td>
-                            <td>Bella</td>
-                            <td>88, 898</td>
-                            <td>Aston Martin</td>
-                        </tr>
-                    
-                        <tr>
-                            <td>1</td>
-                            <td>Max</td>
-                            <td>88, 898</td>
-                            <td>Red Bull</td>
-                        </tr>
-
+                        {transactions && transactions.filter(
+                            (TF) => TF.year === yearFilter &&
+                            TF.month_name === monthFilter &&
+                            (transactionTypeFilter === "all" || TF.type === transactionTypeFilter)
+                        ).map((T) => (
+                                <tr key={T.id}>
+                                    <td>{T.day}</td>
+                                    <td>{T.time}</td>
+                                    <td>{T.details}</td>
+                                    <td>R{(T.amount || 0.00).toFixed(2)}</td>
+                                    <td>{T.type}</td>
+                                    <td>{T.category_name}</td>
+                                    <td>{T.supplier_name}</td>
+                                </tr>
+                            ))
+                        }
                     </tbody>
                 </table>
 

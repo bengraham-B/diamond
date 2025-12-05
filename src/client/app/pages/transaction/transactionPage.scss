@@ -3,10 +3,46 @@
     display: flex;
     flex-direction: column;
 
+    #header-section {
+        width: 100%;
+        font-size: 2.5em;
+        text-align: center;
+    }
+
+    #filter-add-txn-section {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+
+        .select-wrapper{
+            display: flex;
+            flex-direction: row;
+            gap: 0.5rem;
+        }
+
+        .button-wrapper {
+            button {
+                background: inherit;
+                border: 1px solid $secondary;
+                padding: 10px 20px;
+                border-radius: 5px;
+                color: $secondary;
+
+                &:hover{
+                    background-color: $secondary;
+                    color: $accent;
+
+                }
+            }
+        }
+
+    }
+
     #table-container {
         margin-top: auto;
         width: inherit;
-        height: 80vh;        // MUST be tall enough to scroll
+        height: 81vh;        // MUST be tall enough to scroll
         overflow-y: auto;    // SCROLL HERE ✅
         
         #txn-table {
@@ -14,20 +50,40 @@
             height: inherit;
 
             border-collapse: collapse;
-            margin: 25px 0;
             margin: 0;
 
             font-size: 0.9em;
             min-width: 400px;
-            border-radius: 5px 5px 0 0;
+            border: 1px solid $secondary;
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+
+            thead > tr {
+                .day {
+                    width: 5%;
+                }
+
+                .time {
+                    width: 7%;
+                }
+
+                .details {
+                    width: 35%;
+                }
+
+                // .category {
+                //     width: 20%;
+                // }
+
+                // .supplier {
+                //     width: 20%;
+                // }
+            }
 
             thead th {
                 position: sticky;
                 background-color: $secondary;
                 top: 0;
-                // z-index: 5;           // Prevents overlap issues
-
+                z-index: 5;
             }
 
             thead tr {
