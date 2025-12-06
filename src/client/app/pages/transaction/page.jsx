@@ -6,8 +6,6 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useSession } from "next-auth/react";
 const Select = dynamic(() => import("react-select"), { ssr: false });
 
-
-
 import dynamic from "next/dynamic";
 
 import "./transactionPage.scss"
@@ -39,10 +37,10 @@ export default function page() {
     const [yearFilter, setYearFilter] = useState(currentYearForFilter)
     const [transactionTypeFilter, setTransactionTypeFilter] = useState("all")
 
-    //Y Select Styles
-    const selectStyles = {
-        control: (styles) => ({...styles, backgroundColor: 'black', borderColor: "red", textColor: "green"})
-    }
+    //Y ---------- Filter Select ----------
+    const [supplierSelect, setSupplierSelect] = useState([])
+    const [categorySelect, setCategorySelect] = useState([])
+
     
     const transactionTypeFilterOptions = [
         { value: 'all', label: 'All' },
@@ -61,14 +59,18 @@ export default function page() {
         { value: 'Mar', label: 'Mar' },
         { value: 'Apr', label: 'Apr' },
         { value: 'May', label: 'May' },
-        { value: 'June', label: 'June' },
+        { value: 'June', label: 'Jun'},
         { value: 'Jul', label: 'Jul' },
         { value: 'Aug', label: 'Aug' },
-        { value: 'Sept', label: 'Sept' },
+        { value: 'Sept', label: 'Sept'},
         { value: 'Oct', label: 'Oct' },
         { value: 'Nov', label: 'Nov' },
         { value: 'Dec', label: 'Dec' },
     ];
+
+    //Y ----------- Filter Options From API -----------
+    const [categoryFilterOptions, setCategoryFilterOptions] = useState([])
+    const [SupplierFilterOptions, setSupplierFilterOptions] = useState([])
 
     //? React Toast functions
     const notifySuccess = (msg) => {
@@ -123,8 +125,35 @@ export default function page() {
 
     const fetchTransactions = async () => {
         try {
+
+            const response = await fetch(`${process.env.NEXT_PUBLIC_ENV_SERVER_BASE}/api/transaction/get_transactions`, {
+                method: "POST",
+                body: JSON.stringify({
+                    accountID: session.diamond.accountID
+                }),
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+            
+            if(response.ok){
+                const data = await response.json()
+                setTransactions(data.txn)
+            }
+
+            else {
+                throw new Error("Could not connect to Server")
+            }
+            
+        } catch (error) {
+            console.error("Could not fetch Records: " + error)
+        }	
+	}
+	
+    const fetchCategories = async () => {
+        try {
             try {
-                const response = await fetch(`${process.env.NEXT_PUBLIC_ENV_SERVER_BASE}/api/transaction/get_transactions`, {
+                const response = await fetch(`${process.env.NEXT_PUBLIC_ENV_SERVER_BASE}/api/category/get_user_categories`, {
                     method: "POST",
                     body: JSON.stringify({
                         accountID: session.diamond.accountID
@@ -133,43 +162,67 @@ export default function page() {
                         "Content-Type": "application/json"
                     }
                 })
-                // const response = await fetch(`/api/transaction?accountId=${accountID}`)
                 
                 if(response.ok){
                     const data = await response.json()
-                    console.log(data.txn)
-                    console.log(response.status)
-                    setTransactions(data.txn)
-                    notifySuccess("JK")
+                    let cat_TEMP = []
+                    data.categories.map((C) => (
+                        cat_TEMP.push({value: C.name, label: C.name})
+                    ))
+                    setCategoryFilterOptions(cat_TEMP)
+                }
+
+                else {
+                    throw new Error("Could not connect to Server")
                 }
                 
             } catch (error) {
-                // notifyError("Could not fetch Records: " + error)
-                console.log("Could not fetch Records: " + error)
+                console.error("Could not fetch Records: " + error)
                 
             }
         } catch (error) {
-            console.log("Could not fetch Records: " + error)
+            console.error("Could not fetch Records: " + error)
+        }	
+	}
+   
+    const fetchSuppliers = async () => {
+        try {
+
+            const response = await fetch(`${process.env.NEXT_PUBLIC_ENV_SERVER_BASE}/api/supplier/get_user_suppliers`, {
+                method: "POST",
+                body: JSON.stringify({
+                    accountID: session.diamond.accountID
+                }),
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+            
+            if(response.ok){
+                const data = await response.json()
+                let tempSuppliers = []
+                data.suppliers.map((S) => (
+                    tempSuppliers.push({value: S.name, label: S.name})
+                ))
+
+                setSupplierFilterOptions(tempSuppliers)
+            }
+
+            else {
+                throw new Error("Could not connect to server")
+            }
+        
+        } catch (error) {
+            console.error("Could not fetch Records: " + error)
         }	
 	}
 	
     useEffect(() => {
         if (!session) return 
 		fetchTransactions()
+        fetchCategories()
+        fetchSuppliers()
 	}, [isOpenTransactionModal, isOpenEditModal, session])
-
-        const items = [
-        { label: "Phoenix Baker", id: "@phoenix", supportingText: "@phoenix" },
-        { label: "Olivia Rhye", id: "@olivia", supportingText: "@olivia" },
-        { label: "Lana Steiner", id: "@lana", supportingText: "@lana", disabled: true },
-        { label: "Demi Wilkinson", id: "@demi", supportingText: "@demi" },
-        { label: "Candice Wu", id: "@candice", supportingText: "@candice" },
-        { label: "Natali Craig", id: "@natali", supportingText: "@natali" },
-        { label: "Abraham Baker", id: "@abraham", supportingText: "@abraham" },
-        { label: "Adem Lane", id: "@adem", supportingText: "@adem" },
-        { label: "Jackson Reed", id: "@jackson", supportingText: "@jackson" },
-        { label: "Jessie Meyton", id: "@jessie", supportingText: "@jessie" },
-    ];
 
     if (!session) return 
 
@@ -183,8 +236,8 @@ export default function page() {
             <section id="filter-add-txn-section">
 
                 <div className="select-wrapper">
-                    <Select name="colors" options={YearFilterOptions} placeholder={ "Supplier"} className="basic-multi-select" classNamePrefix="select" onChange={(selectedOption) => setYearFilter(selectedOption.value)} />
-                    <Select name="colors" options={YearFilterOptions} placeholder={"Category"} className="basic-multi-select" classNamePrefix="select" onChange={(selectedOption) => setYearFilter(selectedOption.value)} />
+                    <Select name="colors" options={SupplierFilterOptions} placeholder={ "Supplier"} className="supplier basic-multi-select" classNamePrefix="select" onChange={(selectedOption) => setSupplierSelect(selectedOption.value)} />
+                    <Select name="colors" options={categoryFilterOptions} placeholder={"Category"} className="category basic-multi-select" classNamePrefix="select" onChange={(selectedOption) => setCategorySelect(selectedOption.value)} />
                     <Select name="colors" options={transactionTypeFilterOptions} placeholder={"Type"} className="basic-multi-select" classNamePrefix="select" onChange={(selectedOption) => setTransactionTypeFilter(selectedOption.value)} />
                     <Select name="colors" options={MonthFilterOptions} placeholder={monthFilter ? monthFilter : "Month"} className="basic-multi-select" classNamePrefix="select" onChange={(selectedOption) => setMonthFilter(selectedOption.value)} />
                     <Select name="colors" options={YearFilterOptions} placeholder={yearFilter ? yearFilter : "Year"} className="basic-multi-select" classNamePrefix="select" onChange={(selectedOption) => setYearFilter(selectedOption.value)} />
@@ -211,17 +264,18 @@ export default function page() {
                         </tr>
                     </thead>
                     <tbody>
-                        {transactions && transactions.filter(
-                            (TF) => TF.year === yearFilter &&
+                        {transactions && transactions.filter((TF) =>
+                            TF.year === yearFilter &&
                             TF.month_name === monthFilter &&
                             (transactionTypeFilter === "all" || TF.type === transactionTypeFilter)
+                            // && (!categorySelect || TF.category_name === categorySelect.value)
                         ).map((T) => (
                                 <tr key={T.id}>
                                     <td>{T.day}</td>
                                     <td>{T.time}</td>
                                     <td>{T.details}</td>
                                     <td>R{(T.amount || 0.00).toFixed(2)}</td>
-                                    <td>{T.type}</td>
+                                    <td className={T.type === "debit" ? 'pill debit-pill' : 'pill credit-pill'}><p>{T.type}</p></td>
                                     <td>{T.category_name}</td>
                                     <td>{T.supplier_name}</td>
                                 </tr>
