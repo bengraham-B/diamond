@@ -1,0 +1,7 @@
+<main>
+	<app-txn-page
+		[DISPLAY_TXN]="(txn$ | async) ?? []"
+        tableTitle="Cash Transactions 🚀"
+		TransactionType="CASH"
+	/>
+</main>

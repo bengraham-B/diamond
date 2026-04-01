@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  DIAMOND_POSTGRES:
+    image: postgres:15
+    container_name: DIAMOND_DB_CONTAINER
+    restart: always
+    environment:
+      POSTGRES_USER: diamond_user
+      POSTGRES_PASSWORD: dev
+      POSTGRES_DB: DIAMOND_DB
+    ports:
+      - "5451:5432"
+    volumes:
+      - ./Volumes:/var/lib/postgresql/data
+
+volumes:
+  pgdata:

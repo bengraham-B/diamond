@@ -1,0 +1,60 @@
+/* You can add global styles to this file, and also import other style files */
+@import "primeicons/primeicons.css";
+
+@import "tailwindcss";
+
+* {
+    /*overflow: hidden;*/
+}
+
+/* This kills the focus ring across the whole app for PrimeNG components */
+* {
+    --p-focus-ring-shadow: none !important;
+    --p-focus-ring-color: transparent !important;
+}
+
+/* Specifically for the Context Menu row selection */
+.p-datatable-tbody > tr.p-contextmenu-selected-row {
+    outline: none !important;
+}
+
+.p-datatable .p-datatable-tbody > tr.p-highlight-contextmenu {
+    background: transparent !important;
+    color: inherit !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+.p-datatable-row-selected {
+    background: transparent !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+
+/* Override PrimeNG context menu row highlight */
+.p-datatable .p-datatable-tbody > tr.p-highlight-contextmenu,
+.p-datatable .p-datatable-tbody > tr.p-highlight-contextmenu:hover {
+    background: transparent !important;
+    color: inherit !important;
+    outline: none !important;
+    box-shadow: none !important;
+    border-color: transparent !important;
+}
+
+/* Also target the newer PrimeNG v18+ token-based class */
+.p-datatable-tbody > tr[data-p-highlight-contextmenu="true"] {
+    background: transparent !important;
+    outline: none !important;
+}
+
+.p-datatable .p-datatable-tbody > tr.p-highlight-contextmenu {
+    background: transparent !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+input:focus, .p-inputnumber:focus-within {
+    outline: none !important;
+    box-shadow: none !important;
+}

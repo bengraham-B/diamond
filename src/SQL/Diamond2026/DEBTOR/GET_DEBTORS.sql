@@ -1,0 +1,6 @@
+SELECT
+    *
+FROM
+    DEBTOR
+WHERE
+    ACCOUNT_ID='dfdec9eb-0308-11f1-8f82-0242ac160002'

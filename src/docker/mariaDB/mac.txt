@@ -1,0 +1,7 @@
+container_name: DIAMOND_MariaDB
+host: Bens-Macbook-Air
+username: dev
+password: dev
+mariadb_password: diamond
+maria_database: DIAMOND_ENTERPRISE
+port: "3316:3306"

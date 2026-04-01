@@ -1,0 +1,7 @@
+﻿services:
+  diamond2026_personal:
+    image: diamond2026_personal
+    build:
+      context: .
+      dockerfile: Diamond2026_Personal/Dockerfile
+

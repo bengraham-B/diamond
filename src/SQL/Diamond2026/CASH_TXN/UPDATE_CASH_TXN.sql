@@ -1,0 +1,99 @@
+START TRANSACTION;
+
+SET @TXN_ID='45ca61b7-e70f-4ad3-ae5f-86089274ed51';
+SET @TXN_ACCOUNT_ID = '7e7e02f7-035a-11f1-8f82-0242ac160002';
+
+SET @TXN_AMOUNT = 3200;
+SET @TXN_DESC = 'Sold asset';
+SET @TXN_SOURCE_SOURCE = 'CASH';
+SET @TXN_DATE = '2026-02-02';
+
+SET @TXN_MERCHANT_ID='';
+
+SET @RECEIVABLE = FALSE;
+SET @TXN_DEBTOR_ID='';
+
+SET @TXN_TRANSACTION_TYPE='EXPENSE';
+
+SET @TXN_GL_ACCOUNT_ID = '7e967b3e-035a-11f1-8f82-0242ac160002';
+SET @TXN_GL_ACCOUNT_TYPE = 'INCOME';
+SET @TXN_GL_ACCOUNT_CODE = '-4000';
+
+
+-- UPDATE CASH_TXN ===========================================================
+UPDATE CASH_TXN
+    SET
+        DETAILS=@TXN_DESC,
+        AMOUNT=@TXN_AMOUNT,
+
+         DATE=@TXN_DATE,
+        DAY=@TXN_DAY,
+        DAY_OF_WEEK=@TXN_DAY_OF_WEEK,
+        WEEK=@TXN_WEEK,
+        MONTH=@TXN_MONTH,
+        MONTH_NAME=@TXN_MONTH_NAME,
+        YEAR=@TXN_YEAR
+
+    WHERE
+        ACCOUNT_ID=@TXN_ACCOUNT_ID
+        AND CASH_TXN_ID=@TXN_ID;
+
+-- UPDATE GL_HEADER =============================================================
+UPDATE GL_HEADER
+    SET
+        DETAILS=@TXN_DESC
+
+    WHERE
+        ACCOUNT_ID=@TXN_ACCOUNT_ID
+        AND GL_HEADER_ID=(SELECT GL_HEADER_ID FROM GL_HEADER WHERE TRANSACTION_ID=@TXN_ID AND ACCOUNT_ID=@TXN_ACCOUNT_ID);
+
+
+-- UPDATE GL_LINES  ==========================================================================
+
+
+# CHANGE CATEGORY
+-- This is based on the GL_ACCOUNT submitted in the PUT request
+UPDATE
+    GL_LINE
+SET
+    GL_ACCOUNT_ID=@TXN_GL_ACCOUNT_ID,
+    AMOUNT=@TXN_AMOUNT,
+    DEBIT_CREDIT=(IF(@TXN_TRANSACTION_TYPE='INCOME', 'CREDIT', 'DEBIT')) # Specifies that the category is an income / expense
+
+WHERE
+    ACCOUNT_ID=@TXN_ACCOUNT_ID
+    AND GL_LINE_ID=(
+            SELECT
+                GL_LINE_ID
+
+            FROM
+                CASH_TXN
+
+            LEFT JOIN GL_HEADER ON CASH_TXN.CASH_TXN_ID = GL_HEADER.TRANSACTION_ID
+            LEFT JOIN GL_LINE ON GL_HEADER.GL_HEADER_ID = GL_LINE.GL_HEADER_ID
+            LEFT JOIN GL_ACCOUNT ON GL_LINE.GL_ACCOUNT_ID = GL_ACCOUNT.GL_ACCOUNT_ID
+
+            WHERE
+                GL_HEADER.TRANSACTION_ID=@TXN_ID
+
+                AND GL_ACCOUNT.GL_ACCOUNT_TYPE NOT IN ('ASSET', 'LIABILITY', 'EQUITY')
+                AND GL_LINE.ACCOUNT_ID=@TXN_ACCOUNT_ID
+        );
+
+# CHANGE TXN TYPE
+-- This just changes it to an expense or income, thus debiting or crediting the bank account
+UPDATE
+    GL_LINE
+
+SET
+
+    AMOUNT=@TXN_AMOUNT,
+    DEBIT_CREDIT=(IF(@TXN_TRANSACTION_TYPE='INCOME', 'DEBIT', 'CREDIT')) # Specifies to increase or decrease bank
+
+
+WHERE
+    ACCOUNT_ID=@TXN_ACCOUNT_ID
+    AND GL_ACCOUNT_ID=(SELECT GL_ACCOUNT_ID FROM GL_ACCOUNT WHERE GL_ACCOUNT.GL_ACCOUNT_CODE=1000 AND ACCOUNT_ID=@TXN_ACCOUNT_ID); -- This remains 1000 as it is a CASH_TXN;
+
+
+COMMIT;

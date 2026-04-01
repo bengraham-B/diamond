@@ -1,0 +1,303 @@
+<section class="w-full flex justify-between mt-2">
+    <h1 class="text-2xl tracking-wide mb-2">{{tableTitle}}</h1>
+    @if(!isAsideOpen){<button (click)="onOpen()" class="px-4 rounded text-white bg-green-600">Add TXN</button>}
+</section>
+<div class="card p-4">
+    <p-table
+        #dt1
+        [value]="transactions()"
+        dataKey="id"
+        [rows]="10"
+        [rowsPerPageOptions]="[10, 25, 50]"
+        [loading]="loading()"
+        [paginator]="false"
+        [globalFilterFields]="['DAY', 'DETAILS', 'MONTH_NAME', 'GL_ACCOUNT_NAME']"
+        showGridlines
+        [scrollable]="true"
+        scrollHeight="750px"
+        styleClass="p-datatable-sm"
+        [contextMenu]="cm"
+        (contextMenuSelectionChange)="onContextMenuSelect($event)"
+    >
+       
+        <!-- Caption / toolbar -->
+        <ng-template #caption>
+            <div class="flex">
+                <p-button label="Clear" [outlined]="true" icon="pi pi-filter-slash" (click)="clear(dt1)" />
+                <p-iconfield iconPosition="left" class="ml-auto">
+                    <p-inputicon>
+                        <i class="pi pi-search"></i>
+                    </p-inputicon>
+                    <input
+                            pInputText
+                            type="text"
+                            (input)="dt1.filterGlobal(getInputValue($event), 'contains')"
+                            placeholder="Search keyword"
+                    />
+                </p-iconfield>
+            </div>
+        </ng-template>
+        
+        <!-- Header -->
+        <ng-template #header>
+            <tr>
+                <th style="min-width:2rem">
+                    <div class="flex items-center justify-between">
+                        Day
+                        <p-columnFilter type="date" field="DAY" display="menu" />
+                    </div>
+                </th>
+                
+                <th style="min-width:6rem">
+                    <div class="flex items-center justify-between">
+                        Month
+                        <p-columnFilter
+                                field="MONTH"
+                                matchMode="in"
+                                display="menu"
+                                [showMatchModes]="false"
+                                [showOperator]="false"
+                                [showAddButton]="false"
+                        >
+                            <ng-template #filter let-value let-filter="filterCallback">
+                                <p-multiselect
+                                        [ngModel]="value"
+                                        (ngModelChange)="filter($event)"
+                                        [options]="months()"
+                                        optionLabel="label"
+                                        optionValue="value"
+                                        placeholder="Any"
+                                        style="min-width: 14rem"
+                                        [panelStyle]="{ minWidth: '16rem' }"
+                                >
+                                    <ng-template let-option #item>
+                                        <p-tag [value]="option.label" />
+                                    </ng-template>
+                                </p-multiselect>
+                            </ng-template>
+                        </p-columnFilter>
+                    </div>
+                </th>
+                
+                <th style="min-width:18rem">
+                    <div class="flex items-center justify-between">
+                        Details
+                        <p-columnFilter type="text" field="DETAILS" display="menu" />
+                    </div>
+                </th>
+                
+                <th style="min-width:10rem">
+                    <div class="flex items-center justify-between">
+                        Merchant
+                        <p-columnFilter type="date" field="SUPPLIER_NAME" display="menu" />
+                    </div>
+                </th>
+                
+                <th style="min-width:10rem">
+                    <div class="flex items-center justify-between">
+                        Amount
+                        <p-columnFilter type="numeric" field="AMOUNT" display="menu" currency="ZAR" />
+                    </div>
+                </th>
+                
+                <th style="min-width:14rem">
+                    <div class="flex items-center justify-between">
+                        GL Account
+                        <p-columnFilter
+                                field="GL_ACCOUNT.GL_ACCOUNT_ID"
+                                matchMode="in"
+                                display="menu"
+                                [showMatchModes]="false"
+                                [showOperator]="false"
+                                [showAddButton]="false"
+                        >
+                            <ng-template #filter let-value let-filter="filterCallback">
+                                <p-multiselect
+                                        [ngModel]="value"
+                                        (ngModelChange)="filter($event)"
+                                        [options]="glAccounts()"
+                                        optionLabel="label"
+                                        optionValue="value"
+                                        placeholder="Any"
+                                        style="min-width: 14rem"
+                                        [panelStyle]="{ minWidth: '16rem' }"
+                                >
+                                    <ng-template let-option #item>
+                                        <p-tag [value]="option.label" [severity]="getSeverity(option.type)" />
+                                    </ng-template>
+                                </p-multiselect>
+                            </ng-template>
+                        </p-columnFilter>
+                    </div>
+                </th>
+                
+                <th style="width: 5rem">
+                    <div class="flex items-center justify-between">
+                        Type
+                        <p-columnFilter type="boolean" field="TYPE" display="menu" />
+                    </div>
+                </th>
+            </tr>
+        </ng-template>
+        
+        <!-- Body -->
+        <ng-template #body let-TXN>
+            <tr
+                    (click)="selectTXN(TXN)"
+                    [pContextMenuRow]="TXN"
+            >
+                <td>{{ TXN.DAY }}</td>
+                
+                <td>{{ getMonthName(TXN.MONTH) }}</td>
+                
+                <td (click)="$event.stopPropagation()">
+                    <input
+                        pInputText
+                        [ngModel]="TXN.DETAILS"
+                        (ngModelChange)="TXN.DETAILS = $event"
+                        (blur)="editTransaction(TXN)"
+                        class="w-full"
+                    >
+                </td>
+                
+                <td (click)="op.toggle($event)">
+                    <span
+                          *ngIf="TXN.MERCHANT_NAME"
+                          (click)="op.toggle($event)"
+                          class="cursor-pointer underline"
+                          style="text-decoration: none;"
+                    >
+                        {{ TXN.MERCHANT_NAME }}
+                    </span>
+                    
+                    <p-popover #op>
+                        <div class="flex flex-col gap-4" style="max-height: 300px; overflow-y: auto; min-width: 200px;">
+                            <div>
+                                <span class="font-medium block mb-2 text-orange-600">Merchants</span>
+                                <ul class="list-none p-0 m-0 flex flex-col">
+                                    <li
+                                            *ngFor="let merc of merchants()"
+                                            class="flex items-center gap-2 px-2 py-3 hover:bg-emphasis cursor-pointer rounded-border"
+                                            (click)="selectMerchant(merc, TXN)">
+                                        <img [src]="'https://primefaces.org/cdn/primeng/images/demo/avatar/' + merc.image" style="width: 32px" />
+                                        <div>
+                                            <span class="font-medium" >{{ merc.label }}</span>
+                                            <div class="text-sm text-surface-500 dark:text-surface-400">{{ merc.town }}</div>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </p-popover>
+                
+                    <span *ngIf="!TXN.MERCHANT_NAME" class="text-surface-400 italic text-sm"> </span>
+                </td>
+                
+                <td (click)="$event.stopPropagation()">
+                    <p-input-number
+                        [ngModel]="TXN.AMOUNT"
+                        (ngModelChange)="TXN.AMOUNT = $event"
+                        (onBlur)="editTransaction(TXN)"
+                        inputId="locale-user"
+                        mode="currency"
+                        currency="ZAR"
+                        locale="en-ZA"
+                        [minFractionDigits]="2"
+                    >
+                    </p-input-number>
+                </td>
+                
+                <td>
+                    @if(TXN.GL_ACCOUNT_NAME){
+                        <span
+                              
+                              (click)="glOp.toggle($event); $event.stopPropagation()"
+                              class="cursor-pointer"
+                        >
+                            <p-tag [value]="TXN.GL_ACCOUNT_NAME" [severity]="getSeverity(TXN.GL_ACCOUNT_TYPE)" />
+                        </span>
+                    }
+                    
+                    @if(!TXN.GL_ACCOUNT_NAME){
+                        <span
+                            (click)="glOp.toggle($event); $event.stopPropagation()"
+                            class="cursor-pointer text-surface-400 italic text-sm"
+                        >
+                            - assign -
+                        </span>
+                    }
+                    
+                    <p-popover #glOp>
+                        <div style="max-height: 300px; overflow-y: auto; min-width: 220px;">
+                            <span class="font-medium block mb-2">GL Accounts</span>
+                            <ul class="list-none p-0 m-0 flex flex-col">
+                                <li
+                                        *ngFor="let acc of glAccounts()"
+                                        class="flex items-center gap-2 px-2 py-3 hover:bg-emphasis cursor-pointer rounded-border"
+                                        (click)="selectGLAccount(acc, TXN); glOp.hide()"
+                                >
+                                    <span [ngClass]="acc.type === 'EXPENSE' ? 'gl-badge gl-badge--e' : 'gl-badge gl-badge--i'">
+                                        {{ acc.type === 'EXPENSE' ? 'E' : 'I' }}
+                                    </span>
+                                    <div>
+                                        <span class="font-medium">{{ acc.label }}</span>
+                                        <div class="text-sm text-surface-500 dark:text-surface-400">{{ acc.type }}</div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </p-popover>
+                </td>
+                
+                <td>
+                    
+                    <span
+                          *ngIf="TXN.TXN_TYPE"
+                          (click)="typeOp.toggle($event); $event.stopPropagation()"
+                          class="cursor-pointer"
+                    >
+                        <p-tag [value]="TXN.TXN_TYPE" [severity]="getSeverity(TXN.TXN_TYPE)" />
+                    </span>
+                    
+                    <p-popover #typeOp>
+                        <div style="max-height: 300px; min-width: 220px;">
+                            <span class="font-medium block mb-2">TXN Type</span>
+                            <ul class="list-none p-0 m-0 flex flex-col">
+                                <li
+                                        *ngFor="let type of txnTypes"
+                                        class="flex items-center gap-2 px-2 py-3 hover:bg-emphasis cursor-pointer rounded-border"
+                                        (click)="selectTxnType(type, TXN); typeOp.hide()"
+                                >
+                                    <span [ngClass]="{
+                                        'gl-badge': true,
+                                        'gl-badge--e':   type === 'EXPENSE',
+                                        'gl-badge--i':   type === 'INCOME',
+                                        'gl-badge--d':   type === 'DECREASE',
+                                        'gl-badge--inc': type === 'INCREASE'
+                                    }">
+                                        {{ type === 'EXPENSE' ? 'E' : type === 'INCOME' ? 'I' : type === 'DECREASE' ? 'D' : '+' }}
+                                    </span>
+                                    <div>
+                                        <span class="font-medium">{{ type }}</span>
+                                        <div class="text-sm text-surface-500 dark:text-surface-400">{{ type }}</div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </p-popover>
+                </td>
+            </tr>
+        </ng-template>
+        
+        <!-- Empty state -->
+        <ng-template #emptymessage>
+            <tr>
+                <td colspan="7">No transactions found.</td>
+            </tr>
+        </ng-template>
+    </p-table>
+    <div class="card text-center">
+        <p-contextmenu #cm [model]="contextMenuItems"></p-contextmenu>
+    </div>
+</div>
+

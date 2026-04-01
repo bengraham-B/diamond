@@ -1,0 +1,15 @@
+### Macbook ###
+ports: "3316:3306"
+MARIADB_ROOT_PASSWORD: dev
+MARIADB_DATABASE: DIAMOND_ENTERPRISE
+MARIADB_USER: dev
+MARIADB_PASSWORD: diamond <-- Use this one
+
+### ASUS ###
+container_name: ASUS_DIAMOND_MariaDB
+host: localhost
+MARIADB_USER: dev
+MARIADB_PASSWORD: diamond
+maria_database: DIAMOND_PERSONAL
+port: "3317:3306"
+Volume on Asus: C:\Users\Ben Graham\Music\volumes\Diamond2026_Personal

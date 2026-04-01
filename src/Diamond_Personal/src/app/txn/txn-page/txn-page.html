@@ -1,0 +1,23 @@
+<main class="flex h-full w-full" id="txn-page">
+
+    <section class="flex-1 transition-all duration-300">
+        <app-txn-table 
+            (open)="openAside()"
+            [isAsideOpen]="this.isAsideOpen"
+            [tableTitle]="this.tableTitle"
+            [DISPLAY_TXN]="DISPLAY_TXN"
+            [TXN_TYPE]="TransactionType"
+            (emitCopyTxnToForm)="onCopyTxnToForm($event)"
+        />
+    </section>
+
+    <app-aside 
+        appendTo="body"
+        [TXN_TYPE]="TransactionType"
+        (close)="closeAside()"
+        class="transition-all duration-500 overflow-hidden"
+        [class.w-72]="isAsideOpen"
+        [class.w-0]="!isAsideOpen"
+        [receiveCopyTxnToForm]="copyTxnToFormMiddle"
+    />
+</main>

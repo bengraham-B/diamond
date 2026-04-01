@@ -1,0 +1,4 @@
+INSERT INTO DEBTOR
+    (DEBTOR_ID, NAME, DETAILS, ACCOUNT_ID)
+VALUES
+    (UUID(), 'Boss', 'Money Boss will refund me', 'cd2fe940-0398-11f1-8f82-0242ac160002');

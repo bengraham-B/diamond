@@ -1,0 +1,134 @@
+/*.date-row {*/
+/*  background-color: #f4f6f8;*/
+/*  font-weight: 600;*/
+/*}*/
+
+/*.context-menu {*/
+/*    position: fixed;*/
+/*    background: white;*/
+/*    border: 1px solid #ccc;*/
+/*    border-radius: 5px;*/
+/*    list-style: none;*/
+/*    padding: 0;*/
+/*    margin: 0;*/
+/*    z-index: 5;*/
+/*}*/
+
+/*.context-menu li {*/
+/*    padding: 8px 12px;*/
+/*    cursor: pointer;*/
+/*}*/
+
+/*.context-menu li:hover {*/
+/*    background: #eee;*/
+/*}*/
+
+
+
+.add-new-li:hover{
+    background: #f87171;
+}
+
+.add-new-btn{
+    background: mediumspringgreen;
+    padding: 1px;
+    width: 100%;
+    border-radius: 5px;
+}
+
+#table-container {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+#table-container::-webkit-scrollbar{
+    display: none;
+}
+
+table{
+    border-collapse: collapse;
+    width: 100%;
+}
+
+thead th {
+    position: sticky;
+    top: 0;
+    background: grey;
+    z-index: 1;
+}
+
+#txn-day-td{
+    cursor: pointer;
+    text-align: center;
+}
+
+#txn-day-p:hover {
+    padding: 5px;
+    border-radius: 5px;
+    background: aquamarine;
+
+}
+
+.gl-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    font-size: 12px;
+    font-weight: 500;
+    flex-shrink: 0;
+}
+.gl-badge--e { background: #fce8e8; color: #a32d2d; border: 1px solid #f09595; }
+.gl-badge--i { background: #eaf3de; color: #3b6d11; border: 1px solid #97c459; }
+.gl-badge--d   { background: #EEEDFE; color: #3C3489; border: 1px solid #AFA9EC; }
+.gl-badge--inc { background: #E6F1FB; color: #0C447C; border: 1px solid #85B7EB; }
+
+/*
+    Gets rid of the green border when opening the context menu on a row
+*/
+.p-datatable .p-datatable-tbody > tr.p-highlight-contextmenu {
+    background: transparent !important;
+    color: inherit !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+.p-datatable-row-selected {
+    background: transparent !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+:host ::ng-deep .p-datatable .p-datatable-tbody > tr.p-highlight-contextmenu {
+    background: transparent !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+/* Remove the border from the table when focused via context menu */
+/*:host ::v-deep .p-datatable :focus-visible {*/
+/*    outline: none !important;*/
+/*    box-shadow: none !important;*/
+/*}*/
+
+/* Specifically target the row being highlighted by the context menu */
+/*:host ::v-deep .p-datatable-tbody > tr.p-contextmenu-selected-row {*/
+/*    outline: none !important;*/
+/*    !* If it's a border you're seeing: *!*/
+/*    border: none !important;*/
+/*    !* Or set it to the standard border color if 'none' breaks layout *!*/
+/*    box-shadow: none !important;*/
+/*}*/
+
+/*:host ::v-deep .p-datatable .p-datatable-tbody > tr.p-contextmenu-selected-row {*/
+/*    background: inherit !important;*/
+/*    color: inherit !important;*/
+/*    outline: none !important;*/
+/*}*/
+
+/*input:focus, .p-inputnumber:focus-within {*/
+/*    outline: none !important;*/
+/*    box-shadow: none !important;*/
+/*}*/

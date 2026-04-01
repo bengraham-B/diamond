@@ -1,0 +1,8 @@
+CREATE TABLE CATEGORY(
+    CATEGORY_ID UUID PRIMARY KEY,
+    GROUP_ID UUID,
+    accountID UUID,
+    name TEXT,
+    type TEXT,
+    created TIMESTAMP DEFAULT NOW()
+)

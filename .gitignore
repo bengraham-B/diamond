@@ -1,0 +1,79 @@
+##################################################
+# .NET / ASP.NET Core
+##################################################
+
+# Build output
+**/bin/
+**/obj/
+
+# Logs
+*.log
+logs/
+
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.DotSettings.user
+
+# Rider
+.idea/
+*.sln.iml
+
+# Visual Studio
+.vs/
+
+# Publish
+publish/
+
+# ASP.NET config (local only)
+appsettings.Development.json
+appsettings.Local.json
+secrets.json
+
+##################################################
+# Angular / Node
+##################################################
+
+# Dependencies
+node_modules/
+
+# Angular build output
+dist/
+build/
+.tmp/
+out-tsc/
+
+# Angular cache
+.angular/
+.cache/
+
+# Environment files (optional — remove if you WANT them tracked)
+environment.local.ts
+
+# npm / yarn
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+##################################################
+# OS
+##################################################
+
+.DS_Store
+Thumbs.db
+
+##################################################
+# Misc
+##################################################
+
+*.db
+*.sqlite
+*.coverage
+TestResults/
+
+# Gradle build cache and metadata
+.gradle/
+build/

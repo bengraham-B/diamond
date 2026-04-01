@@ -1,0 +1,8 @@
+container_name: DIAMOND_MariaDB
+host: localhost
+MARIADB_USER: dev
+MARIADB_PASSWORD: diamond
+maria_database: DIAMOND_PERSONAL
+port: "3317:3306"
+Volume on Asus:
+    C:\Users\Ben Graham\Music\volumes\Diamond2026_Personal

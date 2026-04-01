@@ -1,0 +1,20 @@
+version: "3.9"
+
+services:
+  mariadb:
+    image: mariadb:11
+    container_name: ASUS_DIAMOND_PERSONAL_MariaDB
+    restart: unless-stopped
+    ports:
+      - "3317:3306"
+    environment:
+      MARIADB_ROOT_PASSWORD: dev
+      MARIADB_DATABASE: DIAMOND_PERSONAL
+      MARIADB_USER: dev
+      MARIADB_PASSWORD: diamond
+    volumes:
+      - "C:/Users/Ben Graham/Music/volumes/Diamond2026_Personal:/var/lib/mysql"
+
+volumes:
+  diamond_personal_data:
+

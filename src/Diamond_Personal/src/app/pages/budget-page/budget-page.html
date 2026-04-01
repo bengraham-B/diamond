@@ -1,0 +1,78 @@
+<div class="card">
+    <p-table
+        #dt2
+        [value]="(budgets$ | async) ?? []"
+        dataKey="BUDGET_ID"
+        [rows]="10"
+        [rowsPerPageOptions]="[10, 25, 50]"
+        [loading]="loading"
+        
+        [globalFilterFields]="['BUDGET_ID', 'ACCOUNT_ID', 'GL_ACCOUNT_ID', 'PERIOD']"
+        [tableStyle]="{ 'min-width': '60rem' }"
+    >
+        <ng-template #caption>
+            <div class="flex justify-between items-center">
+                <span class="text-xl font-semibold">Budgets</span>
+                <p-iconfield iconPosition="left">
+                    <p-inputicon>
+                        <i class="pi pi-search"></i>
+                    </p-inputicon>
+                    <input
+                            pInputText
+                            type="text"
+                            (input)="dt2.filterGlobal($any($event.target).value, 'contains')"
+                            placeholder="Search..."
+                    />
+                </p-iconfield>
+            </div>
+        </ng-template>
+        
+        <ng-template #header>
+            <tr>
+                <th style="width:20%">Budget Name</th>
+                <th style="width:20%">Type</th>
+                <th style="width:20%">Budget Amount</th>
+                <th style="width:20%">Actual Amount</th>
+                <th style="width:20%">Period</th>
+            </tr>
+            <tr>
+                <th>
+                    <p-columnFilter type="text" field="BUDGET_ID" placeholder="Search" filterOn="input" ariaLabel="Filter Budget ID" />
+                </th>
+                <th>
+                    <p-columnFilter type="text" field="ACCOUNT_ID" placeholder="Search" filterOn="input" ariaLabel="Filter Account ID" />
+                </th>
+                <th>
+                    <p-columnFilter type="text" field="GL_ACCOUNT_ID" placeholder="Search" filterOn="input" ariaLabel="Filter GL Account ID" />
+                </th>
+                <th>
+                    <p-columnFilter type="numeric" field="AMOUNT" placeholder="Search" ariaLabel="Filter Amount" />
+                </th>
+                <th>
+                    <p-columnFilter type="text" field="PERIOD" placeholder="WEEK / MONTH" filterOn="input" ariaLabel="Filter Period" />
+                </th>
+            </tr>
+        </ng-template>
+        
+        <ng-template #body let-budget>
+            <tr>
+                <td>{{ budget.GL_ACCOUNT_NAME }}</td>
+                <td>{{ budget.GL_ACCOUNT_TYPE }}</td>
+                <td>{{ budget.BUDGET_AMOUNT | currency:'ZAR':'symbol':'1.2-2' }}</td>
+                <td>{{ budget.ACTUAL_AMOUNT | currency:'ZAR':'symbol':'1.2-2' }}</td>
+                <td>
+                    <p-tag
+                            [value]="budget.BUDGET_PERIOD"
+                            [severity]="getPeriodSeverity(budget.PERIOD)"
+                    />
+                </td>
+            </tr>
+        </ng-template>
+        
+        <ng-template #emptymessage>
+            <tr>
+                <td colspan="5">No budgets found.</td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>

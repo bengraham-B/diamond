@@ -1,0 +1,6 @@
+@Diamond2026_Personal_HostAddress = http://localhost:5107
+
+GET {{Diamond2026_Personal_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

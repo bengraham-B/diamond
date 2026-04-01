@@ -1,0 +1,11 @@
+.side-main {
+    width: 300px;
+    height: 100vh;
+    position: absolute;
+    padding: 4px;
+}
+
+
+.ng-invalid.ng-dirty {
+  	border-color: #f87171;
+}
