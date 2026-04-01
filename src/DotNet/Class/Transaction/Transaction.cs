@@ -10,7 +10,7 @@ public class Transaction
     public required string TYPE { get; set; } // INCOME | EXPENSE | ASSET  - GL_ACCOUNT_TYPE
     public required string DATE  { get; set; }
     public int? GL_CODE { get; set; }
-    public GL_ACCOUNT? GL_ACCOUNT { get; set; }
+    public GL_ACCOUNT_MODEL? GL_ACCOUNT { get; set; }
     public Guid? GL_LINE_ID { get; set; }
     public Guid? GL_HEADER_ID { get; set; }
     public Guid? MERCHANT_ID  { get; set; }

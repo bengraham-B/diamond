@@ -10,7 +10,7 @@ public class CreditCardTXNModel
     public Guid? GL_HEADER_ID { get; set; }
     public required string DATE { get; set; }
     public int? GL_CODE { get; set; }
-    public GL_ACCOUNT? GL_ACCOUNT { get; set; }
+    public GL_ACCOUNT_MODEL? GL_ACCOUNT { get; set; }
     public bool RECEIVABLE { get; set; } = false;
     public Guid? DEBTOR_ID { get; set; } = null;
     public Guid? MERCHANT_ID { get; set; }

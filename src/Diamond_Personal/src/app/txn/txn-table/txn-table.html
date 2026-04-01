@@ -1,5 +1,9 @@
 <section class="w-full flex justify-between mt-2">
     <h1 class="text-2xl tracking-wide mb-2">{{tableTitle}}</h1>
+    @if(TXN_TYPE === "CREDIT_CARD") {
+        <h2>{{outStandingCreditCardBalance() | currency:'ZAR' }}</h2>
+    }
+    
     @if(!isAsideOpen){<button (click)="onOpen()" class="px-4 rounded text-white bg-green-600">Add TXN</button>}
 </section>
 <div class="card p-4">

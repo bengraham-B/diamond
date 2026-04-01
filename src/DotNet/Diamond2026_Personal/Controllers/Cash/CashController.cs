@@ -163,7 +163,7 @@ public class CashController: ControllerBase
                 GL_LINE_ID = reader.GetGuid("GL_LINE_ID"),
                 GL_HEADER_ID = reader.GetGuid("GL_HEADER_ID"),
                 
-                GL_ACCOUNT = new GL_ACCOUNT
+                GL_ACCOUNT = new GL_ACCOUNT_MODEL
                 {
                     GL_ACCOUNT_ID = reader.GetGuid("GL_ACCOUNT_ID"),
                     GL_ACCOUNT_NAME = reader.GetString("GL_ACCOUNT_NAME"),

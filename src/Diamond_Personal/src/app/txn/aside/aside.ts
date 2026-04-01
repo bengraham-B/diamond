@@ -5,7 +5,7 @@
 import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
 import { AsyncPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Observable } from 'rxjs';
+import {Observable, Subscription, take} from 'rxjs';
 
 //Y Reactive Forms
 import { FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -18,17 +18,14 @@ import { DatePickerModule } from 'primeng/datepicker';
 import { InputTextModule } from 'primeng/inputtext';
 
 //Y Models
-import { Category } from '../../models/Category.model';
 import { MERCHANT } from '../../models/Merchant';
 import { GL_ACCOUNT } from '../../models/GL_ACCOUNT';
 
 //Y Services
-import { CashService } from '../../services/cash-service';
 import { GLACCOUNTService } from '../../services/gl-account-service';
 import { UserService } from '../../services/user-service';
 import { MerchantService } from '../../services/merchant-service';
 import { DateService} from "../../services/date-service";
-import {CreditCardTxnService} from "../../services/credit-card-txn-service";
 import {DiamondTxnModel} from "../../models/DiamondTxnModel";
 import {DiamondTxnService} from "../../services/diamond-txn-service";
 
@@ -59,6 +56,8 @@ export class Aside implements OnInit, OnChanges {
     GL_ACCOUNTS$!: Observable<GL_ACCOUNT[]>;
     MERCHANTS$!: Observable<MERCHANT[]>;
 	
+	private TxnTypeSubscription!: Subscription | undefined;
+	
 	// When the user clicks the Copy_To_Form Context menu this will update the form to the values of that TXN
 	ngOnChanges(changes: SimpleChanges) {
 		if(changes['receiveCopyTxnToForm']?.currentValue){
@@ -71,8 +70,14 @@ export class Aside implements OnInit, OnChanges {
 				userType: copiedTxn.TXN_TYPE,
 				userGLAccount: copiedTxn.GL_ACCOUNT_ID,
 				userMerchant: copiedTxn.MERCHANT_ID,
-				userDate: copiedTxn.DATE,
+				userDate: copiedTxn.DATE ? new Date(copiedTxn.DATE) : null,
 			})
+			
+			if(this.TXN_TYPE === "CREDIT_CARD" && copiedTxn.TXN_TYPE == "DECREASE" && copiedTxn.DETAILS === null){
+				this.TXN_FORM.patchValue({
+					userDetails: "REPAID"
+				})
+			}
 		}
 	}
 	
@@ -81,8 +86,6 @@ export class Aside implements OnInit, OnChanges {
         private userService: UserService,
         private glAccountService: GLACCOUNTService,
         private merchantService: MerchantService,
-        private cashService: CashService,
-		private creditCardTxnService: CreditCardTxnService,
 		private diamondTxnService: DiamondTxnService,
         private dateService: DateService
     ){
@@ -106,29 +109,27 @@ export class Aside implements OnInit, OnChanges {
         // if(this.TXN_FORM.invalid) return; //Y Ensures Transaction is correct before preceding
 
         const form = this.TXN_FORM.getRawValue();
-
-        //Y Add the Form data to a transaction model(Interface)
-        const transaction: DiamondTxnModel = {
+		
+        const SubmitTransaction: DiamondTxnModel = {
             ACCOUNT_ID: this.userService.accountID,
             SOURCE: this.TXN_TYPE, //Y The TXN type is passed down from the page, such as CashPage (CASH | CREDIT_CARD_TXN | DEBTOR_TXN | CREDITOR_TXN)
 
             DETAILS: form.userDetails,
             AMOUNT: form.userAmount,
-            TXN_TYPE: form.userType.code,
+            TXN_TYPE: form.userType,
             DATE: this.dateService.TxnDate(form.userDate),
-            MERCHANT_ID: form.userMerchant?.MERCHANT_ID ?? null,
-            GL_ACCOUNT_ID : form.userGLAccount.GL_ACCOUNT_ID ?? null,
+            MERCHANT_ID: form.userMerchant ?? null,
+            GL_ACCOUNT_ID : form.userGLAccount ?? null,
         }
-		console.log({transaction})
+		
+		console.log({SubmitTXN: SubmitTransaction})
 		try {
-			this.diamondTxnService.addDiamondTxn(transaction);
-			
+			this.diamondTxnService.addDiamondTxn(SubmitTransaction);
 		} catch (error){
 			console.error({"Error on Adding DiamondTxn":error})
 		}
     }
-
-
+	
 	onClose(){
 		this.close.emit()
 	}
@@ -147,18 +148,50 @@ export class Aside implements OnInit, OnChanges {
         this.glaccounts = []
 	    
         this.transactionTypes = [
-            {name: "INCOME", code: "INCOME"},
-           { name: "EXPENSE", code: "EXPENSE"}
+            { label: "INCOME", value: "INCOME" },
+            { label: "EXPENSE", value: "EXPENSE" }
         ]
 
         this.creditCardTransactionTypes = [
-            {name: "INCREASE", code: "INCREASE"},
-            { name: "REPAID", code: "REPAID"}
+            { label: "INCREASE", value: "INCREASE" },
+            { label: "DECREASE", value: "DECREASE" }
         ]
 	    
 	    // If the user has copied a TXN to Form
 	    if(this.receiveCopyTxnToForm) console.log({CopyToForm: this.receiveCopyTxnToForm})
+	    
+	    this.TxnTypeSubscription = this.TXN_FORM.get('userType')?.valueChanges.subscribe(
+			value => {
+				if(this.TXN_TYPE === "CREDIT_CARD" && value === "DECREASE"){
+					this.GL_ACCOUNTS$.pipe(take(1)).subscribe(
+						acc => {
+							const GLCode = acc.find(A => A.GL_ACCOUNT_CODE === -5001)
+							console.log({GLCode})
+						this.TXN_FORM.patchValue(
+							{
+								userDetails: "REPAID",
+								userGLAccount: GLCode?.GL_ACCOUNT_ID ?? null
+							}
+						);
+						}
+					);
+					
+				}
+				else {
+					this.TXN_FORM.patchValue(
+						{
+							userDetails: "",
+							userGLAccount: ""
+						}
+					);
+				}
+	        }
+		);
     }
+	
+	ngOnDestroy(){
+		this.TxnTypeSubscription?.unsubscribe();
+	}
 
     setTodayDate(){
         this.TXN_FORM.get('userDate')?.setValue(new Date())

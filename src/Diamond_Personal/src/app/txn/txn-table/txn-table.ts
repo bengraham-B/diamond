@@ -100,6 +100,8 @@ export class TxnTable implements OnInit, OnDestroy {
 	GL_ACCOUNTS$!: Observable<GL_ACCOUNT[]>;
 	MERCHANTS$!: Observable<MERCHANT[]>
 	
+	outStandingCreditCardBalance = signal<number>(0);
+	
 	
 	constructor(
 		private diamondTxnService: DiamondTxnService,
@@ -118,6 +120,7 @@ export class TxnTable implements OnInit, OnDestroy {
 			* Signals must be called like functions to register dependency tracking
 			* */
 			this.diamondTxnService.fetchDiamondTxn();
+			this.diamondTxnService.getCreditCardOutStandingBalance();
 		})
 	}
 	
@@ -138,6 +141,10 @@ export class TxnTable implements OnInit, OnDestroy {
 				this.loading.set(false);
 			},
 		});
+		
+		this.diamondTxnService.globalCreditCardOutStandingBalance.subscribe(
+			b => this.outStandingCreditCardBalance.set(b)
+		)
 		
 		this.GLAccountSubscription = this.glAccountService.globalGL_ACCOUNTS.subscribe({
 			next: (GL_ACC: GL_ACCOUNT[]) => {
@@ -297,7 +304,7 @@ export class TxnTable implements OnInit, OnDestroy {
 	@Output() emitCopyTxnToForm = new EventEmitter<DiamondTxnModel>();
 	// This emits from the TXN_TABLE to the ASIDE
 	copyTxnToForm(TXN: DiamondTxnModel) {
-		
+		console.log({EmitTXN: TXN});
 		switch (this.TXN_TYPE) {
 			case "CASH":
 				TXN.SOURCE = "CASH";

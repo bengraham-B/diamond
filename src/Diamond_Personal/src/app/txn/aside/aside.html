@@ -25,7 +25,7 @@
                 <div>
                     <h3>Type</h3>
                     <div class="card flex justify-center">
-                        <p-select [options]="creditCardTransactionTypes" formControlName="userType" optionLabel="name" placeholder="Transaction Type" class="w-full" appendTo="body"/>
+                        <p-select [options]="creditCardTransactionTypes" formControlName="userType" optionLabel="label" optionValue="value" placeholder="Transaction Type" class="w-full" appendTo="body"/>
                     </div>
                 </div>
                 
@@ -33,11 +33,12 @@
                 <div>
                     <h3>Type</h3>
                     <div class="card flex justify-center">
-                        <p-select [options]="transactionTypes" formControlName="userType" optionLabel="name" placeholder="Transaction Type" class="w-full" appendTo="body"/>
+                        <p-select [options]="transactionTypes" formControlName="userType" optionLabel="label"  optionValue="value" placeholder="Transaction Type" class="w-full" appendTo="body"/>
                     </div>
                 </div>
             }
             
+<!--            Category | GL_ACCOUNTS -->
             <div class="w-full">
                 <h3>Category</h3>
                 
@@ -220,6 +221,7 @@
                 </div>
             </div>
 
+<!--            Supplier -->
             <div>
                 <h3>Supplier</h3>
 
@@ -258,6 +260,7 @@
                 </div>
             </div>
 
+<!--            Date-->
             <div class="space-y-2">
                 <div >
                     <h3>Date</h3>

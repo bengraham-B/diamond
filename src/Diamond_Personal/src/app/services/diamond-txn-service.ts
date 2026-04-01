@@ -11,11 +11,15 @@ import {RequestBodyModel} from "../models/RequestBodyModel";
 })
 export class DiamondTxnService {
 	javaServiceBase: string;
+	serverBase: String
 	accountID: string;
 	
 	//Y Globally Accessible
 	private diamondTxnSubject = new BehaviorSubject<DiamondTxnModel[]>([])
     globalDiamondTxn = this.diamondTxnSubject.asObservable();
+	
+	private CreditCardOutStandingBalanceSubject = new BehaviorSubject<number>(0);
+	globalCreditCardOutStandingBalance = this.CreditCardOutStandingBalanceSubject.asObservable();
 	
 	constructor(
 		private http: HttpClient,
@@ -24,6 +28,7 @@ export class DiamondTxnService {
 	) {
 		this.accountID = this.userService.accountID
 		this.javaServiceBase = this.serverURL.javaServerURL;
+		this.serverBase = this.serverURL.baseURL;
 	}
 	
 	fetchDiamondTxn(){
@@ -37,6 +42,7 @@ export class DiamondTxnService {
 			.subscribe(
 				(res) => {
 					this.fetchDiamondTxn();
+					this.getCreditCardOutStandingBalance();
 				}
 			)
 	}
@@ -46,6 +52,7 @@ export class DiamondTxnService {
 			.subscribe(
 				(res) => {
 					this.fetchDiamondTxn();
+					this.getCreditCardOutStandingBalance();
 				}
 			)
 	}
@@ -59,7 +66,15 @@ export class DiamondTxnService {
 		}).subscribe(
 			(res) => {
 				this.fetchDiamondTxn();
+				this.getCreditCardOutStandingBalance();
 			}
 		)
+	}
+	
+	getCreditCardOutStandingBalance(){
+		console.log("JKLMN")
+		return this.http.post<{ OUTSTANDING_BALANCE: number }>(`${this.serverBase}/api/credit_card_txn/get_outstanding_balance`, {
+			ACCOUNT_ID: this.accountID
+		}).subscribe(OB => this.CreditCardOutStandingBalanceSubject.next(OB.OUTSTANDING_BALANCE))
 	}
 }

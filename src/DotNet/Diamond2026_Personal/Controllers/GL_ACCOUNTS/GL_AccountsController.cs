@@ -46,10 +46,10 @@ public class GL_AccountsController: ControllerBase
             using var cmd = new MySqlCommand(SQL, connection);
             cmd.Parameters.Add("@ACCOUNT_ID", MySqlDbType.Guid).Value = requestParams.ACCOUNT_ID;
             using var reader = cmd.ExecuteReader();
-            List<GL_ACCOUNT> USER_GL_ACCOUNTS = new List<GL_ACCOUNT>();
+            List<GL_ACCOUNT_MODEL> USER_GL_ACCOUNTS = new List<GL_ACCOUNT_MODEL>();
             while (reader.Read())
             {
-                USER_GL_ACCOUNTS.Add(new GL_ACCOUNT
+                USER_GL_ACCOUNTS.Add(new GL_ACCOUNT_MODEL
                 {
                     GL_ACCOUNT_ID = reader.GetGuid("GL_ACCOUNT_ID"),
                     GL_ACCOUNT_TYPE = reader.GetString("GL_ACCOUNT_TYPE"),

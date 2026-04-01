@@ -128,7 +128,7 @@ public class CreditCardTransactionController(Conn conn) : ControllerBase
                     MERCHANT_NAME = reader.IsDBNull(reader.GetOrdinal("MERCHANT_NAME")) ? null : reader.GetString("MERCHANT_NAME"),
                     DEBTOR_ID = reader.IsDBNull(reader.GetOrdinal("DEBTOR_ID")) ? null :  reader.GetGuid("DEBTOR_ID"),
                     GL_HEADER_ID = reader.IsDBNull(reader.GetOrdinal("GL_HEADER_ID")) ? null : reader.GetGuid("GL_HEADER_ID"),
-                    GL_ACCOUNT = new GL_ACCOUNT
+                    GL_ACCOUNT = new GL_ACCOUNT_MODEL
                     {
                         GL_ACCOUNT_NAME = reader.GetString("GL_ACCOUNT_NAME"),
                         GL_ACCOUNT_TYPE = reader.GetString("GL_ACCOUNT_TYPE"),
@@ -316,6 +316,46 @@ public class CreditCardTransactionController(Conn conn) : ControllerBase
             return BadRequest(new {
                 message = $"Could not Delete Credit Card TXN: \n \n {e}"
             });
+        }
+    }
+
+    [HttpPost("get_outstanding_balance")]
+    public IActionResult GetOutStandingBalance([FromBody] RequestParams requestParams)
+    {
+        try
+        {
+            const string SQL = @"
+                SELECT
+                    SUM(
+                        CASE WHEN TXN_TYPE='INCREASE' THEN AMOUNT ELSE -AMOUNT END
+                        ) AS OUTSTANDING_BALANCE
+                FROM
+                    DIAMOND_TRANSACTION
+                WHERE
+                    ACCOUNT_ID=@ACCOUNT_ID AND
+                    SOURCE='CREDIT_CARD'
+            ";
+
+            using var connection = _conn.Open();
+            using var cmd = new MySqlCommand(SQL, connection);
+            cmd.Parameters.Add("@ACCOUNT_ID", MySqlDbType.Guid).Value = requestParams.ACCOUNT_ID;
+
+            using var reader = cmd.ExecuteReader();
+            decimal outStandingBalance = 0;
+            if (reader.Read())
+            {
+                outStandingBalance = reader.IsDBNull(reader.GetOrdinal("OUTSTANDING_BALANCE"))
+                    ? 0
+                    : reader.GetDecimal("OUTSTANDING_BALANCE");
+            }
+
+            return Ok(new { OUTSTANDING_BALANCE = outStandingBalance });
+            
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
         }
     }
 }
