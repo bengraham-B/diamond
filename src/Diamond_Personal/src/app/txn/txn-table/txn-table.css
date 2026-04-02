@@ -132,3 +132,14 @@ thead th {
 /*    outline: none !important;*/
 /*    box-shadow: none !important;*/
 /*}*/
+
+.hidden-input .p-datepicker-input {
+    display: none;
+}
+
+.invisible-datepicker {
+    width: 0;
+    height: 0;
+    overflow: hidden;
+    position: absolute;
+}

@@ -1,7 +1,9 @@
 import {Component, OnInit, OnDestroy, signal, Input, Output, EventEmitter, effect} from '@angular/core';
-import { FormsModule, FormGroup, FormControl } from '@angular/forms';
+import {FormsModule, FormGroup, FormControl, ReactiveFormsModule} from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import {Observable, Subscription} from 'rxjs';
+import { ViewChild } from '@angular/core';
+
 
 // PrimeNG
 import { TagModule } from 'primeng/tag';
@@ -28,6 +30,7 @@ import {DateService} from "../../services/date-service";
 import {GL_ACCOUNT} from "../../models/GL_ACCOUNT";
 import {MERCHANT} from "../../models/Merchant";
 import {DiamondTxnModel} from "../../models/DiamondTxnModel";
+import {DatePicker} from "primeng/datepicker";
 
 @Component({
 	selector: 'app-txn-table',
@@ -50,6 +53,8 @@ import {DiamondTxnModel} from "../../models/DiamondTxnModel";
 		InputNumberModule,
 		ContextMenu,
 		ContextMenuModule,
+		DatePicker,
+		ReactiveFormsModule,
 	],
 })
 export class TxnTable implements OnInit, OnDestroy {
@@ -61,6 +66,11 @@ export class TxnTable implements OnInit, OnDestroy {
 	
 	//Y Aside Inputs from TXN-PAGE (Hides the add TXN button when aside is open)
 	@Input() isAsideOpen: boolean = false;
+	
+	@ViewChild('datepicker') datepicker!: DatePicker;
+	
+	dateControl = new FormControl<Date | null>(null)
+	
 	
 	onOpen(){
 		this.open.emit()
@@ -101,7 +111,6 @@ export class TxnTable implements OnInit, OnDestroy {
 	MERCHANTS$!: Observable<MERCHANT[]>
 	
 	outStandingCreditCardBalance = signal<number>(0);
-	
 	
 	constructor(
 		private diamondTxnService: DiamondTxnService,
@@ -212,6 +221,13 @@ export class TxnTable implements OnInit, OnDestroy {
 				}
 			},
 		];
+	}
+	
+	onDateSelect(date: Date, txn: DiamondTxnModel){
+		console.log({DATE: new Date(date), txn})
+		txn.DATE = this.dateService.TxnDate(date);
+		this.diamondTxnService.editDiamondTxn(txn);
+		console.log({AfterTXN: txn});
 	}
 	
 	///////////////////////////////////////////////////////////////////////////// EDIT TXN

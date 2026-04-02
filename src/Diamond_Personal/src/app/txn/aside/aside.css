@@ -9,3 +9,7 @@
 .ng-invalid.ng-dirty {
   	border-color: #f87171;
 }
+
+.hidden-input .p-datepicker-input {
+    display: none;
+}

@@ -150,7 +150,32 @@
                     (click)="selectTXN(TXN)"
                     [pContextMenuRow]="TXN"
             >
-                <td>{{ TXN.DAY }}</td>
+                <td class="">
+                    <div class="flex justify-between">
+                        <span>
+                            {{ TXN.DAY }}
+                        </span>
+                        
+                        <span>
+                            <p-datepicker
+                                    #dp
+                                    [formControl]="dateControl"
+                                    [showIcon]="true"
+                                    [showOnFocus]="false"
+                                    iconDisplay="input"
+                                    appendTo="body"
+                                    dateFormat="dd-mm-yy"
+                                    placeholder="dd/mm/yyyy"
+                                    styleClass="invisible-datepicker"
+                                    (onSelect)="onDateSelect($event, TXN)"
+                            >
+                            </p-datepicker>
+                            <button type="button" (click)="dp.toggle()">
+                                <i class="pi pi-calendar"></i>
+                            </button>
+                        </span>
+                    </div>
+                </td>
                 
                 <td>{{ getMonthName(TXN.MONTH) }}</td>
                 
