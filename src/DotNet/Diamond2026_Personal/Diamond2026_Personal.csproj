@@ -19,15 +19,17 @@
         <Link>.dockerignore</Link>
       </Content>
     </ItemGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\Class\Class.csproj" />
-      <ProjectReference Include="..\MariaDB\MariaDB.csproj" />
-    </ItemGroup>
-
+    
     <ItemGroup>
       <Folder Include="Controllers\Creditors\" />
       <Folder Include="Controllers\Receivable\" />
+    </ItemGroup>
+    
+    <ItemGroup>
+      <ProjectReference Include="..\Budget\Budget.csproj" />
+      <ProjectReference Include="..\Class\Class.csproj" />
+      <ProjectReference Include="..\MariaDB\MariaDB.csproj" />
+      <ProjectReference Include="..\Utils\Utils.csproj" />
     </ItemGroup>
 
 </Project>

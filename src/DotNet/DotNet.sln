@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MariaDB", "MariaDB\MariaDB.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Utils", "Utils\Utils.csproj", "{17E0FB61-7875-4C6E-B9DE-EE2EB3966A78}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Budget", "Budget\Budget.csproj", "{6E201564-3438-4898-810A-51D6B7045003}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,5 +37,11 @@ Global
 		{17E0FB61-7875-4C6E-B9DE-EE2EB3966A78}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{17E0FB61-7875-4C6E-B9DE-EE2EB3966A78}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{17E0FB61-7875-4C6E-B9DE-EE2EB3966A78}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6E201564-3438-4898-810A-51D6B7045003}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6E201564-3438-4898-810A-51D6B7045003}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6E201564-3438-4898-810A-51D6B7045003}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6E201564-3438-4898-810A-51D6B7045003}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
 	EndGlobalSection
 EndGlobal
