@@ -1,48 +1,42 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, inject, signal, effect} from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { ButtonModule } from 'primeng/button';
+import { SelectModule } from 'primeng/select';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
+import { MultiSelectModule } from 'primeng/multiselect';
+import { ProgressBarModule } from 'primeng/progressbar';
+import { SliderModule } from 'primeng/slider';
 import { Table, TableModule } from 'primeng/table';
-import { InputTextModule } from 'primeng/inputtext';
 import { TagModule } from 'primeng/tag';
-import { BudgetService } from '../../services/budget-service';
-import { BudgetModel } from '../../models/BudgetModel';
-import { Observable } from 'rxjs';
-import { AsyncPipe, CurrencyPipe } from '@angular/common';
+import { InputTextModule } from 'primeng/inputtext';
+import {Subscription} from "rxjs";
+import {ActualBudgetService} from "../../services/actual-budget-service";
 
 @Component({
-	selector: 'app-budget',
+	selector: 'app-budget-page',
+	standalone: true,
 	templateUrl: './budget-page.html',
 	styleUrl: './budget-page.css',
-	imports: [
-		IconFieldModule,
-		InputIconModule,
-		TableModule,
-		InputTextModule,
-		TagModule,
-		FormsModule,
-		AsyncPipe,
-		CurrencyPipe
-	]
+	imports: [ButtonModule, SelectModule, IconFieldModule, InputIconModule, MultiSelectModule, ProgressBarModule, SliderModule, TableModule, TagModule, InputTextModule, FormsModule],
 })
 export class BudgetPage implements OnInit {
 	
-	budgets$!: Observable<BudgetModel[]>;
-	loading: boolean = true;
+	// Signals()
+	budgets = signal<ActualBudgetModel[]>([]);
 	
-	constructor(private budgetService: BudgetService) {}
+	private budgetSubscription!: Subscription;
+	
+	constructor(
+		private actualBudgetService: ActualBudgetService
+	) {
+	}
 	
 	ngOnInit() {
-		this.budgetService.fetchBudgets();
-		this.budgets$ = this.budgetService.globalBudget;
-		this.loading = false;
-	}
-	
-	clear(table: Table) {
-		table.clear();
-	}
-	
-	getPeriodSeverity(period: string): 'info' | 'warn' {
-		return period === 'MONTH' ? 'info' : 'warn';
+		this.ACTUAL_BUDGET = this.actualBudgetService.globalActualBudget;
+		
+		effect(() => {
+			this.actualBudgetService.fetchActualBudgets();
+		});
 	}
 }
