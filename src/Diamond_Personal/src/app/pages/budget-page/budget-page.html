@@ -1,138 +1,190 @@
-<div class="card">
-    <p-table #dt1 [value]="customers()" dataKey="id" [rows]="10" [rowsPerPageOptions]="[10, 25, 50]" [loading]="loading()" [paginator]="true" [globalFilterFields]="['name', 'country.name', 'representative.name', 'status']" showGridlines>
-        <ng-template #caption>
-            <div class="flex">
-                <p-button label="Clear" [outlined]="true" icon="pi pi-filter-slash" (click)="clear(dt1)" />
-                <p-iconfield iconPosition="left" class="ml-auto">
-                    <p-inputicon>
-                        <i class="pi pi-search"></i>
-                    </p-inputicon>
-                    <input pInputText type="text" (input)="dt1.filterGlobal($event.target.value, 'contains')" placeholder="Search keyword" />
-                </p-iconfield>
-            </div>
-        </ng-template>
+<div class="card p-4">
+    <p-table
+            [value]="actualBudgetsDisplayOnTable()"
+            dataKey="id"
+            [loading]="loading()"
+            [paginator]="false"
+            [globalFilterFields]="['DAY', 'DETAILS', 'MONTH_NAME', 'GL_ACCOUNT_NAME']"
+            showGridlines
+            [scrollable]="true"
+            scrollHeight="750px"
+    >
+        <!-- Header -->
         <ng-template #header>
             <tr>
-                <th style="min-width:15rem">
-                    <div class="flex items-center justify-between">
-                        Name
-                        <p-columnFilter type="text" field="name" display="menu" />
-                    </div>
-                </th>
-                <th style="min-width:15rem">
-                    <div class="flex items-center justify-between">
-                        Country
-                        <p-columnFilter type="text" field="country.name" display="menu" />
-                    </div>
-                </th>
-                <th style="min-width:15rem">
-                    <div class="flex items-center justify-between">
-                        Agent
-                        <p-columnFilter field="representative" matchMode="in" display="menu" [showMatchModes]="false" [showOperator]="false" [showAddButton]="false">
-                            <ng-template #filter let-value let-filter="filterCallback">
-                                <p-multiselect [(ngModel)]="value" [options]="representatives()" placeholder="Any" (onChange)="filter($event.value)" optionLabel="name" style="min-width: 14rem" [panelStyle]="{ minWidth: '16rem' }">
-                                    <ng-template let-option #item>
-                                        <div class="flex items-center gap-2">
-                                            <img [alt]="option.label" src="https://primefaces.org/cdn/primeng/images/demo/avatar/{{ option.image }}" style="width: 32px" />
-                                            <span>{{ option.name }}</span>
-                                        </div>
-                                    </ng-template>
-                                </p-multiselect>
-                            </ng-template>
-                        </p-columnFilter>
-                    </div>
-                </th>
-                <th style="min-width:10rem">
-                    <div class="flex items-center justify-between">
-                        Date
-                        <p-columnFilter type="date" field="date" display="menu"></p-columnFilter>
-                    </div>
-                </th>
-                <th style="min-width:10rem">
-                    <div class="flex items-center justify-between">
-                        Balance
-                        <p-columnFilter type="numeric" field="balance" display="menu" currency="USD" />
-                    </div>
-                </th>
-                <th style="min-width:10rem">
-                    <div class="flex items-center justify-between">
-                        Status
-                        <p-columnFilter field="status" matchMode="equals" display="menu">
-                            <ng-template #filter let-value let-filter="filterCallback">
-                                <p-select [(ngModel)]="value" [options]="statuses()" (onChange)="filter($event.value)" placeholder="Select One" class="w-full">
-                                    <ng-template let-option #item>
-                                        <p-tag [value]="option.value" [severity]="getSeverity(option.value)"></p-tag>
-                                    </ng-template>
-                                </p-select>
-                            </ng-template>
-                        </p-columnFilter>
-                    </div>
-                </th>
-                <th style="min-width:10rem">
-                    <div class="flex items-center justify-between">
-                        Activity
-                        <p-columnFilter field="activity" matchMode="between" display="menu" [showMatchModes]="false" [showOperator]="false" [showAddButton]="false">
-                            <ng-template #filter let-value let-filter="filterCallback">
-                                <p-slider [(ngModel)]="value" [range]="true" class="m-4" (onSlideEnd)="filter($event.values)" />
-                                <div class="flex items-center px-2">
-                                    <span *ngIf="!value">0</span>
-                                    <span *ngIf="value">{{ value[0] }} - {{ value[1] }}</span>
-                                </div>
-                            </ng-template>
-                        </p-columnFilter>
-                    </div>
-                </th>
-                <th style="width: 3rem">
-                    <div class="flex items-center justify-between">
-                        Verified
-                        <p-columnFilter type="boolean" field="verified" display="menu" />
-                    </div>
-                </th>
+                <th style="min-width:2rem">GL Account</th>
+                <th style="min-width:5rem">Budget</th>
+                <th>Year Amount</th>
+                <th>Variance</th>
+                <th style="min-width:5rem">Jan</th>
+                <th style="min-width:5rem">Feb</th>
+                <th style="min-width:5rem">Mar</th>
+                <th style="min-width:5rem">Apr</th>
+                <th style="min-width:5rem">May</th>
+                <th style="min-width:5rem">Jun</th>
+                <th style="min-width:5rem">Jul</th>
+                <th style="min-width:5rem">Aug</th>
+                <th style="min-width:5rem">Sept</th>
+                <th style="min-width:5rem">Oct</th>
+                <th style="min-width:5rem">Nov</th>
+                <th style="min-width:5rem">Dec</th>
             </tr>
         </ng-template>
-        <ng-template #body let-customer>
-            <tr>
-                <td>
-                    {{ customer.name }}
-                </td>
-                <td>
-                    <div class="flex items-center gap-2">
-                        <img src="https://primefaces.org/cdn/primeng/images/demo/flag/flag_placeholder.png" [class]="'flag flag-' + customer.country.code" style="width: 20px" />
-                        <span>{{ customer.country.name }}</span>
-                    </div>
-                </td>
-                <td>
-                    <div class="flex items-center gap-2">
-                        <img [alt]="customer.representative.name" src="https://primefaces.org/cdn/primeng/images/demo/avatar/{{ customer.representative.image }}" width="32" />
-                        <span>{{ customer.representative.name }}</span>
-                    </div>
-                </td>
-                <td>
-                    {{ customer.date | date: 'MM/dd/yyyy' }}
-                </td>
-                <td>
-                    {{ customer.balance | currency: 'USD' : 'symbol' }}
-                </td>
-                <td>
-                    <p-tag [value]="customer.status" [severity]="getSeverity(customer.status)" />
-                </td>
-                <td>
-                    <p-progressbar [value]="customer.activity" [showValue]="false" />
-                </td>
-                <td class="text-center">
-                    <i
-                            class="pi"
-                            [ngClass]="{
-                                    'text-green-500 pi-check-circle': customer.verified,
-                                    'text-red-500 pi-times-circle': !customer.verified
-                                }"
-                    ></i>
-                </td>
-            </tr>
+        
+        <!-- Body -->
+        <ng-template #body let-BUDGET>
+            
+            <!-- ───── INCOME SECTION HEADER ───── -->
+            @if (isFirstOfType(BUDGET, 'INCOME')) {
+                <tr class="bg-green-700 text-white font-bold">
+                    <td colspan="15">INCOME</td>
+                </tr>
+            }
+            
+            <!-- Income Rows -->
+            @if (BUDGET.GL_ACCOUNT_TYPE === 'INCOME') {
+                <tr>
+                    <td class="bg-green-100 text-green-800 border border-solid border-green-300">
+                        {{ BUDGET.GL_ACCOUNT_NAME }}
+                    </td>
+                    <td>{{ BUDGET.BUDGET_AMOUNT | currency: "R" }}</td>
+                    <td>
+                        {{ BUDGET.BUDGET_YEAR_AMOUNT | currency: "R" }}
+                    </td>
+                    <td>
+                        @if (BUDGET.BUDGET_VARIANCE > BUDGET.BUDGET_YEAR_AMOUNT) {
+                            <span class="text-green-600 font-bold">{{ BUDGET.BUDGET_VARIANCE | currency: "R" }}</span>
+                        } @else if (BUDGET.BUDGET_VARIANCE === 0){
+                            <span class="text-orange-600 font-bold">{{ BUDGET.BUDGET_VARIANCE | currency: "R" }}</span>
+                        }@else {
+                            <span class="text-red-600 font-bold">{{ BUDGET.BUDGET_VARIANCE | currency: "R" }}</span>
+                        }
+                    </td>
+                    <td [ngClass]="monthClass(BUDGET, 'INCOME', BUDGET.JAN)">{{ BUDGET.JAN | currency: "R" }}</td>
+                    <td [ngClass]="monthClass(BUDGET, 'INCOME', BUDGET.FEB)">{{ BUDGET.FEB | currency: "R" }}</td>
+                    <td [ngClass]="monthClass(BUDGET, 'INCOME', BUDGET.MAR)">{{ BUDGET.MAR | currency: "R" }}</td>
+                    <td [ngClass]="monthClass(BUDGET, 'INCOME', BUDGET.APR)">{{ BUDGET.APR | currency: "R" }}</td>
+                    <td [ngClass]="monthClass(BUDGET, 'INCOME', BUDGET.MAY)">{{ BUDGET.MAY | currency: "R" }}</td>
+                    <td [ngClass]="monthClass(BUDGET, 'INCOME', BUDGET.JUN)">{{ BUDGET.JUN | currency: "R" }}</td>
+                    <td [ngClass]="monthClass(BUDGET, 'INCOME', BUDGET.JUL)">{{ BUDGET.JUL | currency: "R" }}</td>
+                    <td [ngClass]="monthClass(BUDGET, 'INCOME', BUDGET.AUG)">{{ BUDGET.AUG | currency: "R" }}</td>
+                    <td [ngClass]="monthClass(BUDGET, 'INCOME', BUDGET.SEPT)">{{ BUDGET.SEPT | currency: "R" }}</td>
+                    <td [ngClass]="monthClass(BUDGET, 'INCOME', BUDGET.OCT)">{{ BUDGET.OCT | currency: "R" }}</td>
+                    <td [ngClass]="monthClass(BUDGET, 'INCOME', BUDGET.NOV)">{{ BUDGET.NOV | currency: "R" }}</td>
+                    <td [ngClass]="monthClass(BUDGET, 'INCOME', BUDGET.DEC)">{{ BUDGET.DEC | currency: "R" }}</td>
+                </tr>
+            }
+            
+            <!-- Income Totals Row -->
+            @if (isLastOfType(BUDGET, 'INCOME')) {
+                <tr class="bg-green-200 text-green-900 font-bold border-t-2 border-green-700">
+                    <td>TOTAL INCOME</td>
+                    <td>{{ incomeTotals().budget | currency: "R" }}</td>
+                    <td>{{ incomeTotals().yearAmount | currency: "R" }}</td>
+                    <td>{{ incomeTotals().variance | currency: "R" }}</td>
+                    <td>{{ incomeTotals().jan | currency: "R" }}</td>
+                    <td>{{ incomeTotals().feb | currency: "R" }}</td>
+                    <td>{{ incomeTotals().mar | currency: "R" }}</td>
+                    <td>{{ incomeTotals().apr | currency: "R" }}</td>
+                    <td>{{ incomeTotals().may | currency: "R" }}</td>
+                    <td>{{ incomeTotals().jun | currency: "R" }}</td>
+                    <td>{{ incomeTotals().jul | currency: "R" }}</td>
+                    <td>{{ incomeTotals().aug | currency: "R" }}</td>
+                    <td>{{ incomeTotals().sept | currency: "R" }}</td>
+                    <td>{{ incomeTotals().oct | currency: "R" }}</td>
+                    <td>{{ incomeTotals().nov | currency: "R" }}</td>
+                    <td>{{ incomeTotals().dec | currency: "R" }}</td>
+                </tr>
+            }
+            
+            <!-- ───── EXPENSE SECTION HEADER ───── -->
+            @if (isFirstOfType(BUDGET, 'EXPENSE')) {
+                <tr class="bg-red-700 text-white font-bold">
+                    <td colspan="15">EXPENSES</td>
+                </tr>
+            }
+            
+            <!-- Expense Rows -->
+            @if (BUDGET.GL_ACCOUNT_TYPE === 'EXPENSE') {
+                <tr>
+                    <td class="bg-red-100 text-red-800 border border-solid border-red-300">
+                        {{ BUDGET.GL_ACCOUNT_NAME }}
+                    </td>
+                    <td>{{ BUDGET.BUDGET_AMOUNT | currency: "R" }}</td>
+                    <td>
+                        {{ BUDGET.BUDGET_YEAR_AMOUNT | currency: "R" }}
+                    </td>
+                    <td>
+                        @if (BUDGET.BUDGET_VARIANCE < BUDGET.BUDGET_YEAR_AMOUNT) {
+                            <span class="text-green-600 font-bold">{{ BUDGET.BUDGET_VARIANCE | currency: "R" }}</span>
+                        } @else {
+                            <span class="text-red-600 font-bold">{{ BUDGET.BUDGET_VARIANCE | currency: "R" }}</span>
+                        }
+                    </td>
+                   
+                    <td [ngClass]="monthClass(BUDGET, 'EXPENSE', BUDGET.JAN)">{{ BUDGET.JAN | currency: "R" }}</td>
+                    <td [ngClass]="monthClass(BUDGET, 'EXPENSE', BUDGET.FEB)">{{ BUDGET.FEB | currency: "R" }}</td>
+                    <td [ngClass]="monthClass(BUDGET, 'EXPENSE', BUDGET.MAR)">{{ BUDGET.MAR | currency: "R" }}</td>
+                    <td [ngClass]="monthClass(BUDGET, 'EXPENSE', BUDGET.APR)">{{ BUDGET.APR | currency: "R" }}</td>
+                    <td [ngClass]="monthClass(BUDGET, 'EXPENSE', BUDGET.MAY)">{{ BUDGET.MAY | currency: "R" }}</td>
+                    <td [ngClass]="monthClass(BUDGET, 'EXPENSE', BUDGET.JUN)">{{ BUDGET.JUN | currency: "R" }}</td>
+                    <td [ngClass]="monthClass(BUDGET, 'EXPENSE', BUDGET.JUL)">{{ BUDGET.JUL | currency: "R" }}</td>
+                    <td [ngClass]="monthClass(BUDGET, 'EXPENSE', BUDGET.AUG)">{{ BUDGET.AUG | currency: "R" }}</td>
+                    <td [ngClass]="monthClass(BUDGET, 'EXPENSE', BUDGET.SEPT)">{{ BUDGET.SEPT | currency: "R" }}</td>
+                    <td [ngClass]="monthClass(BUDGET, 'EXPENSE', BUDGET.OCT)">{{ BUDGET.OCT | currency: "R" }}</td>
+                    <td [ngClass]="monthClass(BUDGET, 'EXPENSE', BUDGET.NOV)">{{ BUDGET.NOV | currency: "R" }}</td>
+                    <td [ngClass]="monthClass(BUDGET, 'EXPENSE', BUDGET.DEC)">{{ BUDGET.DEC | currency: "R" }}</td>
+                </tr>
+            }
+            
+            <!-- Expense Totals Row -->
+            @if (isLastOfType(BUDGET, 'EXPENSE')) {
+                <tr class="bg-red-200 text-red-900 font-bold border-t-2 border-red-700">
+                    <td>TOTAL EXPENSES</td>
+                    <td>{{ expenseTotals().budget | currency: "R" }}</td>
+                    <td>{{ expenseTotals().yearAmount | currency: "R" }}</td>
+                    <td>{{ expenseTotals().variance | currency: "R" }}</td>
+                    <td>{{ expenseTotals().jan | currency: "R" }}</td>
+                    <td>{{ expenseTotals().feb | currency: "R" }}</td>
+                    <td>{{ expenseTotals().mar | currency: "R" }}</td>
+                    <td>{{ expenseTotals().apr | currency: "R" }}</td>
+                    <td>{{ expenseTotals().may | currency: "R" }}</td>
+                    <td>{{ expenseTotals().jun | currency: "R" }}</td>
+                    <td>{{ expenseTotals().jul | currency: "R" }}</td>
+                    <td>{{ expenseTotals().aug | currency: "R" }}</td>
+                    <td>{{ expenseTotals().sept | currency: "R" }}</td>
+                    <td>{{ expenseTotals().oct | currency: "R" }}</td>
+                    <td>{{ expenseTotals().nov | currency: "R" }}</td>
+                    <td>{{ expenseTotals().dec | currency: "R" }}</td>
+                </tr>
+                
+                <!-- ───── NET ROW ───── -->
+                <tr class="bg-gray-800 text-white font-bold border-t-4 border-gray-500">
+                    <td>NET (Income - Expenses)</td>
+                    <td>{{ netTotals().budget | currency: "R" }}</td>
+                    <td>{{ netTotals().yearAmount | currency: "R" }}</td>
+                    <td>{{ netTotals().variance | currency: "R" }}</td>
+                    <td>{{ netTotals().jan | currency: "R" }}</td>
+                    <td>{{ netTotals().feb | currency: "R" }}</td>
+                    <td>{{ netTotals().mar | currency: "R" }}</td>
+                    <td>{{ netTotals().apr | currency: "R" }}</td>
+                    <td>{{ netTotals().may | currency: "R" }}</td>
+                    <td>{{ netTotals().jun | currency: "R" }}</td>
+                    <td>{{ netTotals().jul | currency: "R" }}</td>
+                    <td>{{ netTotals().aug | currency: "R" }}</td>
+                    <td>{{ netTotals().sept | currency: "R" }}</td>
+                    <td>{{ netTotals().oct | currency: "R" }}</td>
+                    <td>{{ netTotals().nov | currency: "R" }}</td>
+                    <td>{{ netTotals().dec | currency: "R" }}</td>
+                </tr>
+            }
+        
         </ng-template>
+        
+        <!-- Empty state -->
         <ng-template #emptymessage>
             <tr>
-                <td colspan="7">No customers found.</td>
+                <td colspan="15">No Budgets found.</td>
             </tr>
         </ng-template>
     </p-table>

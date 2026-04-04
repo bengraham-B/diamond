@@ -14,9 +14,11 @@ public class ActualBudget
                 GL_ACCOUNT.GL_ACCOUNT_TYPE,
                 GL_ACCOUNT.GL_ACCOUNT_NAME,
                 GL_ACCOUNT.GL_ACCOUNT_ID,
-                D.ACCOUNT_ID,
+                D.ACCOUNT_ID AS ACCOUNT_ID,
                 BUDGET.BUDGET_ID,
                 BUDGET.BUDGET_PERIOD,
+                (BUDGET.BUDGET_AMOUNT * 12) AS BUDGET_YEAR_AMOUNT,
+(BUDGET.BUDGET_AMOUNT * 12) - SUM(D.AMOUNT) AS BUDGET_VARIANCE,
         ";
 
 
@@ -46,12 +48,23 @@ public class ActualBudget
                 BUDGET
 
             LEFT JOIN GL_ACCOUNT ON BUDGET.GL_ACCOUNT_ID = GL_ACCOUNT.GL_ACCOUNT_ID
-            LEFT JOIN DIAMOND_TRANSACTION D ON D.GL_ACCOUNT_ID = BUDGET.GL_ACCOUNT_ID
+            LEFT JOIN DIAMOND_TRANSACTION D ON D.GL_ACCOUNT_ID = BUDGET.GL_ACCOUNT_ID AND D.ACCOUNT_ID = @ACCOUNT_ID
 
-            WHERE D.ACCOUNT_ID=@ACCOUNT_ID
+            WHERE 
+                BUDGET.ACCOUNT_ID=@ACCOUNT_ID
 
             GROUP BY
-                BUDGET.GL_ACCOUNT_ID
+                GL_ACCOUNT.GL_ACCOUNT_TYPE,
+                GL_ACCOUNT.GL_ACCOUNT_NAME,
+                GL_ACCOUNT.GL_ACCOUNT_ID,
+                BUDGET.BUDGET_ID,
+                BUDGET.BUDGET_AMOUNT,
+                BUDGET.BUDGET_PERIOD,
+                BUDGET.ACCOUNT_ID
+            
+            ORDER BY
+                GL_ACCOUNT.GL_ACCOUNT_TYPE DESC,
+                GL_ACCOUNT.GL_ACCOUNT_NAME ASC
         ";
 
         using var connection = conn.Open();
@@ -65,13 +78,15 @@ public class ActualBudget
         {
             budgets.Add(new BudgetModel
             {
-                ACCOUNT_ID = reader.GetGuid("ACCOUNT_ID"),
+                ACCOUNT_ID = reader.IsDBNull(reader.GetOrdinal("ACCOUNT_ID")) ? null : reader.GetGuid("ACCOUNT_ID"),
                 
-                BUDGET_ID = reader.GetGuid("BUDGET_ID"),
-                BUDGET_AMOUNT = reader.GetDouble("BUDGET_AMOUNT"),
+                BUDGET_ID = reader.IsDBNull(reader.GetOrdinal("BUDGET_ID")) ? null : reader.GetGuid("BUDGET_ID"),
+                BUDGET_AMOUNT = reader.IsDBNull(reader.GetOrdinal("BUDGET_AMOUNT")) ? 0 : reader.GetDouble("BUDGET_AMOUNT"),
                 BUDGET_PERIOD = reader.GetString("BUDGET_PERIOD"),
+                BUDGET_VARIANCE = reader.IsDBNull(reader.GetOrdinal("BUDGET_VARIANCE")) ? 0 : reader.GetDouble("BUDGET_VARIANCE"),
+                BUDGET_YEAR_AMOUNT = reader.IsDBNull(reader.GetOrdinal("BUDGET_YEAR_AMOUNT")) ? 0 : reader.GetDouble("BUDGET_YEAR_AMOUNT"),
                
-                GL_ACCOUNT_ID = reader.GetGuid("GL_ACCOUNT_ID"),
+                GL_ACCOUNT_ID = reader.IsDBNull(reader.GetOrdinal("GL_ACCOUNT_ID")) ? null : reader.GetGuid("GL_ACCOUNT_ID"),
                 GL_ACCOUNT_NAME = reader.GetString("GL_ACCOUNT_NAME"),
                 GL_ACCOUNT_TYPE = reader.GetString("GL_ACCOUNT_TYPE"),
                 

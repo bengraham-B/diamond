@@ -3,13 +3,15 @@ namespace Class;
 public class BudgetModel
 {
     public Guid? BUDGET_ID { get; set; }
-    public Guid ACCOUNT_ID { get; set; }
-    public Guid GL_ACCOUNT_ID { get; set; }
+    public Guid? ACCOUNT_ID { get; set; }
+    public Guid? GL_ACCOUNT_ID { get; set; }
     public string? GL_ACCOUNT_NAME { get; set; }
     public string? GL_ACCOUNT_TYPE { get; set; }
     public double BUDGET_AMOUNT { get; set; }
     public double? ACTUAL_AMOUNT { get; set; }
     public string? BUDGET_PERIOD { get; set; } // WEEK | MONTH | DAY
+    public double? BUDGET_YEAR_AMOUNT { get; set; } // BUDGET_AMOUNT x 12 
+    public double? BUDGET_VARIANCE { get; set; } // (BUDGET_AMOUNT * 12) - (AMOUNT USER HAS SPENT ON THIS GL_ACCOUNT SO FAR IN THE YEAR)
     
     public double? JAN { get; set; }
     public double? FEB { get; set; }

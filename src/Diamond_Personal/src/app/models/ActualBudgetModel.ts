@@ -7,6 +7,11 @@ export interface ActualBudgetModel {
 	BUDGET_AMOUNT: number;
 	ACTUAL_AMOUNT : number;
 	BUDGET_PERIOD: string;
+	SURPLUS : string | number;
+	DEFICIT: string | number;
+	
+	BUDGET_VARIANCE: number;
+	BUDGET_YEAR_AMOUNT: number;
 
 	JAN: number;
 	FEB : number;
