@@ -12,5 +12,10 @@ public class ActualBudgetController(Conn conn): ControllerBase
     {
         return Ok(ActualBudget.GetActualBudgets(conn, req));
     }
-    
+
+    [HttpPost("get_unbudgeted_items")]
+    public IActionResult GetUnbudgetedItemsController([FromBody] RequestParams req)
+    {
+        return Ok(ActualBudget.GetUnBudgetedItems(conn, req));
+    }
 }

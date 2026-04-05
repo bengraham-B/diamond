@@ -18,7 +18,7 @@ public class ActualBudget
                 BUDGET.BUDGET_ID,
                 BUDGET.BUDGET_PERIOD,
                 (BUDGET.BUDGET_AMOUNT * 12) AS BUDGET_YEAR_AMOUNT,
-(BUDGET.BUDGET_AMOUNT * 12) - SUM(D.AMOUNT) AS BUDGET_VARIANCE,
+                (BUDGET.BUDGET_AMOUNT * 12) - SUM(D.AMOUNT) AS BUDGET_VARIANCE,
         ";
 
 
@@ -103,7 +103,88 @@ public class ActualBudget
                 NOV = reader.GetDouble("ACTUAL_NOV"),
                 DEC = reader.GetDouble("ACTUAL_DEC")
             });
+
         }
+        List<BudgetModel> UnbudgetedItems =  GetUnBudgetedItems(conn, req);
+        budgets.AddRange(UnbudgetedItems);
         return budgets;
+    }
+
+    public static List<BudgetModel> GetUnBudgetedItems(Conn conn, RequestParams req)
+    {
+        try
+        {
+            string SQL = @"SELECT";
+            
+            List<string> monthNames = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEPT", "OCT", "NOV", "DEC"];
+            for (int i = 0; i < monthNames.Count; i++ )
+            {
+                SQL += $@"
+                    SUM(
+                        CASE
+                            WHEN D.TXN_TYPE='EXPENSE' AND SOURCE='CASH' AND GL_ACCOUNT_TYPE='EXPENSE'  AND MONTH='{i+1}' THEN D.AMOUNT
+                            WHEN D.TXN_TYPE='INCOME'  AND SOURCE='CASH' AND GL_ACCOUNT_TYPE='EXPENSE' AND MONTH='{i+1}' THEN -D.AMOUNT
+
+                            WHEN D.TXN_TYPE='INCOME'  AND SOURCE='CASH' AND GL_ACCOUNT_TYPE='INCOME' AND MONTH='{i+1}' THEN D.AMOUNT
+
+                            WHEN D.TXN_TYPE='INCREASE' AND SOURCE='CREDIT_CARD' AND GL_ACCOUNT_TYPE='EXPENSE' AND MONTH='{i+1}' THEN D.AMOUNT
+                            ELSE 0
+                        END
+                    ) AS ACTUAL_{monthNames[i]},
+                ";
+            }
+
+            SQL += @"GL_ACCOUNT_TYPE, D.ACCOUNT_ID";
+            
+            SQL += @"
+                FROM
+                    DIAMOND_TRANSACTION D
+
+                LEFT JOIN GL_ACCOUNT ON D.GL_ACCOUNT_ID = GL_ACCOUNT.GL_ACCOUNT_ID
+                LEFT JOIN BUDGET ON D.GL_ACCOUNT_ID = BUDGET.GL_ACCOUNT_ID WHERE BUDGET.GL_ACCOUNT_ID IS NULL AND D.ACCOUNT_ID=@ACCOUNT_ID
+
+                GROUP BY 
+                    GL_ACCOUNT_TYPE
+            ";
+
+            using var connection = conn.Open();
+            using var cmd = new MySqlCommand(SQL, connection);
+            cmd.Parameters.Add("@ACCOUNT_ID", MySqlDbType.Guid).Value = req.ACCOUNT_ID;
+
+            var reader = cmd.ExecuteReader();
+            
+            List<BudgetModel> UnbudgetedItems =  new List<BudgetModel>();
+            while (reader.Read())
+            {
+                UnbudgetedItems.Add(new BudgetModel
+                {
+                    ACCOUNT_ID = reader.IsDBNull(reader.GetOrdinal("ACCOUNT_ID")) ? null : reader.GetGuid("ACCOUNT_ID"),
+                    
+                    GL_ACCOUNT_NAME = "UNBUDGETED ITEM",
+                    GL_ACCOUNT_TYPE = reader.GetString("GL_ACCOUNT_TYPE"),
+                
+                    JAN = reader.GetDouble("ACTUAL_JAN"),
+                    FEB = reader.GetDouble("ACTUAL_FEB"),
+                    MAR = reader.GetDouble("ACTUAL_MAR"),
+                    APR = reader.GetDouble("ACTUAL_APR"),
+                    MAY = reader.GetDouble("ACTUAL_MAY"),
+                    JUN = reader.GetDouble("ACTUAL_JUN"),
+                    JUL = reader.GetDouble("ACTUAL_JUL"),
+                    AUG = reader.GetDouble("ACTUAL_AUG"),
+                    SEPT = reader.GetDouble("ACTUAL_SEPT"),
+                    OCT = reader.GetDouble("ACTUAL_OCT"),
+                    NOV = reader.GetDouble("ACTUAL_NOV"),
+                    DEC = reader.GetDouble("ACTUAL_DEC")
+                });
+            }
+
+            return UnbudgetedItems;
+        }
+        catch (Exception e)
+        {
+            throw new Exception(e.ToString());
+            return new List<BudgetModel>();
+            throw;
+        }
     }
 }

@@ -50,6 +50,7 @@ export class BudgetPage implements OnInit {
 	
 	// Signals
 	actualBudgetsDisplayOnTable = signal<ActualBudgetModel[]>([]);
+	unbudgetedItemsDisplayOnTable = signal<ActualBudgetModel[]>([]);
 	loading= signal(true);
 	searchValue= signal('');
 	
@@ -100,16 +101,33 @@ export class BudgetPage implements OnInit {
 // ── Month cell colouring ──────────────────────────────────────────────────
 	monthClass(budget: any, type: string, monthValue: number) {
 		if (type === 'INCOME') {
-			return {
-				'bg-green-200 text-green-700 border border-solid border-green-800': monthValue >= budget.BUDGET_AMOUNT,
-				'bg-red-200   text-red-700   border border-solid border-red-800':   monthValue <  budget.BUDGET_AMOUNT,
-			};
+			if(budget.GL_ACCOUNT_NAME==="UNBUDGETED ITEM"){
+				return {
+					'bg-yellow-200 text-yellow-700 border border-solid border-yellow-800': true
+				};
+			}
+			else {
+				return {
+					'bg-green-200 text-green-700 border border-solid border-green-800': monthValue >= budget.BUDGET_AMOUNT,
+					'bg-red-200   text-red-700   border border-solid border-red-800':   monthValue <  budget.BUDGET_AMOUNT,
+				};
+			}
 		}
-		// EXPENSE: under budget is good (green), over is bad (red)
-		return {
-			'bg-green-200 text-green-700 border border-solid border-green-800': monthValue <= budget.BUDGET_AMOUNT,
-			'bg-red-200   text-red-700   border border-solid border-red-800':   monthValue >  budget.BUDGET_AMOUNT,
-		};
+		else {
+			if(budget.GL_ACCOUNT_NAME==="UNBUDGETED ITEM") {
+				return {
+					'bg-yellow-200 text-yellow-700 border border-solid border-yellow-800': true,
+				};
+			}
+			else {
+				// EXPENSE: under budget is good (green), over is bad (red)
+				return {
+					'bg-green-200 text-green-700 border border-solid border-green-800': monthValue <= budget.BUDGET_AMOUNT,
+					'bg-red-200   text-red-700   border border-solid border-red-800':   monthValue >  budget.BUDGET_AMOUNT,
+				};
+				
+			}
+		}
 	}
 
 // ── Totals helpers ────────────────────────────────────────────────────────

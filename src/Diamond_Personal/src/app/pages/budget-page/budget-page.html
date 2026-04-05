@@ -47,15 +47,29 @@
                     <td class="bg-green-100 text-green-800 border border-solid border-green-300">
                         {{ BUDGET.GL_ACCOUNT_NAME }}
                     </td>
-                    <td>{{ BUDGET.BUDGET_AMOUNT | currency: "R" }}</td>
                     <td>
-                        {{ BUDGET.BUDGET_YEAR_AMOUNT | currency: "R" }}
+                        @if(BUDGET.GL_ACCOUNT_NAME === "UNBUDGETED ITEM"){
+                            -
+                        } @else {
+                            {{ BUDGET.BUDGET_AMOUNT | currency: "R" }}
+                        }
+                       
+                    </td>
+                    <td>
+                        @if(BUDGET.GL_ACCOUNT_NAME === "UNBUDGETED ITEM"){
+                            -
+                        } @else {
+                            {{ BUDGET.BUDGET_YEAR_AMOUNT | currency: "R" }}
+                        }
+                      
                     </td>
                     <td>
                         @if (BUDGET.BUDGET_VARIANCE > BUDGET.BUDGET_YEAR_AMOUNT) {
                             <span class="text-green-600 font-bold">{{ BUDGET.BUDGET_VARIANCE | currency: "R" }}</span>
                         } @else if (BUDGET.BUDGET_VARIANCE === 0){
                             <span class="text-orange-600 font-bold">{{ BUDGET.BUDGET_VARIANCE | currency: "R" }}</span>
+                        }@else if(BUDGET.GL_ACCOUNT_NAME === "UNBUDGETED ITEM"){
+                            -
                         }@else {
                             <span class="text-red-600 font-bold">{{ BUDGET.BUDGET_VARIANCE | currency: "R" }}</span>
                         }
@@ -110,16 +124,29 @@
                     <td class="bg-red-100 text-red-800 border border-solid border-red-300">
                         {{ BUDGET.GL_ACCOUNT_NAME }}
                     </td>
-                    <td>{{ BUDGET.BUDGET_AMOUNT | currency: "R" }}</td>
                     <td>
-                        {{ BUDGET.BUDGET_YEAR_AMOUNT | currency: "R" }}
+                        @if(BUDGET.GL_ACCOUNT_NAME === "UNBUDGETED ITEM"){
+                            -
+                        } @else {
+                            {{ BUDGET.BUDGET_AMOUNT | currency: "R" }}
+                        }
+                    </td>
+                    <td>
+                        @if(BUDGET.GL_ACCOUNT_NAME === "UNBUDGETED ITEM"){
+                            -
+                        } @else {
+                            {{ BUDGET.BUDGET_YEAR_AMOUNT | currency: "R" }}
+                        }
                     </td>
                     <td>
                         @if (BUDGET.BUDGET_VARIANCE < BUDGET.BUDGET_YEAR_AMOUNT) {
                             <span class="text-green-600 font-bold">{{ BUDGET.BUDGET_VARIANCE | currency: "R" }}</span>
+                        }@else if(BUDGET.GL_ACCOUNT_NAME === "UNBUDGETED ITEM"){
+                            -
                         } @else {
                             <span class="text-red-600 font-bold">{{ BUDGET.BUDGET_VARIANCE | currency: "R" }}</span>
                         }
+                       
                     </td>
                    
                     <td [ngClass]="monthClass(BUDGET, 'EXPENSE', BUDGET.JAN)">{{ BUDGET.JAN | currency: "R" }}</td>
