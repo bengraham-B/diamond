@@ -62,7 +62,7 @@ public class ActualBudget
                 BUDGET.BUDGET_PERIOD,
                 BUDGET.ACCOUNT_ID
             
-            ORDER BY
+           ORDER BY
                 GL_ACCOUNT.GL_ACCOUNT_TYPE DESC,
                 GL_ACCOUNT.GL_ACCOUNT_NAME ASC
         ";
@@ -107,7 +107,8 @@ public class ActualBudget
         }
         List<BudgetModel> UnbudgetedItems =  GetUnBudgetedItems(conn, req);
         budgets.AddRange(UnbudgetedItems);
-        return budgets;
+        return budgets.OrderByDescending(A => A.GL_ACCOUNT_TYPE).ToList();
+        // return budgets;
     }
 
     public static List<BudgetModel> GetUnBudgetedItems(Conn conn, RequestParams req)

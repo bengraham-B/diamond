@@ -53,7 +53,6 @@
                         } @else {
                             {{ BUDGET.BUDGET_AMOUNT | currency: "R" }}
                         }
-                       
                     </td>
                     <td>
                         @if(BUDGET.GL_ACCOUNT_NAME === "UNBUDGETED ITEM"){
@@ -61,7 +60,6 @@
                         } @else {
                             {{ BUDGET.BUDGET_YEAR_AMOUNT | currency: "R" }}
                         }
-                      
                     </td>
                     <td>
                         @if (BUDGET.BUDGET_VARIANCE > BUDGET.BUDGET_YEAR_AMOUNT) {
@@ -146,7 +144,6 @@
                         } @else {
                             <span class="text-red-600 font-bold">{{ BUDGET.BUDGET_VARIANCE | currency: "R" }}</span>
                         }
-                       
                     </td>
                    
                     <td [ngClass]="monthClass(BUDGET, 'EXPENSE', BUDGET.JAN)">{{ BUDGET.JAN | currency: "R" }}</td>
