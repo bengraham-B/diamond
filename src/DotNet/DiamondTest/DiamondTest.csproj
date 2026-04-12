@@ -29,6 +29,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Budget\Budget.csproj" />
       <ProjectReference Include="..\Class\Class.csproj" />
       <ProjectReference Include="..\DiamondTransaction\DiamondTransaction.csproj" />
       <ProjectReference Include="..\MariaDB\MariaDB.csproj" />
