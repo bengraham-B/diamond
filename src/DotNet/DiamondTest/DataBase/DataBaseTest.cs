@@ -20,7 +20,7 @@ public class DataBaseTest
 
     [Theory]
     [InlineData("BUDGET", typeof(BudgetModel))]
-    [InlineData("DIAMOND_TRANSACTION", typeof(Class.DiamondTransaction))]
+    [InlineData("DIAMOND_TRANSACTION", typeof(Class.DiamondTransactionModel))]
     [InlineData("MERCHANT", typeof(Class.MerchantModel))]
     public void TestModelTypesAgaintsDataBaseTableTypes(string pTableName, Type pModelType)
     {
@@ -61,12 +61,18 @@ public class DataBaseTest
             var columnName = reader.GetString("COLUMN_NAME");
             var dbtype = reader.GetString("DATA_TYPE");
             
-            if(!modelProperties.ContainsKey(columnName)) continue;
+            // if(!modelProperties.ContainsKey(columnName)) continue;
             if(!dbTypeMap.ContainsKey(dbtype)) continue;
+          
+            Assert.True(
+                modelProperties.ContainsKey(columnName),
+                $"[{pTableName}] DB column '{columnName}' is missing from model!"
+            );
 
             var expectedCSharopType = dbTypeMap[dbtype];
             var actualModelType = modelProperties[columnName];
             var underlyingType = Nullable.GetUnderlyingType(actualModelType) ?? actualModelType;
+            
             
             Assert.True(
                 underlyingType == expectedCSharopType,

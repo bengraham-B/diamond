@@ -11,8 +11,24 @@ public class DiamondTransactionController(Conn conn): ControllerBase
     {
         return Ok();
     }
-    
-    
+
+    [HttpPost("")]
+    public IActionResult AddDiamondTransaction([FromBody] Class.DiamondTransactionModel txn)
+    {
+        return Ok();
+    }
+
+    [HttpPut("")]
+    public IActionResult UpdateDiamondTransaction([FromBody] Class.DiamondTransactionModel txn)
+    {
+        return Ok();
+    }
+
+    [HttpDelete("")]
+    public IActionResult DeleteDiamondTransaction([FromBody] RequestParams requestParams)
+    {
+        return Ok();
+    }
     
     
     
