@@ -1,77 +1,214 @@
-<div class="card">
+<div class="card p-4">
     <p-table
-        #dt2
-        [value]="(budgets$ | async) ?? []"
-        dataKey="BUDGET_ID"
-        [rows]="10"
-        [rowsPerPageOptions]="[10, 25, 50]"
-        [loading]="loading"
-        
-        [globalFilterFields]="['BUDGET_ID', 'ACCOUNT_ID', 'GL_ACCOUNT_ID', 'PERIOD']"
-        [tableStyle]="{ 'min-width': '60rem' }"
+            [value]="actualBudgetsDisplayOnTable()"
+            dataKey="id"
+            [loading]="loading()"
+            [paginator]="false"
+            [globalFilterFields]="['DAY', 'DETAILS', 'MONTH_NAME', 'GL_ACCOUNT_NAME']"
+            showGridlines
+            [scrollable]="true"
+            scrollHeight="750px"
     >
-        <ng-template #caption>
-            <div class="flex justify-between items-center">
-                <span class="text-xl font-semibold">Budgets</span>
-                <p-iconfield iconPosition="left">
-                    <p-inputicon>
-                        <i class="pi pi-search"></i>
-                    </p-inputicon>
-                    <input
-                            pInputText
-                            type="text"
-                            (input)="dt2.filterGlobal($any($event.target).value, 'contains')"
-                            placeholder="Search..."
-                    />
-                </p-iconfield>
-            </div>
-        </ng-template>
-        
+        <!-- Header -->
         <ng-template #header>
             <tr>
-                <th style="width:20%">Budget Name</th>
-                <th style="width:20%">Type</th>
-                <th style="width:20%">Budget Amount</th>
-                <th style="width:20%">Actual Amount</th>
-                <th style="width:20%">Period</th>
-            </tr>
-            <tr>
-                <th>
-                    <p-columnFilter type="text" field="BUDGET_ID" placeholder="Search" filterOn="input" ariaLabel="Filter Budget ID" />
-                </th>
-                <th>
-                    <p-columnFilter type="text" field="ACCOUNT_ID" placeholder="Search" filterOn="input" ariaLabel="Filter Account ID" />
-                </th>
-                <th>
-                    <p-columnFilter type="text" field="GL_ACCOUNT_ID" placeholder="Search" filterOn="input" ariaLabel="Filter GL Account ID" />
-                </th>
-                <th>
-                    <p-columnFilter type="numeric" field="AMOUNT" placeholder="Search" ariaLabel="Filter Amount" />
-                </th>
-                <th>
-                    <p-columnFilter type="text" field="PERIOD" placeholder="WEEK / MONTH" filterOn="input" ariaLabel="Filter Period" />
-                </th>
+                <th style="min-width:2rem">GL Account</th>
+                <th style="min-width:5rem">Budget</th>
+                <th>Year Amount</th>
+                <th>Variance</th>
+                <th style="min-width:5rem">Jan</th>
+                <th style="min-width:5rem">Feb</th>
+                <th style="min-width:5rem">Mar</th>
+                <th style="min-width:5rem">Apr</th>
+                <th style="min-width:5rem">May</th>
+                <th style="min-width:5rem">Jun</th>
+                <th style="min-width:5rem">Jul</th>
+                <th style="min-width:5rem">Aug</th>
+                <th style="min-width:5rem">Sept</th>
+                <th style="min-width:5rem">Oct</th>
+                <th style="min-width:5rem">Nov</th>
+                <th style="min-width:5rem">Dec</th>
             </tr>
         </ng-template>
         
-        <ng-template #body let-budget>
-            <tr>
-                <td>{{ budget.GL_ACCOUNT_NAME }}</td>
-                <td>{{ budget.GL_ACCOUNT_TYPE }}</td>
-                <td>{{ budget.BUDGET_AMOUNT | currency:'ZAR':'symbol':'1.2-2' }}</td>
-                <td>{{ budget.ACTUAL_AMOUNT | currency:'ZAR':'symbol':'1.2-2' }}</td>
-                <td>
-                    <p-tag
-                            [value]="budget.BUDGET_PERIOD"
-                            [severity]="getPeriodSeverity(budget.PERIOD)"
-                    />
-                </td>
-            </tr>
+        <!-- Body -->
+        <ng-template #body let-BUDGET>
+            
+            <!-- ───── INCOME SECTION HEADER ───── -->
+            @if (isFirstOfType(BUDGET, 'INCOME')) {
+                <tr class="bg-green-700 text-white font-bold">
+                    <td colspan="15">INCOME</td>
+                </tr>
+            }
+            
+            <!-- Income Rows -->
+            @if (BUDGET.GL_ACCOUNT_TYPE === 'INCOME') {
+                <tr>
+                    <td class="bg-green-100 text-green-800 border border-solid border-green-300">
+                        {{ BUDGET.GL_ACCOUNT_NAME }}
+                    </td>
+                    <td>
+                        @if(BUDGET.GL_ACCOUNT_NAME === "UNBUDGETED ITEM"){
+                            -
+                        } @else {
+                            {{ BUDGET.BUDGET_AMOUNT | currency: "R" }}
+                        }
+                    </td>
+                    <td>
+                        @if(BUDGET.GL_ACCOUNT_NAME === "UNBUDGETED ITEM"){
+                            -
+                        } @else {
+                            {{ BUDGET.BUDGET_YEAR_AMOUNT | currency: "R" }}
+                        }
+                    </td>
+                    <td>
+                        @if (BUDGET.BUDGET_VARIANCE > BUDGET.BUDGET_YEAR_AMOUNT) {
+                            <span class="text-green-600 font-bold">{{ BUDGET.BUDGET_VARIANCE | currency: "R" }}</span>
+                        } @else if (BUDGET.BUDGET_VARIANCE === 0){
+                            <span class="text-orange-600 font-bold">{{ BUDGET.BUDGET_VARIANCE | currency: "R" }}</span>
+                        }@else if(BUDGET.GL_ACCOUNT_NAME === "UNBUDGETED ITEM"){
+                            -
+                        }@else {
+                            <span class="text-red-600 font-bold">{{ BUDGET.BUDGET_VARIANCE | currency: "R" }}</span>
+                        }
+                    </td>
+                    <td [ngClass]="monthClass(BUDGET, 'INCOME', BUDGET.JAN)">{{ BUDGET.JAN | currency: "R" }}</td>
+                    <td [ngClass]="monthClass(BUDGET, 'INCOME', BUDGET.FEB)">{{ BUDGET.FEB | currency: "R" }}</td>
+                    <td [ngClass]="monthClass(BUDGET, 'INCOME', BUDGET.MAR)">{{ BUDGET.MAR | currency: "R" }}</td>
+                    <td [ngClass]="monthClass(BUDGET, 'INCOME', BUDGET.APR)">{{ BUDGET.APR | currency: "R" }}</td>
+                    <td [ngClass]="monthClass(BUDGET, 'INCOME', BUDGET.MAY)">{{ BUDGET.MAY | currency: "R" }}</td>
+                    <td [ngClass]="monthClass(BUDGET, 'INCOME', BUDGET.JUN)">{{ BUDGET.JUN | currency: "R" }}</td>
+                    <td [ngClass]="monthClass(BUDGET, 'INCOME', BUDGET.JUL)">{{ BUDGET.JUL | currency: "R" }}</td>
+                    <td [ngClass]="monthClass(BUDGET, 'INCOME', BUDGET.AUG)">{{ BUDGET.AUG | currency: "R" }}</td>
+                    <td [ngClass]="monthClass(BUDGET, 'INCOME', BUDGET.SEPT)">{{ BUDGET.SEPT | currency: "R" }}</td>
+                    <td [ngClass]="monthClass(BUDGET, 'INCOME', BUDGET.OCT)">{{ BUDGET.OCT | currency: "R" }}</td>
+                    <td [ngClass]="monthClass(BUDGET, 'INCOME', BUDGET.NOV)">{{ BUDGET.NOV | currency: "R" }}</td>
+                    <td [ngClass]="monthClass(BUDGET, 'INCOME', BUDGET.DEC)">{{ BUDGET.DEC | currency: "R" }}</td>
+                </tr>
+            }
+            
+            <!-- Income Totals Row -->
+            @if (isLastOfType(BUDGET, 'INCOME')) {
+                <tr class="bg-green-200 text-green-900 font-bold border-t-2 border-green-700">
+                    <td>TOTAL INCOME</td>
+                    <td>{{ incomeTotals().budget | currency: "R" }}</td>
+                    <td>{{ incomeTotals().yearAmount | currency: "R" }}</td>
+                    <td>{{ incomeTotals().variance | currency: "R" }}</td>
+                    <td>{{ incomeTotals().jan | currency: "R" }}</td>
+                    <td>{{ incomeTotals().feb | currency: "R" }}</td>
+                    <td>{{ incomeTotals().mar | currency: "R" }}</td>
+                    <td>{{ incomeTotals().apr | currency: "R" }}</td>
+                    <td>{{ incomeTotals().may | currency: "R" }}</td>
+                    <td>{{ incomeTotals().jun | currency: "R" }}</td>
+                    <td>{{ incomeTotals().jul | currency: "R" }}</td>
+                    <td>{{ incomeTotals().aug | currency: "R" }}</td>
+                    <td>{{ incomeTotals().sept | currency: "R" }}</td>
+                    <td>{{ incomeTotals().oct | currency: "R" }}</td>
+                    <td>{{ incomeTotals().nov | currency: "R" }}</td>
+                    <td>{{ incomeTotals().dec | currency: "R" }}</td>
+                </tr>
+            }
+            
+            <!-- ───── EXPENSE SECTION HEADER ───── -->
+            @if (isFirstOfType(BUDGET, 'EXPENSE')) {
+                <tr class="bg-red-700 text-white font-bold">
+                    <td colspan="15">EXPENSES</td>
+                </tr>
+            }
+            
+            <!-- Expense Rows -->
+            @if (BUDGET.GL_ACCOUNT_TYPE === 'EXPENSE') {
+                <tr>
+                    <td class="bg-red-100 text-red-800 border border-solid border-red-300">
+                        {{ BUDGET.GL_ACCOUNT_NAME }}
+                    </td>
+                    <td>
+                        @if(BUDGET.GL_ACCOUNT_NAME === "UNBUDGETED ITEM"){
+                            -
+                        } @else {
+                            {{ BUDGET.BUDGET_AMOUNT | currency: "R" }}
+                        }
+                    </td>
+                    <td>
+                        @if(BUDGET.GL_ACCOUNT_NAME === "UNBUDGETED ITEM"){
+                            -
+                        } @else {
+                            {{ BUDGET.BUDGET_YEAR_AMOUNT | currency: "R" }}
+                        }
+                    </td>
+                    <td>
+                        @if (BUDGET.BUDGET_VARIANCE < BUDGET.BUDGET_YEAR_AMOUNT) {
+                            <span class="text-green-600 font-bold">{{ BUDGET.BUDGET_VARIANCE | currency: "R" }}</span>
+                        }@else if(BUDGET.GL_ACCOUNT_NAME === "UNBUDGETED ITEM"){
+                            -
+                        } @else {
+                            <span class="text-red-600 font-bold">{{ BUDGET.BUDGET_VARIANCE | currency: "R" }}</span>
+                        }
+                    </td>
+                   
+                    <td [ngClass]="monthClass(BUDGET, 'EXPENSE', BUDGET.JAN)">{{ BUDGET.JAN | currency: "R" }}</td>
+                    <td [ngClass]="monthClass(BUDGET, 'EXPENSE', BUDGET.FEB)">{{ BUDGET.FEB | currency: "R" }}</td>
+                    <td [ngClass]="monthClass(BUDGET, 'EXPENSE', BUDGET.MAR)">{{ BUDGET.MAR | currency: "R" }}</td>
+                    <td [ngClass]="monthClass(BUDGET, 'EXPENSE', BUDGET.APR)">{{ BUDGET.APR | currency: "R" }}</td>
+                    <td [ngClass]="monthClass(BUDGET, 'EXPENSE', BUDGET.MAY)">{{ BUDGET.MAY | currency: "R" }}</td>
+                    <td [ngClass]="monthClass(BUDGET, 'EXPENSE', BUDGET.JUN)">{{ BUDGET.JUN | currency: "R" }}</td>
+                    <td [ngClass]="monthClass(BUDGET, 'EXPENSE', BUDGET.JUL)">{{ BUDGET.JUL | currency: "R" }}</td>
+                    <td [ngClass]="monthClass(BUDGET, 'EXPENSE', BUDGET.AUG)">{{ BUDGET.AUG | currency: "R" }}</td>
+                    <td [ngClass]="monthClass(BUDGET, 'EXPENSE', BUDGET.SEPT)">{{ BUDGET.SEPT | currency: "R" }}</td>
+                    <td [ngClass]="monthClass(BUDGET, 'EXPENSE', BUDGET.OCT)">{{ BUDGET.OCT | currency: "R" }}</td>
+                    <td [ngClass]="monthClass(BUDGET, 'EXPENSE', BUDGET.NOV)">{{ BUDGET.NOV | currency: "R" }}</td>
+                    <td [ngClass]="monthClass(BUDGET, 'EXPENSE', BUDGET.DEC)">{{ BUDGET.DEC | currency: "R" }}</td>
+                </tr>
+            }
+            
+            <!-- Expense Totals Row -->
+            @if (isLastOfType(BUDGET, 'EXPENSE')) {
+                <tr class="bg-red-200 text-red-900 font-bold border-t-2 border-red-700">
+                    <td>TOTAL EXPENSES</td>
+                    <td>{{ expenseTotals().budget | currency: "R" }}</td>
+                    <td>{{ expenseTotals().yearAmount | currency: "R" }}</td>
+                    <td>{{ expenseTotals().variance | currency: "R" }}</td>
+                    <td>{{ expenseTotals().jan | currency: "R" }}</td>
+                    <td>{{ expenseTotals().feb | currency: "R" }}</td>
+                    <td>{{ expenseTotals().mar | currency: "R" }}</td>
+                    <td>{{ expenseTotals().apr | currency: "R" }}</td>
+                    <td>{{ expenseTotals().may | currency: "R" }}</td>
+                    <td>{{ expenseTotals().jun | currency: "R" }}</td>
+                    <td>{{ expenseTotals().jul | currency: "R" }}</td>
+                    <td>{{ expenseTotals().aug | currency: "R" }}</td>
+                    <td>{{ expenseTotals().sept | currency: "R" }}</td>
+                    <td>{{ expenseTotals().oct | currency: "R" }}</td>
+                    <td>{{ expenseTotals().nov | currency: "R" }}</td>
+                    <td>{{ expenseTotals().dec | currency: "R" }}</td>
+                </tr>
+                
+                <!-- ───── NET ROW ───── -->
+                <tr class="bg-gray-800 text-white font-bold border-t-4 border-gray-500">
+                    <td>NET (Income - Expenses)</td>
+                    <td>{{ netTotals().budget | currency: "R" }}</td>
+                    <td>{{ netTotals().yearAmount | currency: "R" }}</td>
+                    <td>{{ netTotals().variance | currency: "R" }}</td>
+                    <td>{{ netTotals().jan | currency: "R" }}</td>
+                    <td>{{ netTotals().feb | currency: "R" }}</td>
+                    <td>{{ netTotals().mar | currency: "R" }}</td>
+                    <td>{{ netTotals().apr | currency: "R" }}</td>
+                    <td>{{ netTotals().may | currency: "R" }}</td>
+                    <td>{{ netTotals().jun | currency: "R" }}</td>
+                    <td>{{ netTotals().jul | currency: "R" }}</td>
+                    <td>{{ netTotals().aug | currency: "R" }}</td>
+                    <td>{{ netTotals().sept | currency: "R" }}</td>
+                    <td>{{ netTotals().oct | currency: "R" }}</td>
+                    <td>{{ netTotals().nov | currency: "R" }}</td>
+                    <td>{{ netTotals().dec | currency: "R" }}</td>
+                </tr>
+            }
+        
         </ng-template>
         
+        <!-- Empty state -->
         <ng-template #emptymessage>
             <tr>
-                <td colspan="5">No budgets found.</td>
+                <td colspan="15">No Budgets found.</td>
             </tr>
         </ng-template>
     </p-table>

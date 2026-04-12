@@ -10,5 +10,5 @@
       <ProjectReference Include="..\Class\Class.csproj" />
       <ProjectReference Include="..\MariaDB\MariaDB.csproj" />
     </ItemGroup>
-    
+
 </Project>

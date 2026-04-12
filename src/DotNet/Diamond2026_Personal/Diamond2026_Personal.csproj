@@ -11,6 +11,7 @@
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.2"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.2" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="10.0.2" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.0" />
         <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="9.0.0" />
     </ItemGroup>
 
@@ -19,15 +20,17 @@
         <Link>.dockerignore</Link>
       </Content>
     </ItemGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\Class\Class.csproj" />
-      <ProjectReference Include="..\MariaDB\MariaDB.csproj" />
-    </ItemGroup>
-
+    
     <ItemGroup>
       <Folder Include="Controllers\Creditors\" />
       <Folder Include="Controllers\Receivable\" />
+    </ItemGroup>
+    
+    <ItemGroup>
+      <ProjectReference Include="..\Budget\Budget.csproj" />
+      <ProjectReference Include="..\Class\Class.csproj" />
+      <ProjectReference Include="..\MariaDB\MariaDB.csproj" />
+      <ProjectReference Include="..\Utils\Utils.csproj" />
     </ItemGroup>
 
 </Project>

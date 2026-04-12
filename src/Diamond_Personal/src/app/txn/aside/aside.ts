@@ -162,11 +162,14 @@ export class Aside implements OnInit, OnChanges {
 	    
 	    this.TxnTypeSubscription = this.TXN_FORM.get('userType')?.valueChanges.subscribe(
 			value => {
+				console.log({value})
+				const mrForm = this.TXN_FORM.getRawValue();
+				console.log(this.TXN_FORM.getRawValue())
+				
 				if(this.TXN_TYPE === "CREDIT_CARD" && value === "DECREASE"){
 					this.GL_ACCOUNTS$.pipe(take(1)).subscribe(
 						acc => {
 							const GLCode = acc.find(A => A.GL_ACCOUNT_CODE === -5001)
-							console.log({GLCode})
 						this.TXN_FORM.patchValue(
 							{
 								userDetails: "REPAID",
@@ -177,10 +180,11 @@ export class Aside implements OnInit, OnChanges {
 					);
 					
 				}
-				else {
+				
+				else if(value !== "DECREASE" && this.TXN_TYPE === "CREDIT_CARD") {
 					this.TXN_FORM.patchValue(
 						{
-							userDetails: "",
+							userDetails: mrForm.userDetails === "REPAID" ? "HOWDY": "",
 							userGLAccount: ""
 						}
 					);
@@ -196,4 +200,8 @@ export class Aside implements OnInit, OnChanges {
     setTodayDate(){
         this.TXN_FORM.get('userDate')?.setValue(new Date())
     }
+	
+	// increaseDay(date: Date){
+	// 	this.TXN_FORM.get('userDate')?.setValue(date + 1);
+	// }
 }
