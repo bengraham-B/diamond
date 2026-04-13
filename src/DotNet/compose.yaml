@@ -5,3 +5,9 @@
       context: .
       dockerfile: Diamond2026_Personal/Dockerfile
 
+  diamondtest:
+    image: diamondtest
+    build:
+      context: .
+      dockerfile: DiamondTest/Dockerfile
+

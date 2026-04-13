@@ -7,6 +7,7 @@ using Class;
 using DiamondTransaction;
 using MariaDB;
 using MySqlConnector;
+using Xunit.Sdk;
 
 namespace DiamondTest.IntergationTest.DiamondTransaction;
 
@@ -59,33 +60,84 @@ public class DiamondTransactionTest
     [Fact]
     public void AddDiamondTransactionTest()
     {
-        
-        // Test Transaction
-        Class.DiamondTransactionModel txn = new Class.DiamondTransactionModel
+
+        Guid accountID = Guid.NewGuid();
+        Guid diamondTransactionID = Guid.NewGuid();
+        Guid merchantID = Guid.NewGuid();
+        Guid debtorID = Guid.NewGuid();
+        Guid glAccountID = Guid.NewGuid();
+        DiamondTransactionModel addTxn = new DiamondTransactionModel
         {
-            ACCOUNT_ID = Guid.Parse("de58d6a9-1512-11f1-a3e0-ce6cdc3544e3"),
-            DIAMOND_TRANSACTION_ID = Guid.NewGuid(),
+            ACCOUNT_ID = accountID,
+            DIAMOND_TRANSACTION_ID = diamondTransactionID,
             AMOUNT = 1000000,
             DETAILS = "TEST ADDING DIAMOND_TRANSACTION",
+            MERCHANT_ID = merchantID,
+            DEBTOR_ID = debtorID,
+            GL_ACCOUNT_ID = glAccountID,
             DATE = "2026-04-12",
             TXN_TYPE = "INCOME",
             SOURCE = "CASH",
         };
         
-        Assert.True(DiamondTransactionCRUD.AddDiamondTransaction(_conn, txn));
+        Assert.True(DiamondTransactionCRUD.AddDiamondTransaction(_conn, addTxn));
 
+        DiamondTransactionModel expectedTxn = new DiamondTransactionModel
+        {
+            ACCOUNT_ID = accountID,
+            DIAMOND_TRANSACTION_ID = diamondTransactionID,
+            AMOUNT = 1000000,
+            DETAILS = "TEST ADDING DIAMOND_TRANSACTION",
+            MERCHANT_ID = merchantID,
+            DEBTOR_ID = debtorID,
+            GL_ACCOUNT_ID = glAccountID,
+            DATE = "2026-04-12",
+            TXN_TYPE = "INCOME",
+            SOURCE = "CASH",
+            
+            DAY=12,
+            DAY_OF_WEEK = "Sun",
+            DAY_OF_YEAR = 102,
+            WEEK = 15,
+            MONTH = 4,
+            YEAR = 2026,
+        };
 
+        DiamondTransactionModel? fetchedTxn = FetchSingleTXN(_conn, diamondTransactionID);
+        if (fetchedTxn == null)
+            throw new Exception("Could not Fetch Transaction");
+
+        Assert.Multiple(
+            () => Assert.Equal(expectedTxn.ACCOUNT_ID, fetchedTxn.ACCOUNT_ID),
+            () => Assert.Equal(expectedTxn.ACCOUNT_ID, fetchedTxn.ACCOUNT_ID),
+            () => Assert.Equal(expectedTxn.DIAMOND_TRANSACTION_ID, fetchedTxn.DIAMOND_TRANSACTION_ID),
+            
+            () =>  Assert.Equal(expectedTxn.AMOUNT, fetchedTxn.AMOUNT),
+            () =>  Assert.Equal(expectedTxn.DETAILS, fetchedTxn.DETAILS),
+            
+            () => Assert.Equal(expectedTxn.MERCHANT_ID, fetchedTxn.MERCHANT_ID),
+            () => Assert.Equal(expectedTxn.GL_ACCOUNT_ID, fetchedTxn.GL_ACCOUNT_ID),
+            
+            () =>  Assert.Equal(expectedTxn.DATE, fetchedTxn.DATE),
+            () =>  Assert.Equal(12, fetchedTxn.DAY),
+            () =>  Assert.Equal("Sun", fetchedTxn.DAY_OF_WEEK),
+            () =>  Assert.Equal(102, fetchedTxn.DAY_OF_YEAR),
+            () =>  Assert.Equal(15, fetchedTxn.WEEK),
+            () =>  Assert.Equal(4, fetchedTxn.MONTH),
+            () =>  Assert.Equal(2026, fetchedTxn.YEAR)
+        );
+        
         RequestParams req = new RequestParams
         {
-            ACCOUNT_ID = Guid.Parse("de58d6a9-1512-11f1-a3e0-ce6cdc3544e3"),
-            TRANSACTION_ID = txn.DIAMOND_TRANSACTION_ID,
+            ACCOUNT_ID = accountID,
+            TRANSACTION_ID = addTxn.DIAMOND_TRANSACTION_ID,
         };
         
         // Delete the TXN after
-        DiamondTransactionCRUD.DeleteDiamondTransaction(conn:_conn, requestParams: req);
+        Assert.True(DiamondTransactionCRUD.DeleteDiamondTransaction(conn:_conn, requestParams: req));
     }
 
-    private DiamondTransactionModel? FetchSingleTXN(Conn conn, Guid pDIAMOND_TRANSACTION_ID)
+    private static DiamondTransactionModel? FetchSingleTXN(Conn conn, Guid pDIAMOND_TRANSACTION_ID)
     {
         const string SQL = "SELECT * FROM DIAMOND_TRANSACTION WHERE DIAMOND_TRANSACTION_ID=@DIAMOND_TRANSACTION_ID";
         using var connection = conn.Open();
@@ -162,7 +214,7 @@ public class DiamondTransactionTest
             DAY_OF_WEEK = "Fri",
             DAY_OF_YEAR = 128,
             WEEK = 19,
-            MONTH = 5,
+            MONTH = 5+4,
             YEAR = 2026
         };
         
@@ -189,15 +241,13 @@ public class DiamondTransactionTest
             throw new Exception("Could not get TXN from update");
         }
         
-        // UpdatedTXN == CompareTXN
-        
         Assert.Equal(updatedTXN.ACCOUNT_ID, compareTXN.ACCOUNT_ID);
         Assert.Equal(updatedTXN.DIAMOND_TRANSACTION_ID, compareTXN.DIAMOND_TRANSACTION_ID);
         
         Assert.Equal(updatedTXN.AMOUNT, compareTXN.AMOUNT);
         Assert.Equal(updatedTXN.DETAILS, compareTXN.DETAILS);
         
-        // Assert.Equal(updatedTXN.MERCHANT_ID, compareTXN.MERCHANT_ID);
+        Assert.Equal(updatedTXN.MERCHANT_ID, compareTXN.MERCHANT_ID);
         Assert.Equal(updatedTXN.GL_ACCOUNT_ID, compareTXN.GL_ACCOUNT_ID);
         
         Assert.Equal(updatedTXN.DATE, compareTXN.DATE);
@@ -208,5 +258,41 @@ public class DiamondTransactionTest
         Assert.Equal(updatedTXN.MONTH, compareTXN.MONTH);
         
         Assert.True(DiamondTransactionCRUD.DeleteDiamondTransaction(_conn, req), "Could not Delete TXN After comparing TXNs");
+    }
+
+    [Fact]
+    public void DeleteDiamondTransactionTest()
+    {
+        Guid diamondTransactionID = Guid.NewGuid();
+        Guid merchantID = Guid.NewGuid();
+        Guid debtorID = Guid.NewGuid();
+        Guid glAccountID = Guid.NewGuid();
+        Guid accountID = Guid.NewGuid();
+        
+        DiamondTransactionModel txn = new DiamondTransactionModel
+        {
+            ACCOUNT_ID = accountID,
+            DIAMOND_TRANSACTION_ID = diamondTransactionID,
+            AMOUNT = 1000000,
+            DETAILS = "TEST ADDING DIAMOND_TRANSACTION",
+            MERCHANT_ID = merchantID,
+            DEBTOR_ID = debtorID,
+            GL_ACCOUNT_ID = glAccountID,
+            DATE = "2026-04-12",
+            TXN_TYPE = "INCOME",
+            SOURCE = "CASH",
+        };
+        Assert.True(DiamondTransactionCRUD.AddDiamondTransaction(_conn, txn));
+        
+        RequestParams req = new RequestParams
+        {
+            ACCOUNT_ID = accountID,
+            TRANSACTION_ID = txn.DIAMOND_TRANSACTION_ID,
+        };
+        
+        // Delete the TXN after
+        Assert.True(DiamondTransactionCRUD.DeleteDiamondTransaction(conn:_conn, requestParams: req));
+        
+        
     }
 }
