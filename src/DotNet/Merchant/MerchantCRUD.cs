@@ -20,9 +20,11 @@ public class MerchantCRUD
         {
             merchants.Add(new MerchantModel
             {
+                ACCOUNT_ID = reader.GetGuid("ACCOUNT_ID"),
                 MERCHANT_ID = reader.GetGuid("MERCHANT_ID"),
                 NAME = reader.GetString("NAME"),
-                TOWN = reader.GetString("TOWN")
+                TOWN = reader.GetString("TOWN"),
+                SHOPPING_CENTER = reader.GetString("SHOPPING_CENTER")
             });
         }
         
@@ -41,16 +43,15 @@ public class MerchantCRUD
             VALUES
                 (@MERCHANT_ID, @NAME, @TOWN, @SHOPPING_CENTER, @ACCOUNT_ID);
         ";
-            
-        Guid merchantID = Guid.NewGuid();
+        
         using var connection = conn.Open();
         using var cmd = new MySqlCommand(SQL, connection);
             
-        cmd.Parameters.Add("@ACCOUNT_ID", MySqlDbType.Guid).Value = merchant.ACCOUNT_ID;
-        cmd.Parameters.Add("@MERCHANT_ID", MySqlDbType.Guid).Value = merchantID;
-        cmd.Parameters.Add("@NAME", MySqlDbType.String).Value = merchant.NAME;
-        cmd.Parameters.Add("@TOWN", MySqlDbType.String).Value = merchant.TOWN;
-        cmd.Parameters.Add("@SHOPPING_CENTER", MySqlDbType.String).Value = merchant.SHOPPING_CENTER;
+        cmd.Parameters.AddWithValue("@ACCOUNT_ID", merchant.ACCOUNT_ID);
+        cmd.Parameters.AddWithValue("@MERCHANT_ID", merchant.MERCHANT_ID);
+        cmd.Parameters.AddWithValue("@NAME", merchant.NAME);
+        cmd.Parameters.AddWithValue("@TOWN", merchant.TOWN);
+        cmd.Parameters.AddWithValue("@SHOPPING_CENTER", merchant.SHOPPING_CENTER);
 
         int rowsAffected = cmd.ExecuteNonQuery();
         

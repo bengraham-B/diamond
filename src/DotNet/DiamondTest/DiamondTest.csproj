@@ -35,6 +35,7 @@
       <ProjectReference Include="..\DiamondTransaction\DiamondTransaction.csproj" />
       <ProjectReference Include="..\GL_ACCOUNT\GL_ACCOUNT.csproj" />
       <ProjectReference Include="..\MariaDB\MariaDB.csproj" />
+      <ProjectReference Include="..\Merchant\Merchant.csproj" />
       <ProjectReference Include="..\Utils\Utils.csproj" />
     </ItemGroup>
 
