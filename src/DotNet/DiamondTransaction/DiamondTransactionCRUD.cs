@@ -42,6 +42,11 @@ public class DiamondTransactionCRUD
                     SOURCE = reader.GetString("SOURCE"),
                     
                     DATE = reader.GetString("DATE"),
+                    DAY = reader.GetInt32("DAY"),
+                    DAY_OF_WEEK = reader.GetString("DAY_OF_WEEK"),
+                    DAY_OF_YEAR = reader.GetInt32("DAY_OF_YEAR"),
+                    MONTH = reader.GetInt32("MONTH"),
+                    YEAR = reader.GetInt32("YEAR"),
                     
                     MERCHANT_ID = reader.IsDBNull(reader.GetOrdinal("MERCHANT_ID")) ? null : reader.GetGuid("ACCOUNT_ID"),
                     MERCHANT_NAME = reader.IsDBNull(reader.GetOrdinal("NAME")) ? null : reader.GetString("NAME"),

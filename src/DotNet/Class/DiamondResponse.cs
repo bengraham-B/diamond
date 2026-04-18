@@ -14,5 +14,7 @@ public class DiamondResponse
     
     public List<BudgetModel>? BudgetList { get; set; }
     
+    public List<MerchantModel>? MerchantList { get; set; }
+    
     public List<GLAccountModel>? GLAccountList { get; set; }
 }
