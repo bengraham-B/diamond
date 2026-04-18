@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Class;
 
 [Table("DIAMOND_TRANSACTION")]
-public class DiamondTransaction
+public class DiamondTransactionModel
 {
     [Key]
     public Guid DIAMOND_TRANSACTION_ID { get; set; }

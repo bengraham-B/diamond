@@ -9,7 +9,6 @@
     <ItemGroup>
       <ProjectReference Include="..\Class\Class.csproj" />
       <ProjectReference Include="..\MariaDB\MariaDB.csproj" />
-      <ProjectReference Include="..\Utils\Utils.csproj" />
     </ItemGroup>
 
 </Project>

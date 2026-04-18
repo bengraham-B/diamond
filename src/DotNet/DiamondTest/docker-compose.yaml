@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  MariaDB:
+    image:  mariadb:11
+    container_name: ASUS_DIAMOND_PERSONAL_MARIADB_TEST
+    restart: unless-stopped
+    ports:
+      - "3318:3306"
+    environment:
+      MARIADB_ROOT_PASSWORD: dev
+      MARIADB_DATABASE: DIAMOND_PERSONAL_TEST
+      MARIADB_PASSWORD: test
+      MARIADB_USER: diamond-test
+    volumes:
+      - "C:/Users/Ben Graham/Music/volumes/Diamond2026_Personal_TEST:/var/lib/mysql"
+

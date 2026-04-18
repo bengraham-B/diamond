@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {BehaviorSubject, catchError, of, switchMap, tap} from 'rxjs';
+import {BehaviorSubject} from 'rxjs';
 
 //Y Models
 import { TRANSACTION } from '../models/Transaction.model';

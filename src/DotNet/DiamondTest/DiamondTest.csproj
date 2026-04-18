@@ -5,6 +5,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <IsPackable>false</IsPackable>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     </PropertyGroup>
 
     <ItemGroup>
@@ -32,6 +33,7 @@
       <ProjectReference Include="..\Budget\Budget.csproj" />
       <ProjectReference Include="..\Class\Class.csproj" />
       <ProjectReference Include="..\DiamondTransaction\DiamondTransaction.csproj" />
+      <ProjectReference Include="..\GL_ACCOUNT\GL_ACCOUNT.csproj" />
       <ProjectReference Include="..\MariaDB\MariaDB.csproj" />
       <ProjectReference Include="..\Utils\Utils.csproj" />
     </ItemGroup>
