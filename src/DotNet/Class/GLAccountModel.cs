@@ -1,6 +1,6 @@
 namespace Class;
 
-public class GL_ACCOUNT_MODEL
+public class GLAccountModel
 {
     public Guid? GL_ACCOUNT_ID { get; set; }
     public required string GL_ACCOUNT_NAME { get; set; }

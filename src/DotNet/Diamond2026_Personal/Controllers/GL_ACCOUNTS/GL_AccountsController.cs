@@ -1,8 +1,7 @@
 using Class;
 using MariaDB;
 using Microsoft.AspNetCore.Mvc;
-using MySqlConnector;
-
+using GL_ACCOUNT;
 namespace Diamond2026_Personal.Controllers.GL_ACCOUNTS;
 
 [Route("api/gl_accounts")]
@@ -23,48 +22,55 @@ public class GL_AccountsController: ControllerBase
     [HttpPost("get_gl_accounts")]
     public IActionResult Get_GL_ACCOUNTS([FromBody] RequestParams requestParams)
     {
-
-        if ( requestParams.ACCOUNT_ID == Guid.Empty)
-        {
-            return BadRequest("Request Params is empty");
-        }
         try
         {
-            const string SQL = @"
-                SELECT 
-                    * 
-                FROM 
-                    GL_ACCOUNT 
-                WHERE 
-                    GL_ACCOUNT.ACCOUNT_ID=@ACCOUNT_ID
-                    
-                    AND GL_ACCOUNT_CODE NOT IN (1000, 2000, 3000, 4000, 5000) -- These are the Base Accounts
-                    AND GL_ACCOUNT_TYPE NOT IN ('ASSET', 'LIABILITY', 'EQUITY')
-                ORDER BY GL_ACCOUNT_NAME 
-            ";
-            using var connection = _conn.Open();
-            using var cmd = new MySqlCommand(SQL, connection);
-            cmd.Parameters.Add("@ACCOUNT_ID", MySqlDbType.Guid).Value = requestParams.ACCOUNT_ID;
-            using var reader = cmd.ExecuteReader();
-            List<GL_ACCOUNT_MODEL> USER_GL_ACCOUNTS = new List<GL_ACCOUNT_MODEL>();
-            while (reader.Read())
-            {
-                USER_GL_ACCOUNTS.Add(new GL_ACCOUNT_MODEL
-                {
-                    GL_ACCOUNT_ID = reader.GetGuid("GL_ACCOUNT_ID"),
-                    GL_ACCOUNT_TYPE = reader.GetString("GL_ACCOUNT_TYPE"),
-                    GL_ACCOUNT_NAME = reader.GetString("GL_ACCOUNT_NAME"),
-                    GL_ACCOUNT_CODE = reader.GetInt16("GL_ACCOUNT_CODE"),
-                });
-            }
-            {
-                
-            }
-            return Ok(USER_GL_ACCOUNTS);
+            return Ok(GLAccountCRUD.GetGLAccounts(_conn, requestParams));
         }
         catch (Exception e)
         {
             return BadRequest($"Could not Get GL_ACCOUNTS {e}");
+        }
+    }
+
+    [HttpPost("add_gl_account")]
+    public IActionResult AddGlAccount([FromBody] GLAccountModel model)
+    {
+        try
+        {
+            DiamondResponse DR = GLAccountCRUD.AddGLAccount(_conn, model);
+            return Ok(DR);
+        }
+        catch (Exception e)
+        {
+            return BadRequest($"Could not Add GL_ACCOUNT {e}");
+        }
+    }
+    
+    [HttpPut("update_gl_account")]
+    public IActionResult UpdateGlAccount([FromBody] GLAccountModel model)
+    {
+        try
+        {
+            DiamondResponse DR = GLAccountCRUD.UpdateGLAccount(_conn, model);
+            return Ok(DR);
+        }
+        catch (Exception e)
+        {
+            return BadRequest($"Could not Update GL_ACCOUNT {e}");
+        }
+    }
+    
+    [HttpPost("delete_gl_account")]
+    public IActionResult DeleteGlAccount([FromBody] RequestParams req)
+    {
+        try
+        {
+            DiamondResponse DR = GLAccountCRUD.DeleteGLAccount(_conn, req);
+            return Ok(DR);
+        }
+        catch (Exception e)
+        {
+            return BadRequest($"Could not Delete GL_ACCOUNT {e}");
         }
     }
 }
