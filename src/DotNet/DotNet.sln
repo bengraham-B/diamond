@@ -19,7 +19,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiamondTest", "DiamondTest\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiamondTransaction", "DiamondTransaction\DiamondTransaction.csproj", "{16682AC2-9B1F-4003-BA46-21B81FFA4D02}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GL_ACCOUNT", "GL_ACCOUNT\GL_ACCOUNT.csproj", "{088BBE59-3FCB-49EC-9C54-BE0367C7C181}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Merchant", "Merchant\Merchant.csproj", "{A3BB675F-541F-4DC6-82E7-695C61165638}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -55,10 +55,10 @@ Global
 		{16682AC2-9B1F-4003-BA46-21B81FFA4D02}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{16682AC2-9B1F-4003-BA46-21B81FFA4D02}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{16682AC2-9B1F-4003-BA46-21B81FFA4D02}.Release|Any CPU.Build.0 = Release|Any CPU
-		{088BBE59-3FCB-49EC-9C54-BE0367C7C181}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{088BBE59-3FCB-49EC-9C54-BE0367C7C181}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{088BBE59-3FCB-49EC-9C54-BE0367C7C181}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{088BBE59-3FCB-49EC-9C54-BE0367C7C181}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A3BB675F-541F-4DC6-82E7-695C61165638}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A3BB675F-541F-4DC6-82E7-695C61165638}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A3BB675F-541F-4DC6-82E7-695C61165638}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A3BB675F-541F-4DC6-82E7-695C61165638}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 	EndGlobalSection
