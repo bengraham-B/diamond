@@ -1,5 +1,6 @@
 using Class;
 using MariaDB;
+using Merchant;
 using Microsoft.AspNetCore.Mvc;
 using MySqlConnector;
 
@@ -14,25 +15,8 @@ public class MerchantController(Conn conn): ControllerBase
     {
         try
         {
-            const string SQL = @"SELECT * FROM MERCHANT WHERE ACCOUNT_ID=@ACCOUNT_ID ORDER BY NAME";
-            using var connection = _conn.Open();
-            using var cmd = new MySqlCommand(SQL, connection);
-            cmd.Parameters.Add("ACCOUNT_ID", MySqlDbType.Guid).Value = requestParams.ACCOUNT_ID;
-
-            var reader = cmd.ExecuteReader();
-            
-            List<MerchantModel> merchants = new List<MerchantModel>();
-            while (reader.Read())
-            {
-                merchants.Add(new MerchantModel
-                {
-                    MERCHANT_ID = reader.GetGuid("MERCHANT_ID"),
-                    NAME = reader.GetString("NAME"),
-                    TOWN = reader.GetString("TOWN")
-                });
-            }
-            
-            return Ok(merchants);
+            DiamondResponse DR = MerchantCRUD.GetMerchants(_conn, requestParams);
+            return Ok(DR.MerchantList);
         }
         catch (Exception e)
         {
@@ -45,35 +29,42 @@ public class MerchantController(Conn conn): ControllerBase
     {
         try
         {
-            const string SQL = @"
-                INSERT INTO MERCHANT
-                    (MERCHANT_ID, NAME, TOWN, SHOPPING_CENTER, ACCOUNT_ID)
-                VALUES
-                    (@MERCHANT_ID, @NAME, @TOWN, @SHOPPING_CENTER, @ACCOUNT_ID);
-
-                ";
-            
-            Guid merchantID = Guid.NewGuid();
-            using var connection = _conn.Open();
-            using var cmd = new MySqlCommand(SQL, connection);
-            
-            cmd.Parameters.Add("@ACCOUNT_ID", MySqlDbType.Guid).Value = merchant.ACCOUNT_ID;
-            cmd.Parameters.Add("@MERCHANT_ID", MySqlDbType.Guid).Value = merchantID;
-            cmd.Parameters.Add("@NAME", MySqlDbType.String).Value = merchant.NAME;
-            cmd.Parameters.Add("@TOWN", MySqlDbType.String).Value = merchant.TOWN;
-            cmd.Parameters.Add("@SHOPPING_CENTER", MySqlDbType.String).Value = merchant.SHOPPING_CENTER;
-
-            int rowsAffected = cmd.ExecuteNonQuery();
-            if (rowsAffected == 0)
-                throw new Exception("Could not INSERT Merchant into DB");
-            
-            return Ok("Merchant Added Successfully");
+            DiamondResponse DR = MerchantCRUD.AddMerchant(_conn, merchant);
+            return Ok(DR);
         }
         catch (Exception e)
         {
             return BadRequest($"Could not ADD_MERCHANTS: \n \n, {e}");
         }
         
+    }
+    
+    [HttpPut("update_merchant")]
+    public IActionResult UpdateMerchant([FromBody] MerchantModel merchant)
+    {
+        try
+        {
+            DiamondResponse DR = MerchantCRUD.UpdateMerchant(_conn, merchant);
+            return Ok(DR);
+        }
+        catch (Exception e)
+        {
+            return BadRequest($"Could not UPDATE_MERCHANTS: \n \n, {e}");
+        }
+    }
+
+    [HttpPut("delete_merchant")]
+    public IActionResult DeleteMerchant([FromBody] RequestParams requestParams)
+    {
+        try
+        {
+            DiamondResponse DR = MerchantCRUD.DeleteMerchant(_conn, requestParams);
+            return Ok(DR);
+        }
+        catch (Exception e)
+        {
+            return BadRequest($"Could not DELETE_MERCHANTS: \n \n, {e}");
+        }
     }
     
 }
