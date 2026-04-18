@@ -14,12 +14,6 @@
         <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.0" />
         <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="9.0.0" />
     </ItemGroup>
-
-    <ItemGroup>
-      <Content Include="..\.dockerignore">
-        <Link>.dockerignore</Link>
-      </Content>
-    </ItemGroup>
     
     <ItemGroup>
       <Folder Include="Controllers\Creditors\" />
@@ -29,6 +23,7 @@
     <ItemGroup>
       <ProjectReference Include="..\Budget\Budget.csproj" />
       <ProjectReference Include="..\Class\Class.csproj" />
+      <ProjectReference Include="..\DiamondTransaction\DiamondTransaction.csproj" />
       <ProjectReference Include="..\MariaDB\MariaDB.csproj" />
       <ProjectReference Include="..\Utils\Utils.csproj" />
     </ItemGroup>

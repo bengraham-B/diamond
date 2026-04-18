@@ -1,11 +1,9 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { TRANSACTION } from '../models/Transaction.model';
 import { MERCHANT } from '../models/Merchant';
 import { HttpClient } from '@angular/common/http';
 import { UserService } from './user-service';
 import { ServerUrlService } from './server-url-service';
-import { RequestParams } from '../models/RequestParams';
 
 @Injectable({
   providedIn: 'root',

@@ -8,11 +8,8 @@ import { Observable } from 'rxjs';
 import { TxnPage } from '../../txn/txn-page/txn-page';
 
 //Y Services
-import { CashService } from '../../services/cash-service';
 
 //Y Models
-import { TRANSACTION } from '../../models/Transaction.model';
-import {DateService} from "../../services/date-service";
 import {DiamondTxnService} from "../../services/diamond-txn-service";
 import {DiamondTxnModel} from "../../models/DiamondTxnModel"; //Y This model is used to display TXN on the Table
 
@@ -27,8 +24,6 @@ export class CashPage {
 	txn$!: Observable<DiamondTxnModel[]> //Y Getting global objects from Services
 
 	constructor(
-		private cashService: CashService,
-		public dateService: DateService,
 		public diamondTxnService: DiamondTxnService
 	
 	){

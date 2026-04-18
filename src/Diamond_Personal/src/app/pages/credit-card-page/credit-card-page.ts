@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Observable } from 'rxjs';
-import { TRANSACTION } from '../../models/Transaction.model';
+
 
 import { TxnPage} from "../../txn/txn-page/txn-page";
 import {AsyncPipe} from "@angular/common";

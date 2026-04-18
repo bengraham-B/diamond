@@ -17,6 +17,20 @@ public class DiamondTransactionTest
     private readonly RequestParams _req;
     private readonly DiamondTransactionCRUD _diamondTransactionCrud;
 
+    private DiamondTransactionModel testDiamondTransactionModel = new DiamondTransactionModel
+    {
+        DIAMOND_TRANSACTION_ID = Guid.Parse("428d53f2-ecdb-4eb9-82b0-523b1ceecd87"),
+        ACCOUNT_ID = Guid.Parse("625d0169-9f3d-42fb-b861-9f05798ac7be"),
+        DETAILS = "Test Transaction",
+        AMOUNT = 6000000,
+        MERCHANT_ID = Guid.Parse("da95a985-1dce-4ae4-85e5-4059aa685844"),
+        DEBTOR_ID = Guid.Parse("d203ed4f-e3e5-44f9-8ed1-92c571e32468"),
+        DATE = "2026-04-20",
+        GL_ACCOUNT_ID = Guid.Parse("9afd74e8-f125-4b8b-a376-73f7886849c4"),
+        TXN_TYPE = "INCOME",
+        SOURCE = "CASH",
+    };
+
     public DiamondTransactionTest()
     {
         var configuration = new ConfigurationBuilder()
@@ -27,14 +41,17 @@ public class DiamondTransactionTest
         
         _req = new RequestParams
         {
-            ACCOUNT_ID = Guid.Parse("de58d6a9-1512-11f1-a3e0-ce6cdc3544e3") // real ACCOUNT_ID from your dev DB
+            ACCOUNT_ID = Guid.Parse("625d0169-9f3d-42fb-b861-9f05798ac7be"), // real ACCOUNT_ID from your dev DB
+            TRANSACTION_ID = Guid.Parse("428d53f2-ecdb-4eb9-82b0-523b1ceecd87"),
+            
         };
     }
 
     [Fact]
     public void GetAllDiamondTransactionsTest()
     {
-        List<Class.DiamondTransactionModel> result = DiamondTransactionCRUD.GetDiamondTransaction(_conn, _req);
+        Assert.True(DiamondTransactionCRUD.AddDiamondTransaction(_conn, testDiamondTransactionModel), "Could not add Test Diamond Transaction");
+        List<DiamondTransactionModel> result = DiamondTransactionCRUD.GetDiamondTransaction(_conn, _req);
 
         Assert.NotEmpty(result);
     
@@ -45,16 +62,8 @@ public class DiamondTransactionTest
         Assert.NotNull(first.TXN_TYPE);
         Assert.NotNull(first.SOURCE);
         Assert.NotNull(first.DATE);
-
-        // This will only show to the console when you debug the test
-        foreach (var txn in result)
-        {
-            Debug.WriteLine(txn.ACCOUNT_ID);
-            Debug.WriteLine(txn.AMOUNT);
-            Debug.WriteLine(txn.DETAILS);
-            Debug.WriteLine("---------------------------------------------------------");
-            
-        }
+        
+        Assert.True(DiamondTransactionCRUD.DeleteDiamondTransaction(conn: _conn, _req), "Could not Delete Transaction in [GetAllDiamondTransactionsTest]");
     }
 
     [Fact]
@@ -119,12 +128,12 @@ public class DiamondTransactionTest
             () => Assert.Equal(expectedTxn.GL_ACCOUNT_ID, fetchedTxn.GL_ACCOUNT_ID),
             
             () =>  Assert.Equal(expectedTxn.DATE, fetchedTxn.DATE),
-            () =>  Assert.Equal(12, fetchedTxn.DAY),
-            () =>  Assert.Equal("Sun", fetchedTxn.DAY_OF_WEEK),
-            () =>  Assert.Equal(102, fetchedTxn.DAY_OF_YEAR),
-            () =>  Assert.Equal(15, fetchedTxn.WEEK),
-            () =>  Assert.Equal(4, fetchedTxn.MONTH),
-            () =>  Assert.Equal(2026, fetchedTxn.YEAR)
+            () =>  Assert.Equal(expectedTxn.DAY, fetchedTxn.DAY),
+            () =>  Assert.Equal(expectedTxn.DAY_OF_WEEK, fetchedTxn.DAY_OF_WEEK),
+            () =>  Assert.Equal(expectedTxn.DAY_OF_YEAR, fetchedTxn.DAY_OF_YEAR),
+            () =>  Assert.Equal(expectedTxn.WEEK, fetchedTxn.WEEK),
+            () =>  Assert.Equal(expectedTxn.MONTH, fetchedTxn.MONTH),
+            () =>  Assert.Equal(expectedTxn.YEAR, fetchedTxn.YEAR)
         );
         
         RequestParams req = new RequestParams
@@ -214,7 +223,7 @@ public class DiamondTransactionTest
             DAY_OF_WEEK = "Fri",
             DAY_OF_YEAR = 128,
             WEEK = 19,
-            MONTH = 5+4,
+            MONTH = 5,
             YEAR = 2026
         };
         

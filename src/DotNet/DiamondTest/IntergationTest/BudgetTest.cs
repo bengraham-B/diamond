@@ -57,9 +57,7 @@ public class BudgetTest
             "BUDGET_ID",
             "GL_ACCOUNT_ID",
             "BUDGET_AMOUNT",
-            "BUDGET_PERIOD",
-            "GL_ACCOUNT_NAME",
-            "GL_ACCOUNT_TYPE"
+            "BUDGET_PERIOD"
         };
         
         // Get all fields which actually have values using reflection
