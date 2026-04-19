@@ -13,7 +13,7 @@ public class MerchantReportController(Conn conn) : ControllerBase
     public IActionResult MonthlyMerchantReport([FromBody] RequestParams requestParams)
     {
         DiamondResponse DR = MerchantReport.MonthlyMerchantReport(conn, requestParams);
-        return Ok(DR);
+        return Ok(DR.MonthlyReportList);
     }
     
 }

@@ -32,6 +32,7 @@ export class MerchantService {
 		this.serverBase = this.serverURL.baseURL;
 
 		this.fetchMerchants();
+		this.fetchMerchantMonthlyReport();
 	}
 
 	fetchMerchants(){
@@ -41,7 +42,7 @@ export class MerchantService {
 	}
 	
 	fetchMerchantMonthlyReport(){
-		this.http.post<DisplayDataModel[]>(`${this.serverBase}/api/merchant/get_merchants`, {
+		this.http.post<DisplayDataModel[]>(`${this.serverBase}/api/merchant_report/month_merchant_report`, {
 			ACCOUNT_ID: this.accountID
 		}).subscribe(monthlyReport => this.merchantMonthlyReportSubject.next(monthlyReport));
 	}

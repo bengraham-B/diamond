@@ -123,4 +123,6 @@ public class MerchantTest
 
 
     }
+    
+    // TODO: Test for checking that sum of monthly amount equals TOTAL
 }
