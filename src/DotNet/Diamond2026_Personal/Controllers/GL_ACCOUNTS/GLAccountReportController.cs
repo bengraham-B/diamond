@@ -1,4 +1,5 @@
 using Class;
+using GL_ACCOUNT;
 using MariaDB;
 using Merchant;
 using Microsoft.AspNetCore.Mvc;
@@ -11,7 +12,7 @@ public class GLAccountReportController(Conn conn) : ControllerBase
     [HttpPost("month_gl_account_report")]
     public IActionResult MonthlyMerchantReport([FromBody] RequestParams requestParams)
     {
-        DiamondResponse DR = MerchantReport.MonthlyMerchantReport(conn, requestParams);
+        DiamondResponse DR = GLAccountReport.MonthlyGLAccountReport(conn, requestParams);
         return Ok(DR.MonthlyReportList);
     }
     
