@@ -1,0 +1,67 @@
+<div class="card rounded-2xl">
+    <p-table
+            [value]="DisplayData"
+            [paginator]="false"
+            [scrollable]="true"
+            [frozenValue]="DisplayData"
+            [tableStyle]="{ 'width': '100%' }"
+            class="rounded"
+    >
+        <ng-template #colgroup>
+            <colgroup>
+                <col style="width: 18%" />
+                <col style="width: 10%" />
+                <col style="width: 6%" />
+                <col style="width: 6%" />
+                <col style="width: 6%" />
+                <col style="width: 6%" />
+                <col style="width: 6%" />
+                <col style="width: 6%" />
+                <col style="width: 6%" />
+                <col style="width: 6%" />
+                <col style="width: 6%" />
+                <col style="width: 6%" />
+                <col style="width: 6%" />
+                <col style="width: 6%" />
+            </colgroup>
+        </ng-template>
+        
+        <ng-template #header>
+            <tr>
+                <th>Name</th>
+                <th style="text-align: left">Total</th>
+                <th style="text-align: right">Jan</th>
+                <th style="text-align: right">Feb</th>
+                <th style="text-align: right">Mar</th>
+                <th style="text-align: right">Apr</th>
+                <th style="text-align: right">May</th>
+                <th style="text-align: right">Jun</th>
+                <th style="text-align: right">Jul</th>
+                <th style="text-align: right">Aug</th>
+                <th style="text-align: right">Sept</th>
+                <th style="text-align: right">Oct</th>
+                <th style="text-align: right">Nov</th>
+                <th style="text-align: right">Dec</th>
+            </tr>
+        </ng-template>
+        
+        <ng-template #body let-D>
+            <tr>
+                <td>{{ D.NAME }}</td>
+                <td style="text-align: left">R {{ (D.TOTAL) }}</td>
+                <td style="text-align: right">R {{ (D.JAN) }}</td>
+                <td style="text-align: right">R {{ (D.FEB) }}</td>
+                <td style="text-align: right">R {{ D.MAR }}</td>
+                <td style="text-align: right">R {{ D.APR }}</td>
+                <td style="text-align: right">R {{ D.MAY }}</td>
+                <td style="text-align: right">R {{ D.JUN }}</td>
+                <td style="text-align: right">R {{ D.JUL }}</td>
+                <td style="text-align: right">R {{ D.AUG }}</td>
+                <td style="text-align: right">R {{ D.SEPT }}</td>
+                <td style="text-align: right">R {{ D.OCT }}</td>
+                <td style="text-align: right">R {{ D.NOV }}</td>
+                <td style="text-align: right">R {{ D.DEC }}</td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>
