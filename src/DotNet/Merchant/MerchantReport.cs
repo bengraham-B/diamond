@@ -32,14 +32,39 @@ public class MerchantReport
 
         using var connection = conn.Open();
         using var cmd = new MySqlCommand(SQL, connection);
-
         cmd.Parameters.AddWithValue("@ACCOUNT_ID", requestParams.ACCOUNT_ID);
+
+        var reader = cmd.ExecuteReader();
         
         List<MonthlyReportModel> reportResult = new List<MonthlyReportModel>(); 
+
+        while (reader.Read())
+        {
+            reportResult.Add(new MonthlyReportModel
+            {
+                NAME = reader.GetString("NAME"),
+                TOTAL = reader.GetDouble("TOTAL"),
+                JAN = reader.GetDouble("JAN"),
+                FEB = reader.GetDouble("FEB"),
+                MAR = reader.GetDouble("MAR"),
+                APR = reader.GetDouble("APR"),
+                MAY = reader.GetDouble("MAY"),
+                JUN = reader.GetDouble("JUN"),
+                JUL = reader.GetDouble("JUL"),
+                AUG = reader.GetDouble("AUG"),
+                SEPT = reader.GetDouble("SEPT"),
+                OCT = reader.GetDouble("OCT"),
+                NOV = reader.GetDouble("NOV"),
+                DEC = reader.GetDouble("DECEMBER"),
+            });
+            
+        }
+        
         
         return new DiamondResponse
         {
-            Success = true
+            Success = true,
+            MonthlyReportList = reportResult
         };
     }
     
