@@ -1,3 +1,5 @@
+using Class.Report;
+
 namespace Class;
 
 public class DiamondResponse
@@ -17,4 +19,6 @@ public class DiamondResponse
     public List<MerchantModel>? MerchantList { get; set; }
     
     public List<GLAccountModel>? GLAccountList { get; set; }
+    
+    public List<MonthlyReportModel>? MonthlyReportList { get; set; }
 }
