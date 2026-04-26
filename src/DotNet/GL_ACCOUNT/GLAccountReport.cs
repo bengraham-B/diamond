@@ -15,18 +15,24 @@ public class GLAccountReport
 
         for (int i = 1; i < 13; i++)
         {
-            SQL += $" COALESCE(SUM(CASE WHEN DT.MONTH={i}  THEN DT.AMOUNT END), 0) AS {monthName[i-1]}, ";
+            SQL += $" COALESCE(SUM(CASE WHEN DT.MONTH={i}  THEN ROUND(DT.AMOUNT, 2) END), 0) AS {monthName[i-1]}, ";
         }
 
-        SQL += " GL_ACCOUNT.NAME, ";
-        SQL += " GL_ACCOUNT.GL_ACCOUNT_ID,";
-        SQL += " COALESCE(SUM(AMOUNT), 0) AS TOTAL ";
+        SQL += " GL_ACCOUNT.GL_ACCOUNT_NAME, ";
+        SQL += " GL_ACCOUNT.GL_ACCOUNT_ID, ";
+        SQL += " GL_ACCOUNT.GL_ACCOUNT_ID, ";
+        SQL += " COALESCE(ROUND(SUM(AMOUNT),2), 0) AS TOTAL ";
         
         SQL += " FROM GL_ACCOUNT ";
         
         SQL += " LEFT JOIN DIAMOND_TRANSACTION DT ON GL_ACCOUNT.GL_ACCOUNT_ID = DT.GL_ACCOUNT_ID AND DT.ACCOUNT_ID = @ACCOUNT_ID ";
-        SQL += " WHERE MERCHANT.ACCOUNT_ID=@ACCOUNT_ID  ";
+        SQL += @" WHERE 
+                    GL_ACCOUNT.ACCOUNT_ID=@ACCOUNT_ID  AND 
+                    GL_ACCOUNT_TYPE IN ('INCOME', 'EXPENSE') AND
+                    GL_ACCOUNT_CODE NOT IN (5000, 2000, 4000)
+        ";
         SQL += " GROUP BY GL_ACCOUNT.GL_ACCOUNT_ID ";
+        SQL += " ORDER BY GL_ACCOUNT.GL_ACCOUNT_TYPE DESC, GL_ACCOUNT.GL_ACCOUNT_NAME";
         
 
         using var connection = conn.Open();
@@ -41,7 +47,8 @@ public class GLAccountReport
         {
             reportResult.Add(new MonthlyReportModel
             {
-                NAME = reader.GetString("NAME"),
+                NAME = reader.GetString("GL_ACCOUNT_NAME"),
+                ID = reader.GetGuid("GL_ACCOUNT_ID"),
                 TOTAL = reader.GetDouble("TOTAL"),
                 JAN = reader.GetDouble("JAN"),
                 FEB = reader.GetDouble("FEB"),

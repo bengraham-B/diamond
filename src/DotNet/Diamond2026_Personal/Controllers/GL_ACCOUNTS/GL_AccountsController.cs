@@ -24,7 +24,8 @@ public class GL_AccountsController: ControllerBase
     {
         try
         {
-            return Ok(GLAccountCRUD.GetGLAccounts(_conn, requestParams));
+            DiamondResponse DR = GLAccountCRUD.GetGLAccounts(_conn, requestParams);
+            return Ok(DR.GLAccountList);
         }
         catch (Exception e)
         {

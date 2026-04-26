@@ -1,16 +1,17 @@
-<div class="card rounded-2xl">
+<div class="card rounded-2xl p-4">
     <p-table
             [value]="DisplayData"
             [paginator]="false"
             [scrollable]="true"
             [frozenValue]="DisplayData"
             [tableStyle]="{ 'width': '100%' }"
+            scrollHeight="90vh"
             class="rounded"
     >
         <ng-template #colgroup>
             <colgroup>
                 <col style="width: 18%" />
-                <col style="width: 10%" />
+                <col style="width: 6%" />
                 <col style="width: 6%" />
                 <col style="width: 6%" />
                 <col style="width: 6%" />
@@ -49,7 +50,7 @@
             <tr>
                 <td>{{ D.NAME }}</td>
                 <td style="text-align: left">R {{ (D.TOTAL) }}</td>
-                <td style="text-align: right">R {{ (D.JAN) }}</td>
+                <td style="text-align: right">R {{ (D.JAN).toFixed(2) }}</td>
                 <td style="text-align: right">R {{ (D.FEB) }}</td>
                 <td style="text-align: right">R {{ D.MAR }}</td>
                 <td style="text-align: right">R {{ D.APR }}</td>

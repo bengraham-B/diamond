@@ -6,6 +6,8 @@ public class MonthlyReportModel
     
     public required double TOTAL { get; set; }
     
+    public required Guid ID { get; set; }
+    
     public double? JAN { get; set; }
     public double? FEB { get; set; }
     public double? MAR { get; set; }

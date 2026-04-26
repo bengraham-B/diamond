@@ -30,7 +30,7 @@ export const routes: Routes = [
 		component: MerchantPage
 	},
 	{
-		path: 'gl_account',
+		path: 'gl-account',
 		component: GlAccountPage
 	}
 ];

@@ -177,7 +177,7 @@ public class DiamondTransactionCRUD
             using var connection = conn.Open();
             using var cmd = new MySqlCommand(SQL, connection);
             cmd.Parameters.AddWithValue("@ACCOUNT_ID", requestParams.ACCOUNT_ID);
-            cmd.Parameters.AddWithValue("@DIAMOND_TRANSACTION_ID", requestParams.TRANSACTION_ID);
+            cmd.Parameters.AddWithValue("@DIAMOND_TRANSACTION_ID", requestParams.DIAMOND_TRANSACTION_ID);
 
             int rowsEffected = cmd.ExecuteNonQuery();
             return rowsEffected != 0;

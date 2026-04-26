@@ -41,6 +41,10 @@ export class MerchantGlAccountTable implements OnInit{
 			
 			case "GL_ACCOUNT":
 			case "CATEGORY":
+				this.glAccountService.globalGLAccountMonthlyReport.subscribe(data => {
+					this.DisplayData = data;
+					this.cdr.detectChanges();
+				})
 				break;
 				
 			default:

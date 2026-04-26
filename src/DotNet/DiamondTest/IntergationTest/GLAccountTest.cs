@@ -1,6 +1,8 @@
 using MariaDB;
 using Class;
+using Class.Report;
 using GL_ACCOUNT;
+using Merchant;
 using Microsoft.Extensions.Configuration;
 
 namespace DiamondTest.UnitTest;
@@ -104,27 +106,30 @@ public class GLAccountTest
     }
     
     [Fact]
-    public void MonthlyMerchantReport_TEST()
+    public void MonthlyGLAccountReport_TEST()
     {
-        Guid TestMerchantID = Guid.NewGuid();
+        Guid TestGLAccountID = Guid.NewGuid();
+        string testGLAccountName = "Coffee";
         
         // Add Merchant
-        MerchantModel addMerchant = new MerchantModel
+        GLAccountModel addGlAccount = new GLAccountModel
         {
             ACCOUNT_ID = _testAccountID,
-            NAME = "SPAR",
-            MERCHANT_ID = TestMerchantID
+            GL_ACCOUNT_NAME = testGLAccountName,
+            GL_ACCOUNT_TYPE = "EXPENSE",
+            GL_ACCOUNT_ID = TestGLAccountID,
+            GL_ACCOUNT_CODE = 0000,
         };
 
-        GLAccountCRUD.AddGLAccount(_conn, addMerchant);
+        GLAccountCRUD.AddGLAccount(_conn, addGlAccount);
 
         DiamondResponse result = MerchantReport.MonthlyMerchantReport(conn: _conn, requestParams: _req);
         Assert.NotNull(result.MonthlyReportList);
         
-        MonthlyReportModel? testReport = result.MonthlyReportList.FirstOrDefault(r => r.NAME == "SPAR");
+        MonthlyReportModel? testReport = result.MonthlyReportList.FirstOrDefault(r => r.NAME == testGLAccountName);
         Assert.NotNull(testReport);
         
-        Assert.Equal("SPAR", testReport!.NAME);
+        Assert.Equal(testGLAccountName, testReport!.NAME);
         Assert.True(testReport.TOTAL >= 0, "TOTAL not included.");
         Assert.True(testReport.JAN >= 0, "JAN not included.");
         Assert.True(testReport.FEB >= 0, "FEB not included.");
@@ -141,7 +146,7 @@ public class GLAccountTest
         
         
         // DELETE MERCHANT AFTER TEST
-        GLAccountID.DeleteMerchant(_conn, new RequestParams { ACCOUNT_ID = _testAccountID, MERCHANT_ID = TestMerchantID });
+        GLAccountCRUD.DeleteGLAccount(_conn, new RequestParams { ACCOUNT_ID = _testAccountID, MERCHANT_ID = TestGLAccountID });
         
     }
     
