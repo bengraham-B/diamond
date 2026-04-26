@@ -102,6 +102,9 @@ export class Aside implements OnInit, OnChanges {
         //Y Getting GL_ACCOUNTS
         this.GL_ACCOUNTS$ = this.glAccountService.globalGL_ACCOUNTS;
         this.MERCHANTS$ = this.merchantService.globalMerchant;
+		
+		console.log(this.MERCHANTS$)
+		
     }
 
     onSubmit(): void{
